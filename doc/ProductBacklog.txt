@@ -15,6 +15,9 @@ As a doer, I want to edit the details of a habit of mine.
 US 01.05.01
 As a doer, I want to delete a habit of mine.
 
+For this habit, the size in story points is 1 because only 1 fragment will ever pop up. The risk level for this habit is low because it is much more
+important to both add a habit and store its data in Firebase. 
+
 US 01.06.01
 As a doer, I want a habit title to be up to 20 characters and habit reason to be up to 30 characters.
 
