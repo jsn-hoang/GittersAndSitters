@@ -21,11 +21,17 @@ important to both add a habit and store its data in Firebase.
 US 01.06.01
 As a doer, I want a habit title to be up to 20 characters and habit reason to be up to 30 characters.
 
+For this habit, the size in story points would be 1. Only if the user enters too many characters will they get an error message. The risk level for this habit is low as most people will write in a title under 20 characters. 
+
 US 01.07.01
 As a doer, I want to see what habits I need to do today.
 
+For this habit, the size in story points will be at least 1. This risk level for this habit is high. If you cannot see what habits you must do today, then the app loses a major part of its functionality.   
+
 US 01.08.01
 As a doer, I want to see a list of all my habits.
+
+For this habit, the size in story points will be at least 2. This risk level for this habit is high. If you cannot list your habits then the app has almost no functionality. 
 
 US 01.09.01
 As a doer, I want for each habit on the list, a visual indicator to show how closely I am following its plan over time.
