@@ -34,15 +34,28 @@ As a doer, I want to see a list of all my habits.
 For this habit, the size in story points will be at least 2. This risk level for this habit is high. If you cannot list your habits then the app has almost no functionality. 
 
 US 01.09.01
+Mark 
+
 As a doer, I want for each habit on the list, a visual indicator to show how closely I am following its plan over time.
+
+For this habit, the size of the story points will be 2. The risk level for this habit will be medium because it is important to track your habits however the app can still function
+without a visual indicator.
+
 
 Habit Events
 
 US 02.01.01
 As a doer, I want to denote a habit event when I have done a habit as planned.
 
+For this habit, the size of the story points will be at least 2. The risk level for this habit will be medium because the app is able to function without denoting a habit.
+
 US 02.02.01
 As a doer, I want a habit event to have an optional comment of up to 20 characters.
+
+For this habit the size of the story point will be at least 1. The risk level for this habit will be low because the app can function without optional comments.
+
+
+Mark
 
 US 02.03.01
 As a doer, I want a habit event to have an optional photograph to record what happened.
