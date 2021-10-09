@@ -82,10 +82,16 @@ As a doer, I want to ask another doer to follow all their habits.
 US 05.02.01
 As a doer, I want to grant or deny another doer permission to follow all my habits.
 
+For this habit the size of the story point will be at least 5. The risk level for this habit is high because a follow system needs permissions.
+
 US 05.03.01
 As a doer, I want to view the habits and visual indicators of the other doers I am granted to follow.
+
+For this habit the size of the story point will be at least 2. The risk level for this habit is high because this is the basis of following someone.
 
 Geolocation and Maps
 
 US 06.01.01
 As a doer, I want to a habit event to have an optional location to record where it happened.
+
+For this habit the size of the story point will be at least 3. The risk level for this habit is low because the app does not need habit location info to function.
