@@ -1,16 +1,27 @@
+*Each user story is assigned 1, 2, 3, 5, 8, 13, or 21 story points.*
+
 Habits
 
 US 01.01.01
 As a doer, I want to add a habit, giving it a brief title, reason, and date to start.
+Story points: 5 (A fair amount of work, but seems very similar to Assignment 1.)
+Risk Level: Medium (Invalid user input has to be considered to avoid possible crashing.)
 
 US 01.02.01
 As a doer, I want a habit to have a plan for what days of the week it should regularly occur.
+Story points: 8 (Not a large specification, but I am unsure of how to implement it.)
+Risk Level: Low (I believe there is a way to implement it to easily avoid unwanted input (checklist).)
 
 US 01.03.01
 As a doer, I want to view a given habit and its details.
+Story points: 5 (A fair amount of work, but seems very similar to Assignment 1.)
+Risk Level: Low (Doesn't seem to leave much room for crashing (user simply has to click an existing habit).)
 
 US 01.04.01
 As a doer, I want to edit the details of a habit of mine.
+Story points: 5 (A fair amount of work, but seems very similar to Assignment 1.)
+Risk Level: Medium (Invalid user input has to be considered to avoid possible crashing.)
+
 
 US 01.05.01
 As a doer, I want to delete a habit of mine.
