@@ -70,12 +70,21 @@ Mark
 
 US 02.03.01
 As a doer, I want a habit event to have an optional photograph to record what happened.
+Story points - 5 (potentially complex to implement the functionality for allowing a user to take/select a photo)
+Risk level - medium (app may crash or encounter unexpected error)
+Can be released for half-way checkpoint if time permits.
 
 US 02.04.01
 As a doer, I want to view a given habit event and all its available details.
+Story points - 3 (will involve fragment or new activity but similar to previous assignment(s))
+Risk level - low (relatively important part of the app and should be implemented)
+Should be released for half-way checkpoint.
 
 US 02.05.01
 As a doer, I want to edit the details of a habit event of mine.
+Story points - 3 (will involve fragment but similar to previous assignment(s))
+Risk level - low (relatively important part of the app and should be implemented)
+Should be released for half-way checkpoint.
 
 US 02.06.01
 As a doer, I want to delete a habit event of mine.
