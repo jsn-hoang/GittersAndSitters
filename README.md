@@ -10,4 +10,5 @@ The best way to track your habits!
 | Aaaron Skiba  |   |
 | Jason Hoang  |   |
 | Justin Rozeboom  |   |
+| Ashwin Thampy |      |
 
