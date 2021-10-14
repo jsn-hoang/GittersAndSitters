@@ -7,7 +7,7 @@ The best way to track your habits!
 | ------------- | ------------- |
 | Traian Oglinzanu  | oglinzan  |
 | Mark McGoey  | mcgoey |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| Aaaron Skiba  |   |
+| Jason Hoang  |   |
+| Justin Rozeboom  |   |
 
