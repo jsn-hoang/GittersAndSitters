@@ -9,6 +9,6 @@ The best way to track your habits!
 | Mark McGoey  | mmcgoey |
 | Aaron Skiba  |   |
 | Jason Hoang  | jhoang2 |
-| Justin Rozeboom  |   |
+| Justin Rozeboom  | wrozeboo  |
 | Ashwin Thampy |      |
 
