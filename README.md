@@ -7,7 +7,7 @@ The best way to track your habits!
 | ------------- | ------------- |
 | Traian Oglinzanu  | oglinzan  |
 | Mark McGoey  | mmcgoey |
-| Aaron Skiba  |   |
+| Aaron Skiba  | askiba  |
 | Jason Hoang  | jhoang2 |
 | Justin Rozeboom  | wrozeboo  |
 | Ashwin Thampy |      |
