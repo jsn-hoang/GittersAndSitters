@@ -27,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
 
         cityDataList = new ArrayList<>();
 
-        for (int i = 0; i < cities.length; i++) {
-            cityDataList.add(new com.example.habittracker.Habit(cities[i], provinces[i]));
-        }
+//        for (int i = 0; i < cities.length; i++) {
+//            cityDataList.add(new com.example.habittracker.Habit(cities[i], provinces[i]));
+//        }
 
-        cityAdapter = new CustomList(this, cityDataList);
+        cityAdapter = new HabitCustomList(this, cityDataList);
 
         cityList.setAdapter(cityAdapter);
 
