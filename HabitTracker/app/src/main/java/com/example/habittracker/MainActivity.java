@@ -12,8 +12,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Declare the variables so that you will be able to reference it later.
     ListView cityList;
-    ArrayAdapter<com.example.habittracker01.Habit> cityAdapter;
-    ArrayList<com.example.habittracker01.Habit> cityDataList;
+    ArrayAdapter<com.example.habittracker.Habit> cityAdapter;
+    ArrayList<com.example.habittracker.Habit> cityDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         cityDataList = new ArrayList<>();
 
         for (int i = 0; i < cities.length; i++) {
-            cityDataList.add(new com.example.habittracker01.Habit(cities[i], provinces[i]));
+            cityDataList.add(new com.example.habittracker.Habit(cities[i], provinces[i]));
         }
 
         cityAdapter = new CustomList(this, cityDataList);
