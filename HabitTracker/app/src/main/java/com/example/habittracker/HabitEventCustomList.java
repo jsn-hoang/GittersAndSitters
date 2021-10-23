@@ -12,14 +12,14 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class HabitCustomList extends ArrayAdapter<Habit> {
+public class HabitEventCustomList extends ArrayAdapter<HabitEvent> {
 
-    private ArrayList<Habit> habitList;
+    private ArrayList<HabitEvent> habitEventList;
     private Context context;
 
-    public HabitCustomList(Context context, ArrayList<Habit> habitList){
-        super(context,0, habitList);
-        this.habitList = habitList;
+    public HabitEventCustomList(Context context, ArrayList<HabitEvent> habitEventList){
+        super(context,0, habitEventList);
+        this.habitEventList = habitEventList;
         this.context = context;
     }
 
@@ -29,14 +29,12 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
         if(view == null){
             view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
         }
-        Habit habit = habitList.get(position);
-        TextView habitName = view.findViewById(R.id.habit_name);
-        //TODO icon <-> Habit.isCompletedToday()
+        HabitEvent habitEvent = habitEventList.get(position);
+        TextView habitName = view.findViewById(R.id.event_name);
+        //
 
-        habitName.setText(habit.getHabitName());
+        habitName.setText(habitEvent.getEventName());
 
         return view;
     }
-
-
 }
