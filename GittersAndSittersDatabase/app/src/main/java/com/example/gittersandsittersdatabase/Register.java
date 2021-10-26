@@ -72,12 +72,12 @@ public class Register extends AppCompatActivity {
             }
         });
 
-        login_button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                startActivity(new Intent(getApplicationContext(), Login.class));
-            }
-         });
+        //login_button.setOnClickListener(new View.OnClickListener(){
+        //    @Override
+       //     public void onClick(View view){
+       //         startActivity(new Intent(getApplicationContext(), Login.class));
+       //     }
+       //  });
 
 
     }
