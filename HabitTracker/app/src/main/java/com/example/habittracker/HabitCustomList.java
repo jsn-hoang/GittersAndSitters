@@ -30,10 +30,12 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
             view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
         }
         Habit habit = habitList.get(position);
-        TextView habitName = view.findViewById(R.id.habit_name);
+        TextView habitName = view.findViewById(R.id.habit_name_text);
+        TextView habitReason = view.findViewById(R.id.habit_reason_text);
         //TODO icon <-> Habit.isCompletedToday()
 
         habitName.setText(habit.getHabitName());
+        habitReason.setText(habit.getHabitReason());
 
         return view;
     }

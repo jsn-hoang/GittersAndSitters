@@ -30,10 +30,9 @@ public class HabitEventCustomList extends ArrayAdapter<HabitEvent> {
             view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
         }
         HabitEvent habitEvent = habitEventList.get(position);
-        TextView habitName = view.findViewById(R.id.event_name);
-        //
+        //TextView habitName = view.findViewById(R.id.event_name);
 
-        habitName.setText(habitEvent.getEventName());
+        //habitName.setText(habitEvent.getEventName());
 
         return view;
     }

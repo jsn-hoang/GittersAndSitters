@@ -1,12 +1,16 @@
 package com.example.habittracker;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,7 +18,9 @@ public class MainActivity extends AppCompatActivity {
     ListView cityList;
     ArrayAdapter<com.example.habittracker.Habit> cityAdapter;
     ArrayList<com.example.habittracker.Habit> cityDataList;
+    ArrayList<DayOfWeek> weekdays;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)           // api required to implement DayOfWeek
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,14 +28,26 @@ public class MainActivity extends AppCompatActivity {
 
         cityList = findViewById(R.id.city_list);
 
-        String []cities = {"Edmonton", "Vancouver", "Toronto", "Hamilton", "Denver", "Los Angeles"};
-        String []provinces = {"AB", "BC", "ON", "ON", "CO", "CA"};
+        /**
+         * Test creating a new Habit
+         *
+         *         habitName;
+         *         weekdays;
+         *         habitReason;
+         */
+
+        String habitName = "Running";
+        weekdays = new ArrayList<>();
+        weekdays.add(DayOfWeek.MONDAY);
+        weekdays.add(DayOfWeek.WEDNESDAY);
+        weekdays.add(DayOfWeek.FRIDAY);
+        String habitReason = "Get in shape";
+
+        Habit habit = new Habit(habitName, weekdays, habitReason);
 
         cityDataList = new ArrayList<>();
+        cityDataList.add(habit);
 
-//        for (int i = 0; i < cities.length; i++) {
-//            cityDataList.add(new com.example.habittracker.Habit(cities[i], provinces[i]));
-//        }
 
         cityAdapter = new HabitCustomList(this, cityDataList);
 
