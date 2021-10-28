@@ -19,7 +19,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * This class is responsible for allowing a user to register for the HabitTracker app
+ */
 public class Register extends AppCompatActivity implements View.OnClickListener{
+
+    // Declare variables to be referenced
     EditText emailName;
     EditText userName;
     EditText userPassword;
@@ -61,6 +66,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()){
+                            String username = userName.toString();
+                            String useremail = emailName.toString();
                             User user = new User(username,useremail);
                         }
 

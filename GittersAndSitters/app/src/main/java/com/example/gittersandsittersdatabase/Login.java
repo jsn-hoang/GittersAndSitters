@@ -15,8 +15,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * This class is responsible for logging into the HabitTracker app.
+ */
 public class Login extends AppCompatActivity {
 
+    // Declare variables to be referenced
     EditText emailName;
     EditText userPassword;
     Button loginButton;

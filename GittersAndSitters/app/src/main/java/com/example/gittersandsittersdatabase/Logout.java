@@ -10,7 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * This class is responsible for logging out of the HabitTracker app.
+ */
 public class Logout extends AppCompatActivity {
+
+    // Declare variables to be referenced
     private Button logout;
 
     @Override
