@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
@@ -35,7 +36,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
     EditText emailName;
     EditText userName;
     EditText userPassword;
-
+    ProgressBar progressBar;
     FirebaseAuth mAuth;
 
     @Override
@@ -108,7 +109,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
                         if(task.isSuccessful()){
                             User user = new User(email, password);
-
+                            //FirebaseDatabase database = FirebaseDatabase.getInstance();
                             FirebaseDatabase.getInstance().getReference("Users")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>(){
@@ -121,7 +122,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                                                 progressBar.setVisibility(View.VISIBLE);
                                             }else{
                                                 Toast.makeText(Register.this, "Failed to register user! Please try once again", Toast.LENGTH_LONG).show();
-                                                progressBar.setVisibilty(View.GONE);
+                                                progressBar.setVisibility(View.GONE);
                                             }
                                     }
                             });
