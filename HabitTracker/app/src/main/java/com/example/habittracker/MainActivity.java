@@ -18,9 +18,9 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     // Declare the variables so that you will be able to reference it later.
-    ListView cityList;
-    ArrayAdapter<com.example.habittracker.Habit> cityAdapter;
-    ArrayList<com.example.habittracker.Habit> cityDataList;
+    ListView habitListView;
+    ArrayAdapter<com.example.habittracker.Habit> habitAdapter;
+    ArrayList<com.example.habittracker.Habit> habitList;
     ArrayList<DayOfWeek> weekdays;
     User user;
 
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cityList = findViewById(R.id.today_habits_list);
+        habitListView = findViewById(R.id.today_habits_list);
 
         /**
          * Test creating a new Habit
@@ -56,22 +56,38 @@ public class MainActivity extends AppCompatActivity {
         user.addUserHabit(habit);
 
 
-        cityDataList = new ArrayList<>();
-        cityDataList.add(habit);
+        habitList = new ArrayList<>();
+        habitList.add(habit);
 
         // Set adapter to todayUserHabits
-        cityAdapter = new HabitCustomList(this, user.getTodayUserHabits());
+        habitAdapter = new HabitCustomList(this, user.getTodayUserHabits());
+        habitListView.setAdapter(habitAdapter);
 
-        cityList.setAdapter(cityAdapter);
         final Button allHabitsButton = findViewById(R.id.all_habits_button);
         allHabitsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AllHabitsActivity.class);
-                //ArrayList<Habit> allHabits = user.getAllUserHabits();
-                intent.putExtra("user", user);
-                startActivity(intent);
+                habitAdapter = new HabitCustomList(MainActivity.this, user.getAllUserHabits());
+                habitListView.setAdapter(habitAdapter);
             }
         });
+
+        final Button todaysHabitsButton = findViewById(R.id.todays_habits_button);
+        todaysHabitsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                habitAdapter = new HabitCustomList(MainActivity.this, user.getTodayUserHabits());
+                habitListView.setAdapter(habitAdapter);
+            }
+        });
+
+//        final Button allHabitsButton = findViewById(R.id.all_habits_button);
+//        allHabitsButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, AllHabitsActivity.class);
+//                //ArrayList<Habit> allHabits = user.getAllUserHabits();
+//                intent.putExtra("user", user);
+//                startActivity(intent);
+//            }
+//        });
     }
 }
 

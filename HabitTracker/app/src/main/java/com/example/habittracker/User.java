@@ -35,6 +35,7 @@ public class User implements Serializable {
     }
 
     public ArrayList<Habit> getTodayUserHabits(){
+        //TODO needs to be fixed.
         ArrayList<Habit> tempList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
