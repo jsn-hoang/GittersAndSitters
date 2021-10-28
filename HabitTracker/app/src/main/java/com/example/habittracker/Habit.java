@@ -6,20 +6,20 @@ import java.util.Date;
 
 public class Habit {
 
-    private ArrayList<DayOfWeek> weekdays;
     private String habitName;
+    private ArrayList<DayOfWeek> weekdays;
     private Date startDate;
     private String habitReason;
     private Double progress;
     private ArrayList<HabitEvent> habitEventList;
 
-    public Habit(ArrayList<DayOfWeek> weekdays, String habitName, Date startDate, String habitReason) {
-        this.weekdays = weekdays;
+    public Habit(String habitName, ArrayList<DayOfWeek> weekdays, /*Date startDate,*/ String habitReason) {
         this.habitName = habitName;
-        this.startDate = startDate;
+        this.weekdays = weekdays;
+        //this.startDate = startDate;
         this.habitReason = habitReason;
-        this.progress = 0.0;
-        this.habitEventList = new ArrayList<>();
+        this.progress = 0.0;                        // Initialize progress to 0
+        this.habitEventList = new ArrayList<>();    // Initialize empty habitEventList
     }
 
     public boolean isCompletedToday() {
