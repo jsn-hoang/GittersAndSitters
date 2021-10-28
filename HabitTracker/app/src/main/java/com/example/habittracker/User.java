@@ -2,11 +2,12 @@ package com.example.habittracker;
 
 import android.graphics.Picture;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class User {
+public class User implements Serializable {
 
     private String uname;
     private Picture picture;
@@ -16,8 +17,9 @@ public class User {
 
     public User(String uname) {
         this.uname = uname;
-        this.following = new ArrayList<>(); // initialize empty following list
-        this.requests = new ArrayList<>(); // initialize empty requests list
+        this.following = new ArrayList<>();     // initialize empty following list
+        this.requests = new ArrayList<>();      // initialize empty requests list
+        this.habitList = new ArrayList<>();     // initialize empty Habit list
     }
 
     public void addUserHabit(Habit habit) {
