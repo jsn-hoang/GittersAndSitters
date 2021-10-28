@@ -2,6 +2,7 @@ package com.example.habittracker;
 
 import android.location.Location;
 
+import java.io.File;
 import java.util.Date;
 
 public class HabitEvent {
@@ -10,7 +11,7 @@ public class HabitEvent {
     private Date eventDate;
     private Location eventLocation;
     private String eventComment;
-    private Picture eventPhoto;
+    private File eventPhoto;
 
     // Constructor with the required attributes: name and date
     public HabitEvent(String eventName, Date eventDate) {
@@ -52,11 +53,11 @@ public class HabitEvent {
         this.eventComment = eventComment;
     }
 
-    public Picture getEventPhoto() {
+    public File getEventPhoto() {
         return eventPhoto;
     }
 
-    public void setEventPhoto(Picture eventPhoto) {
+    public void setEventPhoto(File eventPhoto) {
         this.eventPhoto = eventPhoto;
     }
 }
