@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         weekdays.add(DayOfWeek.FRIDAY);
         String habitReason = "Get in shape";
 
-        Habit habit = new Habit(habitName, weekdays, habitReason);
+        Habit habit = new Habit(habitName, weekdays, habitReason, true);
 
         cityDataList = new ArrayList<>();
         cityDataList.add(habit);

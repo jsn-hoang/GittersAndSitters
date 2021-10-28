@@ -6,19 +6,22 @@ import java.util.Date;
 
 public class Habit {
 
+    // private String uname;
     private String habitName;
     private ArrayList<DayOfWeek> weekdays;
     private Date startDate;
     private String habitReason;
     private Double progress;
+    private boolean habitPublic; // public vs private to users that follow
     private ArrayList<HabitEvent> habitEventList;
 
-    public Habit(String habitName, ArrayList<DayOfWeek> weekdays, /*Date startDate,*/ String habitReason) {
+    public Habit(String habitName, ArrayList<DayOfWeek> weekdays, /*Date startDate,*/ String habitReason, boolean habitPublic) {
         this.habitName = habitName;
         this.weekdays = weekdays;
         //this.startDate = startDate;
         this.habitReason = habitReason;
         this.progress = 0.0;                        // Initialize progress to 0
+        this.habitPublic = habitPublic;
         this.habitEventList = new ArrayList<>();    // Initialize empty habitEventList
     }
 
@@ -42,11 +45,29 @@ public class Habit {
         updateProgress();
     }
 
+    public void deleteHabitEvent(HabitEvent habitEvent) {
+        habitEventList.remove(habitEvent);
+        updateProgress();
+    }
+
+    public int countHabitEvents(){
+        return habitEventList.size();
+    }
+
     private void updateProgress() {
         //TODO
     }
 
+
     // Getters and Setters
+
+    public boolean isHabitPublic() {
+        return habitPublic;
+    }
+
+    public void setHabitPublic(boolean habitPublic) {
+        this.habitPublic = habitPublic;
+    }
 
     public ArrayList<DayOfWeek> getWeekdays() {
         return weekdays;
