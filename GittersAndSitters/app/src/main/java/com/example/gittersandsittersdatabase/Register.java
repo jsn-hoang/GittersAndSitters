@@ -13,12 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.gittersandsittersdatabase.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Register extends AppCompatActivity {
+public class Register extends AppCompatActivity implements View.OnClickListener{
     EditText emailName;
     EditText userName;
     EditText userPassword;
@@ -60,11 +61,9 @@ public class Register extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()){
-                            Toast.makeText(Register.this, "user Created. ", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        }else{
-                            Toast.makeText(Register.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            User user = new User(username,useremail);
                         }
+
 
                     }
                 });
@@ -72,17 +71,17 @@ public class Register extends AppCompatActivity {
             }
         });
 
-        //login_button.setOnClickListener(new View.OnClickListener(){
-        //    @Override
-       //     public void onClick(View view){
-       //         startActivity(new Intent(getApplicationContext(), Login.class));
-       //     }
-       //  });
+
 
 
     }
 
+    @Override
+    public void onClick(View view) {
+
+    }
 }
+
 
 
 
