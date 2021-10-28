@@ -7,12 +7,15 @@ import android.os.Bundle;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-     private FirebaseAuth mAuth;
+
+    // Declare variables to be referenced
+    private FirebaseAuth mAuth;             // The entry point of the Firebase Authentication SDK
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();     // Get an instance of Firebase Authentication SDK
 
 
     }
