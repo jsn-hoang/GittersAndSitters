@@ -1,21 +1,19 @@
 package com.example.habittracker;
 
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Habit {
 
-    private enum Weekdays {
-        MON, TUES, WED, THURS, FRI, SAT, SUN
-    }
-    private ArrayList<Weekdays> weekdays;
+    private ArrayList<DayOfWeek> weekdays;
     private String habitName;
     private Date startDate;
     private String habitReason;
     private Double progress;
     private ArrayList<HabitEvent> habitEventList;
 
-    public Habit(ArrayList<Weekdays> weekdays, String habitName, Date startDate, String habitReason) {
+    public Habit(ArrayList<DayOfWeek> weekdays, String habitName, Date startDate, String habitReason) {
         this.weekdays = weekdays;
         this.habitName = habitName;
         this.startDate = startDate;
@@ -50,11 +48,11 @@ public class Habit {
 
     // Getters and Setters
 
-    public ArrayList<Weekdays> getWeekdays() {
+    public ArrayList<DayOfWeek> getWeekdays() {
         return weekdays;
     }
 
-    public void setWeekdays(ArrayList<Weekdays> weekdays) {
+    public void setWeekdays(ArrayList<DayOfWeek> weekdays) {
         this.weekdays = weekdays;
     }
 
