@@ -6,14 +6,17 @@ package com.example.gittersandsittersdatabase;
 public class User {
 
     // Declare attributes
-    private String username;
-    private String useremail;
+    public String username;
+    public String email;
 
     // User constructors
     public User(){
+
+
     }
-    public User(String username, String useremail){
+
+    public User(String username, String email){
         this.username = username;
-        this.useremail = useremail;
+        this.email = email;
     }
 }
