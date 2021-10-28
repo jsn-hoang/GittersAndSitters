@@ -8,6 +8,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
         userName = findViewById(R.id.editTextUserName);
         userPassword = findViewById(R.id.editTextUserPassword);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
     }
 
@@ -98,6 +100,43 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        if(task.isSuccessful()){
+                            User user = new User(email, password);
+
+                            FirebaseDatabase.getInstance().getReference("Users")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>(){
+
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                            if(task.isSuccessful()){
+                                                Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
+                                                progressBar.setVisibility(View.VISIBLE);
+                                            }else{
+                                                Toast.makeText(Register.this, "Failed to register user! Please try once again", Toast.LENGTH_LONG).show();
+                                                progressBar.setVisibilty(View.GONE);
+                                            }
+                                    }
+                            });
+
+                            /**
+                             * Could not create user
+                              */
+
+                        }else{
+                            Toast.makeText(Register.this, "Failed to register user ! Please try again!", Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                    }
+                });
 
     }
 
