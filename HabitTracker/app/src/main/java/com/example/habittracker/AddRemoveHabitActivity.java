@@ -148,8 +148,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
 
                 else { // else edit the existing habit
                     habit.setHabitName(habitName);
-                    habit.setWeekdays(weekdays);
+                    //habit.setWeekdays(weekdays);
                     habit.setHabitReason(habitReason);
+                    //TODO replace Habit habit = user.getAllUserHabits().get(habitPosition)
+                    // with edited habit
                 }
 
 
