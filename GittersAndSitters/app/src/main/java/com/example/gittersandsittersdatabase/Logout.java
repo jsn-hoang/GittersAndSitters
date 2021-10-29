@@ -35,5 +35,13 @@ public class Logout extends AppCompatActivity {
             }
         });
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference();
+        userID = user.getUid();
+
+        final TextView greetingTextView = (TextView) findViewById(R.id.greeting);
+        final TextView userNameTextView = (TextView) findViewById(R.id.userName);
+        final TextView emailTextView = (TextView) findViewById(R.id.emailAddress);
+        
     }
 }
