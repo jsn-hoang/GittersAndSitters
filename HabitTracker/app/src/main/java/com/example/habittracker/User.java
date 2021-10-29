@@ -7,8 +7,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * This class represents a user of the HabitTracker app.
+ */
 public class User implements Serializable {
 
+    // Declare variables for referencing
     private String uname;
     private Picture picture;
     private ArrayList<String> following;
