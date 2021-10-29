@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * This class provides the logic for displaying HabitEvent objects as ListView entries.
+ */
 public class HabitEventCustomList extends ArrayAdapter<HabitEvent> {
 
     private ArrayList<HabitEvent> habitEventList;
