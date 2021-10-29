@@ -5,6 +5,9 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * This class represents a Habit in the HabitTracker app.
+ */
 public class Habit implements Serializable {
 
     // private String uname;
