@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GittersAndSittersDatabase</string>
+    <string name="search_username">Enter a Username</string>
+    <string name="button_send">Send</string>
 </resources>
