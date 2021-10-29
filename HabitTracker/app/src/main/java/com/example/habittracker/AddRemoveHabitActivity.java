@@ -44,14 +44,15 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_remove_habit);
 
-        // get user Object
+        // get user
         user = (User) getIntent().getSerializableExtra("user");
-        // Getting this boolean enables us to return to correct habitListView later
+
+        // allHabits enables us to return to correct habitListView later
         allHabits = getIntent().getExtras().getBoolean("allHabits");
 
-        // This conditional determines whether user clicked an existing habit or "Add Habit"
+        // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position"))
-            habitPosition = getIntent().getExtras().getInt("allHabits");
+            habitPosition = getIntent().getExtras().getInt("position");
         // if habitPosition == -1 -> user clicked "Add Habit"
         else habitPosition = -1;
 
@@ -80,7 +81,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
         // if habit already exists
         if (habitPosition != -1) {
             // Get the clicked Habit entry
-            Habit habit = user.getAllUserHabits().get(habitPosition);
+            habit = user.getUserHabit(habitPosition);
 
             // Set field entries equal to the attributes of the existing habit
             habitNameEditText.setText(habit.getHabitName());
@@ -142,18 +143,18 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                     // Create a new Habit
                     weekdays.add(DayOfWeek.MONDAY);
 
-                    Habit habit = new Habit(habitName, weekdays, habitReason, true);
-                    user.addUserHabit(habit);
+                    Habit newHabit = new Habit(habitName, weekdays, habitReason, true);
+                    user.addUserHabit(newHabit);
                 }
 
                 else { // else edit the existing habit
+
+                    //TODO Editing an existing habit keeps crashing
                     habit.setHabitName(habitName);
                     //habit.setWeekdays(weekdays);
                     habit.setHabitReason(habitReason);
-                    //TODO replace Habit habit = user.getAllUserHabits().get(habitPosition)
-                    // with edited habit
+                    user.setUserHabit(habitPosition, habit);
                 }
-
 
                 // Finally,navigate back to MainActivity
                 Intent intent = new Intent(AddRemoveHabitActivity.this, MainActivity.class);
