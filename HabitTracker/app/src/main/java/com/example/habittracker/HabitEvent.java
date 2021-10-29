@@ -5,6 +5,9 @@ import android.location.Location;
 import java.io.File;
 import java.util.Date;
 
+/**
+ * This class represents a HabitEvent in the HabitTracker app.
+ */
 public class HabitEvent {
 
     private String eventName;
