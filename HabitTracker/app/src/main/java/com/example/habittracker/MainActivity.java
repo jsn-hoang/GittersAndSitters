@@ -4,12 +4,20 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
+
+import org.w3c.dom.Text;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -28,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_habit);
 
-        habitListView = findViewById(R.id.today_habits_list);
+        habitListView = findViewById(R.id.habit_listview);
 
         /**
          * Test creating a new Habit
@@ -63,25 +71,55 @@ public class MainActivity extends AppCompatActivity {
         habitAdapter = new HabitCustomList(this, user.getTodayUserHabits());
         habitListView.setAdapter(habitAdapter);
 
-        // Button for navigating to allHabits
-        final Button allHabitsButton = findViewById(R.id.all_habits_button);
-        allHabitsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AllHabitsActivity.class);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0: // todays habits
+                        habitAdapter = new HabitCustomList(MainActivity.this, user.getTodayUserHabits());
+                        habitListView.setAdapter(habitAdapter);
+                        break;
+                    case 1: // all habits
+                        habitAdapter = new HabitCustomList(MainActivity.this, user.getAllUserHabits());
+                        habitListView.setAdapter(habitAdapter);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
+                intent.putExtra("mode", "ADD");
                 startActivity(intent);
             }
         });
 
-        // Button for creating a habit
-        final Button addHabitButton = findViewById(R.id.today_add_habit_button);
-        addHabitButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
+                intent.putExtra("mode", "EDIT");
+                intent.putExtra("position", i);
                 startActivity(intent);
             }
         });
+
     }
 }
 
