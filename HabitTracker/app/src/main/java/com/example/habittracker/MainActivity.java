@@ -63,31 +63,25 @@ public class MainActivity extends AppCompatActivity {
         habitAdapter = new HabitCustomList(this, user.getTodayUserHabits());
         habitListView.setAdapter(habitAdapter);
 
+        // Button for navigating to allHabits
         final Button allHabitsButton = findViewById(R.id.all_habits_button);
         allHabitsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                habitAdapter = new HabitCustomList(MainActivity.this, user.getAllUserHabits());
-                habitListView.setAdapter(habitAdapter);
+                Intent intent = new Intent(MainActivity.this, AllHabitsActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
             }
         });
 
-        final Button todaysHabitsButton = findViewById(R.id.todays_habits_button);
-        todaysHabitsButton.setOnClickListener(new View.OnClickListener() {
+        // Button for creating a habit
+        final Button addHabitButton = findViewById(R.id.today_add_habit_button);
+        addHabitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                habitAdapter = new HabitCustomList(MainActivity.this, user.getTodayUserHabits());
-                habitListView.setAdapter(habitAdapter);
+                Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
             }
         });
-
-//        final Button allHabitsButton = findViewById(R.id.all_habits_button);
-//        allHabitsButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, AllHabitsActivity.class);
-//                //ArrayList<Habit> allHabits = user.getAllUserHabits();
-//                intent.putExtra("user", user);
-//                startActivity(intent);
-//            }
-//        });
     }
 }
 
