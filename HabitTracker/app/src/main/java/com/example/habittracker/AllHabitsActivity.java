@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -33,6 +34,16 @@ public class AllHabitsActivity extends AppCompatActivity {
         todayHabitsButton.setOnClickListener(v -> {
             Intent intent = new Intent(AllHabitsActivity.this, MainActivity.class);
             startActivity(intent);
+        });
+
+        // Button for creating a habit
+        final Button addHabitButton = findViewById(R.id.all_add_habit_button);
+        addHabitButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(AllHabitsActivity.this, AddRemoveHabitActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
         });
     }
 }
