@@ -20,12 +20,12 @@
         android:textSize="16dp" />
 
     <EditText
-        android:id="@+id/habit_title_editText"
+        android:id="@+id/habit_name_editText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="58dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Give your habit a title" />
+        android:hint="Give your habit a name"
+        android:inputType="textPersonName" />
     <TextView
         android:id="@+id/habit_start_date_text"
         android:layout_width="match_parent"

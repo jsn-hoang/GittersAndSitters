@@ -13,9 +13,6 @@
             android:name=".AddRemoveHabitActivity"
             android:exported="true"/>
         <activity
-            android:name=".AllHabitsActivity"
-            android:exported="true"/>
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
