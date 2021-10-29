@@ -3,7 +3,9 @@ package com.example.habittracker;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -15,14 +17,18 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * This class represents the MainActivity for the HabitTracker app.
+ * (It is set to display today's habits by default.)
+ */
 public class MainActivity extends AppCompatActivity {
 
-    // Declare the variables so that you will be able to reference it later.
+    // Declare variables for referencing
     ListView habitListView;
-    ArrayAdapter<com.example.habittracker.Habit> habitAdapter;
-    ArrayList<com.example.habittracker.Habit> habitList;
-    ArrayList<DayOfWeek> weekdays;
+    ArrayAdapter<com.example.habittracker.Habit> todayHabitsAdapter;
+    ArrayAdapter<com.example.habittracker.Habit> allHabitsAdapter;
     User user;
+    boolean allHabits = false;      // tracks if ListView is displaying todayHabits or allHabits
 
     @RequiresApi(api = Build.VERSION_CODES.O)           // api required to implement DayOfWeek
     @Override
@@ -30,69 +36,74 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        habitListView = findViewById(R.id.today_habits_list);
+        habitListView = findViewById(R.id.habit_list);
 
-        /**
-         * Test creating a new Habit
-         *
-         *         habitName;
-         *         weekdays;
-         *         habitReason;
-         */
+        // This conditional checks whether or not there is an existing user.
+        if (getIntent().hasExtra("user"))
+            user = (User) getIntent().getSerializableExtra("user");
+        else user = new User("Timmy");
 
-        String habitName = "Running";
-        weekdays = new ArrayList<>();
-        weekdays.add(DayOfWeek.MONDAY);
-        weekdays.add(DayOfWeek.WEDNESDAY);
-        weekdays.add(DayOfWeek.THURSDAY);
-        String habitReason = "Get in shape";
-
-        Habit habit = new Habit(habitName, weekdays, habitReason, true);
-
-        /**
-         *  Test creating a user and giving them a habit
-         */
-        user = new User("Timmy");
-        user.addUserHabit(habit);
+        // This conditional enables us to use allHabits
+        // to set habitListView to the last chosen adapter
+        if (getIntent().hasExtra("allHabits"))
+            // Display
+            allHabits = getIntent().getExtras().getBoolean("allHabits");
 
 
-        habitList = new ArrayList<>();
-        habitList.add(habit);
 
-        // Set adapter to todayUserHabits
-        habitAdapter = new HabitCustomList(this, user.getTodayUserHabits());
-        habitListView.setAdapter(habitAdapter);
+        // Having two adapters enables us to set habitListView to "Today's Habits" or "All Habits"
+        todayHabitsAdapter = new HabitCustomList(this, user.getTodayUserHabits());
+        allHabitsAdapter = new HabitCustomList(this, user.getAllUserHabits());
+        // This conditional sets habitListView to the correct adapter
+        if (allHabits)
+            habitListView.setAdapter(allHabitsAdapter);
+        else
+            habitListView.setAdapter(todayHabitsAdapter);
 
-        // Button for navigating to allHabits
-        final Button allHabitsButton = findViewById(R.id.all_habits_button);
-        allHabitsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AllHabitsActivity.class);
+        // This method is responsible for the logic when clicking an existing habit
+        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
+                intent.putExtra("position", position);
+                intent.putExtra("allHabits", allHabits);
                 startActivity(intent);
+
             }
         });
 
-        // Button for creating a habit
-        final Button addHabitButton = findViewById(R.id.today_add_habit_button);
+        // This method is responsible for the logic when clicking the "Add Habit" button
+        final Button addHabitButton = findViewById(R.id.add_habit_button);
         addHabitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
+                intent.putExtra("allHabits", allHabits);
                 startActivity(intent);
+            }
+        });
+
+        // This method is responsible for the logic when clicking the "Today's Habits" button
+        final Button todayHabitsButton = findViewById(R.id.today_habits_button);
+        todayHabitsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (allHabits) {
+                    allHabits = false;
+                    habitListView.setAdapter(todayHabitsAdapter);
+                }
+            }
+        });
+
+        // This method is responsible for the logic when clicking the "All Habits" button
+        final Button allHabitsButton = findViewById(R.id.all_habits_button);
+        allHabitsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!allHabits) {
+                    allHabits = true;
+                    habitListView.setAdapter(allHabitsAdapter);
+                }
             }
         });
     }
 }
-
-    /**
-     // Retains ListView when returning to MainActivity
-     @Override
-     public boolean onOptionsItemSelected(MenuItem item) {
-     if(item.getItemId() == android.R.id.home) {
-     onBackPressed();
-     return true;
-     }
-     return super.onOptionsItemSelected(item);
-     }
-     */
