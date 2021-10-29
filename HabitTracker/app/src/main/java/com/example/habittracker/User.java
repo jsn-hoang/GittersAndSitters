@@ -33,6 +33,13 @@ public class User implements Serializable {
     public void deleteUserHabit(Habit habit) {
         habitList.remove(habit);
     }
+    public Habit getUserHabit(Integer i) {
+        return habitList.get(i);
+    }
+
+    public void setUserHabit(Integer i, Habit habit) {
+        habitList.set(i, habit);
+    }
 
     public ArrayList<Habit> getAllUserHabits(){
         return habitList;
