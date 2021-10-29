@@ -4,34 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/add_to_today_habits_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Today's Habits" />
-
-        <Button
-            android:id="@+id/add_to_all_habits_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="All Habits" />
-
-        <Button
-            android:id="@+id/asdfgadf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Add Habit" />
-    </LinearLayout>
-
     <TextView
         android:id="@+id/add_edit_habit_title_text"
         android:layout_width="match_parent"
