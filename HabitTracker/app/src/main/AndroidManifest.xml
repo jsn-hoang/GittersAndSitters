@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HabitTracker">
         <activity
+            android:name=".AddRemoveHabitActivity"
+            android:exported="true"/>
+        <activity
             android:name=".AllHabitsActivity"
             android:exported="true"/>
         <activity
