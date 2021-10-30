@@ -7,9 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.w3c.dom.Text;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -53,8 +56,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
         // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position"))
             habitPosition = getIntent().getExtras().getInt("position");
-        // if habitPosition == -1 -> user clicked "Add Habit"
-        else habitPosition = -1;
 
 
 
@@ -77,9 +78,34 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
         weekdayCheckBoxes.addAll(checkBoxes);
 
         habitReasonEditText = findViewById(R.id.habit_reason_editText);
+        final Button deleteButton = findViewById(R.id.delete_habit_button);
+        final Button addButton = findViewById(R.id.add_habit_button);
+        final TextView header = findViewById(R.id.add_edit_habit_title_text);
 
-        // if habit already exists
-        if (habitPosition != -1) {
+
+        // Make activity layout correspond to mode ADD
+        String mode = getIntent().getStringExtra("mode");
+        if (mode.equals("ADD")) {
+            header.setText("Add a New Habit");
+            // deleteButton disappears, add button says CREATE
+            deleteButton.setVisibility(View.GONE);
+            addButton.setText("CREATE");
+
+            //TODO: initialize StartDate to today's date
+                        /*
+    initialize the Startdate to today's date
+    LocalDateTime currentDate = LocalDateTime.now();
+    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CANADA);
+            date = dateFormat.format(currentDate);
+            */
+        }
+
+        // Make activity layout correspond to mode EDIT
+        if (mode.equals("EDIT")) {
+            header.setText("Edit Habit");
+            // add button says UPDATE
+            addButton.setText("UPDATE");
+
             // Get the clicked Habit entry
             habit = user.getUserHabit(habitPosition);
 
@@ -101,17 +127,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
             //TODO: Get the habitPublic boolean
         }
 
-        else {   // User selected "Add Habit
-
-            //TODO: initialize StartDate to today's date
-            /*
-    initialize the Startdate to today's date
-    LocalDateTime currentDate = LocalDateTime.now();
-    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CANADA);
-            date = dateFormat.format(currentDate);
-            */
-        }
-
 
         // This method is responsible for the logic when clicking the "OK" button
         final Button createButton = findViewById(R.id.add_habit_button);
@@ -123,6 +138,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                  * Retrieve user inputted information
                  */
                 String habitName = habitNameEditText.getText().toString();
+                String habitReason = habitReasonEditText.getText().toString();
 
                 ArrayList<DayOfWeek> weekdays = new ArrayList<>();
                 /*
@@ -135,8 +151,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                     }
                 }
                 */
-
-                String habitReason = habitReasonEditText.getText().toString();
 
                 // if "Add Habit" clicked
                 if (habitPosition == -1) {
