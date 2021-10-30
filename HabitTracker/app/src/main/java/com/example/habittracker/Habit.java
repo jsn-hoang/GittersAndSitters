@@ -1,7 +1,6 @@
 package com.example.habittracker;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Date;
 
