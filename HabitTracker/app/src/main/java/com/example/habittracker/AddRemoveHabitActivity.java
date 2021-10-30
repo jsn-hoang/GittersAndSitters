@@ -9,12 +9,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.w3c.dom.Text;
 
-import java.time.DayOfWeek;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -137,7 +136,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
 
         // This method is responsible for the logic when clicking the "OK" button
         addButton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
 
                 /**
