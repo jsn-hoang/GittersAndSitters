@@ -1,5 +1,7 @@
 package com.example.gittersandsittersdatabase;
 
+
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.register:
                 startActivity(new Intent(this, Register.class));
                 break;
+
             case R.id.login_button:
                 userLogin();
                 break;
