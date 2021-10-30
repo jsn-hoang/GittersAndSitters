@@ -12,14 +12,14 @@ public class Habit implements Serializable {
 
     // private String uname;
     private String habitName;
-    private ArrayList<DayOfWeek> weekdays;
+    private ArrayList<Integer> weekdays;    // 1 -> Sunday, 2 -> Monday, ..., 6 -> Saturday
     private Date startDate;
     private String habitReason;
     private int progress;
     private boolean habitPublic; // public vs private to users that follow
     private ArrayList<HabitEvent> habitEventList;
 
-    public Habit(String habitName, ArrayList<DayOfWeek> weekdays, /*Date startDate,*/ String habitReason, boolean habitPublic) {
+    public Habit(String habitName, ArrayList<Integer> weekdays, /*Date startDate,*/ String habitReason, boolean habitPublic) {
         this.habitName = habitName;
         this.weekdays = weekdays;
         //this.startDate = startDate;
@@ -73,11 +73,11 @@ public class Habit implements Serializable {
         this.habitPublic = habitPublic;
     }
 
-    public ArrayList<DayOfWeek> getWeekdays() {
+    public ArrayList<Integer> getWeekdays() {
         return weekdays;
     }
 
-    public void setWeekdays(ArrayList<DayOfWeek> weekdays) {
+    public void setWeekdays(ArrayList<Integer> weekdays) {
         this.weekdays = weekdays;
     }
 
