@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (email.isEmpty()) {
             editTextEmail.setError("Email is required");
+            editTextEmail.requestFocus();
+            return;
         }
         if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Please enter a valid email");
