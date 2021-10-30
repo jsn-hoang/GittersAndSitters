@@ -8,24 +8,33 @@
 
     <TextView
         android:id="@+id/habit_name_text"
-        android:layout_width="wrap_content"
+        android:layout_width="165dp"
         android:layout_height="wrap_content"
-        android:padding="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_weight="1"
         android:text="Habit"
-        android:textSize="30sp" />
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/habit_reason_text"
-        android:layout_width="186dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_width="108dp"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
         android:text="Reason"
-        android:textSize="20sp" />
+        android:textAlignment="textStart"
+        android:textSize="14sp" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
+        android:layout_width="118dp"
         android:layout_height="match_parent"
         android:padding="10dp" />
 </LinearLayout>
