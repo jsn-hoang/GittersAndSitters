@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 /**
  * This class is responsible for logging out of the HabitTracker app.
  */
-public class Logout extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     // Declare variables to be referenced
     private Button logout;
@@ -22,7 +22,7 @@ public class Logout extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_logout);
+        setContentView(R.layout.activity_profile);
 
         logout = findViewById(R.id.logout);
 
@@ -31,7 +31,7 @@ public class Logout extends AppCompatActivity {
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
 
-                startActivity(new Intent(Logout.this, MainActivity.class));
+                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
             }
         });
 
