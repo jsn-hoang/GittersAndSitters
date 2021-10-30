@@ -34,10 +34,10 @@
         android:textSize="16dp" />
 
     <Button
-        android:id="@+id/habit_calendar_button"
+        android:id="@+id/date_picker_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open Calendar" />
+        android:text="Change Start Date" />
 
     <LinearLayout
         android:layout_width="match_parent"
