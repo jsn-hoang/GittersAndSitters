@@ -19,10 +19,10 @@ public class Habit implements Serializable {
     private boolean habitPublic; // public vs private to users that follow
     private ArrayList<HabitEvent> habitEventList;
 
-    public Habit(String habitName, ArrayList<Integer> weekdays, /*Date startDate,*/ String habitReason, boolean habitPublic) {
+    public Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic) {
         this.habitName = habitName;
         this.weekdays = weekdays;
-        //this.startDate = startDate;
+        this.startDate = startDate;
         this.habitReason = habitReason;
         this.progress = 0;                        // Initialize progress to 0
         this.habitPublic = habitPublic;
