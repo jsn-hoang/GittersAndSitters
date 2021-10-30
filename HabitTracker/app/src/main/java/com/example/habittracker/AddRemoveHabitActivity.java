@@ -154,14 +154,9 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                         weekdays.add(i+1);  // // CheckBox i corresponds to day i+1
                     }
                 }
-
-<<<<<<< Updated upstream
-
-                if (newHabit) {
-=======
+                
                 // if "Add Habit" clicked
                 if (mode.equals("ADD")) {
->>>>>>> Stashed changes
                     // Create a new Habit
 
                     Habit newHabit = new Habit(habitName, weekdays, habitReason, true);
