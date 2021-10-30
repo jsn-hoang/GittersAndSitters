@@ -1,5 +1,6 @@
 package com.example.habittracker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -78,6 +83,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // manages the result (updated user object)
+        ActivityResultLauncher<Intent> habitActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        user = (User) data.getExtras().get("user");
+                        // update current tab with data from new user object
+                        switch(tabLayout.getSelectedTabPosition()) {
+                            case 0: // today's habits
+                                habitAdapter = new HabitCustomList(MainActivity.this, user.getTodayUserHabits());
+                                habitListView.setAdapter(habitAdapter);
+                                break;
+                            case 1: // all habits
+                                habitAdapter = new HabitCustomList(MainActivity.this, user.getAllUserHabits());
+                                habitListView.setAdapter(habitAdapter);
+                                break;
+                        }
+                    }
+                });
+
         final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
                 intent.putExtra("mode", "ADD");
-                startActivity(intent);
+                habitActivityResultLauncher.launch(intent);
             }
         });
 
@@ -96,11 +122,14 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("user", user);
                 intent.putExtra("mode", "EDIT");
                 intent.putExtra("position", i);
-                startActivity(intent);
+                habitActivityResultLauncher.launch(intent);
             }
         });
 
+
     }
+
+
 }
 
     /**

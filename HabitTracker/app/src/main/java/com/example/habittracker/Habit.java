@@ -15,7 +15,7 @@ public class Habit implements Serializable {
     private ArrayList<DayOfWeek> weekdays;
     private Date startDate;
     private String habitReason;
-    private Double progress;
+    private int progress;
     private boolean habitPublic; // public vs private to users that follow
     private ArrayList<HabitEvent> habitEventList;
 
@@ -24,7 +24,7 @@ public class Habit implements Serializable {
         this.weekdays = weekdays;
         //this.startDate = startDate;
         this.habitReason = habitReason;
-        this.progress = 0.0;                        // Initialize progress to 0
+        this.progress = 0;                        // Initialize progress to 0
         this.habitPublic = habitPublic;
         this.habitEventList = new ArrayList<>();    // Initialize empty habitEventList
     }
@@ -105,11 +105,11 @@ public class Habit implements Serializable {
         this.habitReason = habitReason;
     }
 
-    public double getProgress() {
+    public int getProgress() {
         return progress;
     }
 
-    public void setProgress(double progress) {
+    public void setProgress(int progress) {
         this.progress = progress;
     }
 }

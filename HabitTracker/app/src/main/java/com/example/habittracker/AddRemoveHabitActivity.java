@@ -174,10 +174,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                 }
 
                 // Navigate back to MainActivity
-                Intent intent = new Intent(AddRemoveHabitActivity.this, MainActivity.class);
+                Intent intent = new Intent();
                 intent.putExtra("user", user);
-                // intent.putExtra("allHabits", allHabits);
-                startActivity(intent);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }
