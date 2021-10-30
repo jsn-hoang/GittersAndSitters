@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 
+
 /**
  * This class is responsible for creating, editing, or deleting a Habit.
  */
@@ -33,6 +34,8 @@ import java.util.Locale;
 public class AddRemoveHabitActivity extends AppCompatActivity {
 
     // Declare variables for referencing
+    public static final int RESULT_DELETE = 2;
+
     User user;
     Habit habit;
     boolean allHabits;
@@ -83,6 +86,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
         habitReasonEditText = findViewById(R.id.habit_reason_editText);
         final Button deleteButton = findViewById(R.id.delete_habit_button);
         final Button addButton = findViewById(R.id.add_habit_button);
+        final Button cancelButton = findViewById(R.id.cancel_habit_button);
         final TextView header = findViewById(R.id.add_edit_habit_title_text);
 
 
@@ -132,8 +136,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
 
 
         // This method is responsible for the logic when clicking the "OK" button
-        final Button createButton = findViewById(R.id.add_habit_button);
-        createButton.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
 
@@ -180,11 +183,24 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
             }
         });
 
-        final Button cancelButton = findViewById(R.id.cancel_habit_button);
+
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setResult(RESULT_CANCELED);
+                finish();
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                user.deleteUserHabit(habit);
+
+                // Navigate back to MainActivity
+                Intent intent = new Intent();
+                intent.putExtra("user", user);
+                setResult(RESULT_DELETE, intent);
                 finish();
             }
         });

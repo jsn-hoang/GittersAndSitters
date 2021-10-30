@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         // manages the result (updated user object)
         ActivityResultLauncher<Intent> habitActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -103,7 +104,23 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                         }
                     }
+                    else if (result.getResultCode() == 2) { // DELETE habit
+                        Intent data = result.getData();
+                        user = (User) data.getExtras().get("user");
+                        // update current tab with data from updated user object
+                        switch(tabLayout.getSelectedTabPosition()) {
+                            case 0: // today's habits
+                                habitAdapter = new HabitCustomList(MainActivity.this, user.getTodayUserHabits());
+                                habitListView.setAdapter(habitAdapter);
+                                break;
+                            case 1: // all habits
+                                habitAdapter = new HabitCustomList(MainActivity.this, user.getAllUserHabits());
+                                habitListView.setAdapter(habitAdapter);
+                                break;
+                        }
+                    }
                 });
+
         // manages the result (updated habit object)
         ActivityResultLauncher<Intent> habitEventActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -151,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //            }
 //        });
+
 
 
     }
