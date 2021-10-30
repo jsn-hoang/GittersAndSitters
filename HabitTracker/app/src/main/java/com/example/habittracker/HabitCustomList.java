@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * This class provides the logic for displaying Habit objects as ListView entries.
+ */
 public class HabitCustomList extends ArrayAdapter<Habit> {
 
     private ArrayList<Habit> habitList;
