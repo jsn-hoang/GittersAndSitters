@@ -2,6 +2,7 @@ package com.example.habittracker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ public class Habit implements Serializable {
     // private String uname;
     private String habitName;
     private ArrayList<Integer> weekdays;    // 1 -> Sunday, 2 -> Monday, ..., 6 -> Saturday
-    private Date startDate;
+    private Calendar startDate;
     private String habitReason;
     private int progress;
     private boolean habitPublic; // public vs private to users that follow
@@ -88,11 +89,11 @@ public class Habit implements Serializable {
         this.habitName = habitName;
     }
 
-    public Date getStartDate() {
+    public Calendar getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Calendar startDate) {
         this.startDate = startDate;
     }
 
