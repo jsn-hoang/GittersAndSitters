@@ -15,7 +15,6 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     User user;
     Habit habit;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)           // api required to implement DayOfWeek
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
