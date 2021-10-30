@@ -77,7 +77,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
 
         // Populate weekdayCheckBoxes ArrayList
         List<CheckBox> checkBoxes = Arrays.asList
-                (monday, tuesday, wednesday, thursday, friday, saturday, sunday);
+                (sunday, monday, tuesday, wednesday, thursday, friday, saturday);
         weekdayCheckBoxes.addAll(checkBoxes);
 
         habitReasonEditText = findViewById(R.id.habit_reason_editText);
@@ -115,11 +115,11 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
             // Set field entries equal to the attributes of the existing habit
             habitNameEditText.setText(habit.getHabitName());
 
-            // Loop through all of the checkboxes
+            // Check off all CheckBoxes that correspond to current Habit weekdays
             for (int i = 0; i < weekdayCheckBoxes.size(); i++) {
-                // if the habit is scheduled on weekday(i)
-                if (habit.getWeekdays().contains(i)) {
-                    // check off weekday(i)
+                // if the habit is scheduled on weekday(i+1)
+                if (habit.getWeekdays().contains(i+1)) {    // CheckBox i corresponds to day i+1
+                    // Check off box(i)
                     weekdayCheckBoxes.get(i).setChecked(true);
                 }
             }
@@ -143,22 +143,21 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                 String habitName = habitNameEditText.getText().toString();
                 String habitReason = habitReasonEditText.getText().toString();
 
-                ArrayList<DayOfWeek> weekdays = new ArrayList<>();
-                /*
+                // Initialize ArrayList to be filled with integers corresponding to checked boxes
+                ArrayList<Integer> weekdays = new ArrayList<>();
+
                 // Loop through all of the checkboxes
                 for (int i = 0; i < weekdayCheckBoxes.size(); i++) {
                     // if checkBox(i) is checked
                     if (weekdayCheckBoxes.get(i).isChecked()) {
-                        // add weekday(i) to weekdays
-                        weekdays.add(DayOfWeek.of(i));
+                        // add i to weekdays
+                        weekdays.add(i+1);  // // CheckBox i corresponds to day i+1
                     }
                 }
-                */
-
-
-                if (newHabit) {
+                
+                // if "Add Habit" clicked
+                if (mode.equals("ADD")) {
                     // Create a new Habit
-                    weekdays.add(DayOfWeek.MONDAY);
 
                     Habit newHabit = new Habit(habitName, weekdays, habitReason, true);
                     user.addUserHabit(newHabit);
@@ -168,7 +167,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
 
                     //TODO Editing an existing habit keeps crashing
                     habit.setHabitName(habitName);
-                    //habit.setWeekdays(weekdays);
+                    habit.setWeekdays(weekdays);
                     habit.setHabitReason(habitReason);
                     user.setUserHabit(habitIndexPosition, habit);
                 }
