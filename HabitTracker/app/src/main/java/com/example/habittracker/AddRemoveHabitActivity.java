@@ -36,7 +36,8 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
     User user;
     Habit habit;
     boolean allHabits;
-    int habitPosition;
+    boolean newHabit;
+    int habitIndexPosition;
     EditText habitNameEditText;
     Date habitStartDate;
     ArrayList<CheckBox> weekdayCheckBoxes;
@@ -51,12 +52,14 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
         user = (User) getIntent().getSerializableExtra("user");
 
         // allHabits enables us to return to correct habitListView later
-        allHabits = getIntent().getExtras().getBoolean("allHabits");
+        // allHabits = getIntent().getExtras().getBoolean("allHabits");
 
         // habitPosition corresponds to which ListView entry was clicked
-        if (getIntent().hasExtra("position"))
-            habitPosition = getIntent().getExtras().getInt("position");
-
+        if (getIntent().hasExtra("position")) {
+            habitIndexPosition = getIntent().getExtras().getInt("position");
+            newHabit = false;
+        }
+        else newHabit = true;       // if no position passed, then this is a new Habit
 
 
         // Get views that will be used for user input
@@ -107,7 +110,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
             addButton.setText("UPDATE");
 
             // Get the clicked Habit entry
-            habit = user.getUserHabit(habitPosition);
+            habit = user.getUserHabit(habitIndexPosition);
 
             // Set field entries equal to the attributes of the existing habit
             habitNameEditText.setText(habit.getHabitName());
@@ -152,8 +155,8 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                 }
                 */
 
-                // if "Add Habit" clicked
-                if (habitPosition == -1) {
+
+                if (newHabit) {
                     // Create a new Habit
                     weekdays.add(DayOfWeek.MONDAY);
 
@@ -167,13 +170,13 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                     habit.setHabitName(habitName);
                     //habit.setWeekdays(weekdays);
                     habit.setHabitReason(habitReason);
-                    user.setUserHabit(habitPosition, habit);
+                    user.setUserHabit(habitIndexPosition, habit);
                 }
 
-                // Finally,navigate back to MainActivity
+                // Navigate back to MainActivity
                 Intent intent = new Intent(AddRemoveHabitActivity.this, MainActivity.class);
                 intent.putExtra("user", user);
-                intent.putExtra("allHabits", allHabits);
+                // intent.putExtra("allHabits", allHabits);
                 startActivity(intent);
             }
         });
