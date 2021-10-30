@@ -180,6 +180,15 @@ public class AddRemoveHabitActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        final Button cancelButton = findViewById(R.id.cancel_habit_button);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+        });
     }
 }
 

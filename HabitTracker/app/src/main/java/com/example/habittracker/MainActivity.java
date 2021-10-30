@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<com.example.habittracker.Habit> habitList;
     ArrayList<DayOfWeek> weekdays;
     User user;
+    Habit habit;
 
     @RequiresApi(api = Build.VERSION_CODES.O)           // api required to implement DayOfWeek
     @Override
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         user = (User) data.getExtras().get("user");
-                        // update current tab with data from new user object
+                        // update current tab with data from updated user object
                         switch(tabLayout.getSelectedTabPosition()) {
                             case 0: // today's habits
                                 habitAdapter = new HabitCustomList(MainActivity.this, user.getTodayUserHabits());
@@ -103,6 +104,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        // manages the result (updated habit object)
+        ActivityResultLauncher<Intent> habitEventActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        habit = (Habit) data.getExtras().get("habit");
+                        // update events list with data from updated habit object
+                        //TODO
+                        }
+                    });
 
         final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -115,16 +127,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        habitListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
                 intent.putExtra("mode", "EDIT");
                 intent.putExtra("position", i);
                 habitActivityResultLauncher.launch(intent);
+                return false;
             }
         });
+
+        // launches add habit event
+//        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                habit = (Habit) habitListView.getItemAtPosition(i);
+//                Intent intent = new Intent(MainActivity.this, HabitEventActivity.class);
+//                intent.putExtra("habit", habit);
+//                intent.putExtra("mode", "ADD");
+//                intent.putExtra("position", i);
+//
+//            }
+//        });
 
 
     }
