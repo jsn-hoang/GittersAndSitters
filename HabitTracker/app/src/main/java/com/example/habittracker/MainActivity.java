@@ -38,34 +38,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit);
 
+        // Check whether there is an existing user to get
+        if (getIntent().hasExtra("user"))
+            user = (User) getIntent().getSerializableExtra("user");
+
+        // else create a new user
+        else user = new User("Timmy");
+
         habitListView = findViewById(R.id.habit_listview);
-
-        /**
-         * Test creating a new Habit
-         *
-         *         habitName;
-         *         weekdays;
-         *         habitReason;
-         */
-
-        String habitName = "Running";
-        weekdays = new ArrayList<>();
-        weekdays.add(DayOfWeek.MONDAY);
-        weekdays.add(DayOfWeek.WEDNESDAY);
-        weekdays.add(DayOfWeek.THURSDAY);
-        String habitReason = "Get in shape";
-
-        Habit habit = new Habit(habitName, weekdays, habitReason, true);
-
-        /**
-         *  Test creating a user and giving them a habit
-         */
-        user = new User("Timmy");
-        user.addUserHabit(habit);
-
-
-        habitList = new ArrayList<>();
-        habitList.add(habit);
 
         // Set adapter to todayUserHabits
         habitAdapter = new HabitCustomList(this, user.getTodayUserHabits());
@@ -76,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
-                    case 0: // todays habits
+                    case 0: // today's habits
                         habitAdapter = new HabitCustomList(MainActivity.this, user.getTodayUserHabits());
                         habitListView.setAdapter(habitAdapter);
                         break;
