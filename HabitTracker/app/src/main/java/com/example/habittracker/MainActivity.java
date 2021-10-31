@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     ListView habitListView;
     ArrayAdapter<com.example.habittracker.Habit> habitAdapter;
     ArrayList<com.example.habittracker.Habit> habitList;
-    ArrayList<DayOfWeek> weekdays;
     User user;
     Habit habit;
 
@@ -137,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
-                intent.putExtra("mode", "ADD");
                 habitActivityResultLauncher.launch(intent);
             }
         });
@@ -147,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(MainActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
-                intent.putExtra("mode", "EDIT");
                 intent.putExtra("position", i);
                 habitActivityResultLauncher.launch(intent);
                 return false;
