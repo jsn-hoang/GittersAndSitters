@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +27,7 @@ public class FollowingActivity extends AppCompatActivity {
 
     ArrayList<User> userList;
     ListView followingList;
+    TextView followingBanner;
     ArrayAdapter<User> followingAdapter;
 
     @Override
@@ -48,6 +50,9 @@ public class FollowingActivity extends AppCompatActivity {
 
             }
         });
+
+        followingBanner = findViewById(R.id.following_banner);
+        followingBanner.setText("Following");
 
         followingList = findViewById(R.id.following_list);
         followingAdapter = new UserCustomList(this, userList);

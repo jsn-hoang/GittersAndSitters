@@ -51,6 +51,14 @@ public class User {
         }
     }
 
+    public void removeFollowing(User user) {
+        if (following.contains(user)) {
+            following.remove(user);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public ArrayList<User> getRequests() {
         return requests;
     }
@@ -58,6 +66,14 @@ public class User {
     public void addRequests(User user) {
         if (!requests.contains(user)) {
             requests.add(user);
+        }
+    }
+
+    public void removeRequests(User user) {
+        if (requests.contains(user)) {
+            requests.remove(user);
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 
