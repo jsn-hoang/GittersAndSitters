@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a CustomList which holds User objects
+ */
 public class UserCustomList extends ArrayAdapter<User> {
     private ArrayList<User> users;
     private Context context;
