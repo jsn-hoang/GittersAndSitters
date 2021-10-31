@@ -43,8 +43,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
     User user;
     Habit habit;
-    boolean allHabits;
-    boolean newHabit;
+    boolean isNewHabit;
     int habitIndexPosition;
     EditText habitNameEditText;
     Calendar habitStartDate;
@@ -60,14 +59,12 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         // get user
         user = (User) getIntent().getSerializableExtra("user");
 
-        // allHabits enables us to return to correct habitListView later
-        // allHabits = getIntent().getExtras().getBoolean("allHabits");
-
         // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position")) {
             habitIndexPosition = getIntent().getExtras().getInt("position");
-            newHabit = false;
-        } else newHabit = true;       // if no position passed, then this is a new Habit
+            isNewHabit = false;
+        }
+        else isNewHabit = true;     // if no position passed, then this is a new Habit
 
 
         // Get views that will be used for user input
@@ -94,63 +91,30 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         final Button datePickerButton = findViewById(R.id.date_picker_button);
         final TextView header = findViewById(R.id.add_edit_habit_title_text);
 
+        /**
+         * Set up activity layout and fields
+         */
 
-        // Make activity layout correspond to mode ADD
-        String mode = getIntent().getStringExtra("mode");
-        if (mode.equals("ADD")) {
-            header.setText("Add a New Habit");
-            // deleteButton disappears, add button says CREATE
-            deleteButton.setVisibility(View.GONE);
-            addButton.setText("CREATE");
+        // Set up activity layout
+        activityLayoutSetup(isNewHabit, header, addButton, deleteButton);
 
-            // Initialize habitStartDate TextView to today's date
-            habitStartDate = Calendar.getInstance();
-            // Get today's date
-            int year = habitStartDate.get(Calendar.YEAR);
-            int month = habitStartDate.get(Calendar.MONTH);
-            int day = habitStartDate.get(Calendar.DAY_OF_MONTH);
-            // set cal to today's date;
-            habitStartDate.set(Calendar.YEAR, year);
-            habitStartDate.set(Calendar.MONTH, month);
-            habitStartDate.set(Calendar.DAY_OF_MONTH, day);
-            // Convert to Calendar object to String
-            String dateString = DateFormat.getDateInstance().format(habitStartDate.getTime());
-            // Set String representation of today's date to startDate TextView
-            habitStartDateText.setText(dateString);
-        }
+        // Set up Date field
+        setDateField(isNewHabit, habitStartDateText);
 
-        // Make activity layout correspond to mode EDIT
-        if (mode.equals("EDIT")) {
-            header.setText("Edit Habit");
-            // add button says UPDATE
-            addButton.setText("UPDATE");
+        // Set up remaining fields for existing habit
+        if (!isNewHabit) {
 
-            // Get the clicked Habit entry
+            // Get the habit to be edited
             habit = user.getUserHabit(habitIndexPosition);
 
-            // Set field entries equal to the attributes of the existing habit
+            // Set name and reason fields
             habitNameEditText.setText(habit.getHabitName());
-
-            // Check off all CheckBoxes that correspond to current Habit weekdays
-            for (int i = 0; i < weekdayCheckBoxes.size(); i++) {
-                // if the habit is scheduled on weekday(i+1)
-                if (habit.getWeekdays().contains(i + 1)) {    // CheckBox i corresponds to day i+1
-                    // Check off box(i)
-                    weekdayCheckBoxes.get(i).setChecked(true);
-                }
-            }
-
-            // Get habitStartDate
-            habitStartDate = habit.getStartDate();
-            // Convert to Calendar object to String
-            String dateString = DateFormat.getDateInstance().format(habitStartDate.getTime());
-            // Set String representation of today's date to startDate TextView
-            habitStartDateText.setText(dateString);
-
-
             habitReasonEditText.setText(habit.getHabitReason());
 
-            //TODO: Get the habitPublic boolean
+            // Set checkboxes
+            setDaysToCheckBoxes(habit, weekdayCheckBoxes);
+
+            //TODO: Set the habitPublic boolean
         }
 
 
@@ -161,36 +125,33 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                 /**
                  * Retrieve user inputted information
                  */
+
                 String habitName = habitNameEditText.getText().toString();
                 String habitReason = habitReasonEditText.getText().toString();
 
-                // Initialize ArrayList to be filled with integers corresponding to checked boxes
-                ArrayList<Integer> weekdays = new ArrayList<>();
-
-                // Loop through all of the checkboxes
-                for (int i = 0; i < weekdayCheckBoxes.size(); i++) {
-                    // if checkBox(i) is checked
-                    if (weekdayCheckBoxes.get(i).isChecked()) {
-                        // add i to weekdays
-                        weekdays.add(i + 1);  // // CheckBox i corresponds to day i+1
-                    }
-                }
+                // Get user selected days from checked boxes
+                ArrayList<Integer> weekdays = getDaysFromCheckBoxes(weekdayCheckBoxes);
 
                 // habitStartDate is already retrieved
 
-                // if "Add Habit" clicked
-                if (mode.equals("ADD")) {
+                //TODO: Get the habitPublic boolean
+
+                /**
+                 * Create new or edit existing Habit
+                 */
+                if (isNewHabit) {
                     // Create a new Habit
-
                     Habit newHabit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
+                    // Add habit to userHabitList
                     user.addUserHabit(newHabit);
-
-                } else { // else edit the existing habit
+                }
+                else { // else edit the existing habit
 
                     habit.setHabitName(habitName);
                     habit.setWeekdays(weekdays);
                     habit.setStartDate(habitStartDate);
                     habit.setHabitReason(habitReason);
+                    // Overwrite the previous habit with the edited one
                     user.setUserHabit(habitIndexPosition, habit);
                 }
 
@@ -254,6 +215,76 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         String dateString = DateFormat.getDateInstance().format(cal.getTime());
         // Set dateString to TextView
         habitStartDateText.setText(dateString);
+    }
+
+    private void activityLayoutSetup(boolean isNewActivityMode,
+                                     TextView header, Button addButton, Button deleteButton) {
+
+        if (isNewActivityMode){
+
+            // Make activity layout correspond to mode ADD
+            header.setText("Add a New Habit");
+            // deleteButton disappears, add button says CREATE
+            deleteButton.setVisibility(View.GONE);
+            addButton.setText("CREATE");
+        }
+        else {  // Make activity layout correspond to mode EDIT
+            header.setText("Edit Habit");
+            // add button says UPDATE
+            addButton.setText("UPDATE");
+        }
+    }
+
+    public void setDateField(boolean isNewHabit, TextView habitStartDateText) {
+
+        if (isNewHabit) {
+            // Initialize habitStartDate TextView to today's date
+            habitStartDate = Calendar.getInstance();
+            // Get today's date
+            int year = habitStartDate.get(Calendar.YEAR);
+            int month = habitStartDate.get(Calendar.MONTH);
+            int day = habitStartDate.get(Calendar.DAY_OF_MONTH);
+            // set cal to today's date;
+            habitStartDate.set(Calendar.YEAR, year);
+            habitStartDate.set(Calendar.MONTH, month);
+            habitStartDate.set(Calendar.DAY_OF_MONTH, day);
+        }
+        else { // This is an existing Habit with a set startDate
+            Habit habit = user.getUserHabit(habitIndexPosition);
+            // Get habitStartDate
+            habitStartDate = habit.getStartDate();
+        }
+        // Convert to Calendar object to String
+        String dateString = DateFormat.getDateInstance().format(habitStartDate.getTime());
+        // Set String representation of date to startDate TextView
+        habitStartDateText.setText(dateString);
+    }
+
+    public void setDaysToCheckBoxes(Habit habit, ArrayList<CheckBox> checkBoxes) {
+
+        // Check off all CheckBoxes that correspond to current Habit weekdays
+        for (int i = 0; i < checkBoxes.size(); i++) {
+            // if the habit is scheduled on weekday(i+1)
+            if (habit.getWeekdays().contains(i + 1)) {    // CheckBox i corresponds to day i+1
+                // Check off box(i)
+                checkBoxes.get(i).setChecked(true);
+            }
+        }
+    }
+
+    public ArrayList<Integer> getDaysFromCheckBoxes(ArrayList<CheckBox> checkBoxes) {
+
+        // Initialize new weekdays arraylist
+        ArrayList<Integer> days = new ArrayList<>();
+        // Loop through all of the checkboxes
+        for (int i = 0; i < weekdayCheckBoxes.size(); i++) {
+            // if checkBox(i) is checked
+            if (weekdayCheckBoxes.get(i).isChecked()) {
+                // add i to weekdays
+                days.add(i + 1);  // // CheckBox i corresponds to day i+1
+            }
+        }
+        return days;
     }
 }
 
