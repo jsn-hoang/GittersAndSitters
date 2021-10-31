@@ -34,10 +34,10 @@
         android:textSize="16dp" />
 
     <Button
-        android:id="@+id/habit_calendar_button"
+        android:id="@+id/date_picker_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open Calendar" />
+        android:text="Change Start Date" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -120,26 +120,23 @@
 
         <Button
             android:id="@+id/delete_habit_button"
-            android:layout_width="121dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Delete" />
 
         <Button
             android:id="@+id/cancel_habit_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Cancel" />
 
         <Button
-            android:id="@+id/edit_habit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit" />
-
-        <Button
             android:id="@+id/add_habit_button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Create" />
     </LinearLayout>
 

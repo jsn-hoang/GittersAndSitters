@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,10 +36,12 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
         Habit habit = habitList.get(position);
         TextView habitName = view.findViewById(R.id.habit_name_text);
         TextView habitReason = view.findViewById(R.id.habit_reason_text);
+        ProgressBar habitProgress = view.findViewById(R.id.progressBar);
         //TODO icon <-> Habit.isCompletedToday()
 
         habitName.setText(habit.getHabitName());
         habitReason.setText(habit.getHabitReason());
+        habitProgress.setProgress(habit.getProgress());
 
         return view;
     }
