@@ -62,8 +62,8 @@ public class ProfileActivity extends AppCompatActivity {
                 User userProfile = snapshot.getValue(User.class);
 
                 if(userProfile != null){
-                    String username = userProfile.username;
-                    String email = userProfile.email;
+                    String username = userProfile.getUsername();
+                    String email = userProfile.getEmail();
 
                     greetingTextView.setText("Welcome," + username);
                     userNameTextView.setText(username);
