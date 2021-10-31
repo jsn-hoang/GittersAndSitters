@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import android.content.Context;
 
 import org.w3c.dom.Text;
 
@@ -145,7 +146,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
                                             if(task.isSuccessful()){
                                                 Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
-                                                progressBar.setVisibility(View.VISIBLE);
+
+                                                progressBar.setVisibility(View.GONE);
                                             }else{
                                                 Toast.makeText(Register.this, "Failed to register user! Please try once again", Toast.LENGTH_LONG).show();
                                                 progressBar.setVisibility(View.GONE);
