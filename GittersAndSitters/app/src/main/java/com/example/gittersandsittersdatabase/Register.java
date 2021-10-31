@@ -147,7 +147,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                                             if(task.isSuccessful()){
                                                 Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
 
-                                                progressBar.setVisibility(View.VISIBLE);
+                                                progressBar.setVisibility(View.GONE);
                                             }else{
                                                 Toast.makeText(Register.this, "Failed to register user! Please try once again", Toast.LENGTH_LONG).show();
                                                 progressBar.setVisibility(View.GONE);
