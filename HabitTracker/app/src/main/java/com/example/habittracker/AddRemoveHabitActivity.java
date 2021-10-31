@@ -43,7 +43,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
     User user;
     Habit habit;
-    boolean allHabits;
     boolean newHabit;
     int habitIndexPosition;
     EditText habitNameEditText;
@@ -59,9 +58,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
         // get user
         user = (User) getIntent().getSerializableExtra("user");
-
-        // allHabits enables us to return to correct habitListView later
-        // allHabits = getIntent().getExtras().getBoolean("allHabits");
 
         // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position")) {
