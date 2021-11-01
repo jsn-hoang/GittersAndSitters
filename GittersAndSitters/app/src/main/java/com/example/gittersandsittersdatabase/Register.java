@@ -1,5 +1,7 @@
 package com.example.gittersandsittersdatabase;
 
+import static okio.HashingSource.sha256;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -25,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import android.content.Context;
 
 import org.w3c.dom.Text;
+
+import okio.HashingSource;
 
 /**
  * This class is responsible for allowing a user to register for the HabitTracker app
@@ -82,6 +86,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
         String password = userPassword.getText().toString().trim();
         String uname = userName.getText().toString().trim();
 
+
+
         /**
          * Require user to enter username
          */
@@ -119,7 +125,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
         }
 
         /**
-         * Reuire password to have a minimum length of 6
+         * Require password to have a minimum length of 6
          */
 
         if(password.length() < 6){
