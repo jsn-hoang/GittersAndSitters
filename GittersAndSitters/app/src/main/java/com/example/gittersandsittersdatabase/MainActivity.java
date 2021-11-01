@@ -1,7 +1,5 @@
 package com.example.gittersandsittersdatabase;
 
-
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Declare variables to be referenced
     // The entry point of the Firebase Authentication SDK
+    // Page where user logs in
 
     private TextView register;
     private EditText editTextEmail, editTextPassword;
@@ -69,22 +68,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
+        /**
+         * Check to see if email field is empty
+         */
+
         if (email.isEmpty()) {
             editTextEmail.setError("Email is required");
             editTextEmail.requestFocus();
             return;
         }
+
+        /**
+         * Check to see if email format is correct
+         */
+
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Please enter a valid email");
             editTextEmail.requestFocus();
             return;
-
         }
+
+        /**
+         * Check to see if password field is empty
+         */
+
         if (password.isEmpty()) {
             editTextPassword.setError("Password is required!");
             editTextPassword.requestFocus();
             return;
         }
+
+        /**
+         * Check to see if password length is less than 6
+         */
+
         if (password.length() < 6) {
             editTextPassword.setError("Min password length is 6 characters!");
             editTextPassword.requestFocus();
