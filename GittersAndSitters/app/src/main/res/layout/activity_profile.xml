@@ -45,12 +45,12 @@
         android:id="@+id/userNameTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="username"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/emailAddress"
-        app:layout_constraintLeft_toLeftOf="@+id/greeting"
         android:layout_marginTop="20dp"
-        android:textSize="20sp">
+        android:text="Username"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@+id/greeting"
+        app:layout_constraintTop_toBottomOf="@+id/emailAddress">
 
     </TextView>
     <TextView

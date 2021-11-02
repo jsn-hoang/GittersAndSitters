@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startActivity(new Intent(MainActivity.this,ProfileActivity.class));
                     }else{
                         user.sendEmailVerification();
-                        Toast.makeText(MainActivity.this, "Check your email to verify your account !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
                     }
 
                 } else {
