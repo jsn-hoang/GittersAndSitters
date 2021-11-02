@@ -162,7 +162,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                             });
 
                         }else{
-                            Toast.makeText(Register.this, "Failed to register user ! Please try again!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Register.this, "Failed to register user! Please try again!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
                         }
 
