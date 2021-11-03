@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // redirect to user profile
 
                         //NOTE: Changed from Profile
-                        startActivity(new Intent(MainActivity.this,HabitActivity.class));
+                        startActivity(new Intent(MainActivity.this,ProfileActivity.class));
                     }else{
                         user.sendEmailVerification();
                         Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
