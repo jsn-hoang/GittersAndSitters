@@ -59,12 +59,19 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         userID = mAuth.getCurrentUser().getUid();
-        //userID = user.getUid();
 
-        DocumentReference docRef = fStore.collection("Users").document(userID);
+        
+
+
+
         final TextView greetingTextView = (TextView) findViewById(R.id.greeting);
         final TextView userNameTextView = (TextView) findViewById(R.id.userName);
         final TextView emailTextView = (TextView) findViewById(R.id.emailAddress);
+
+        DocumentReference docRef = fStore.collection("Users").document("markmcgoey");
+        //final TextView greetingTextView = (TextView) findViewById(R.id.greeting);
+        //final TextView userNameTextView = (TextView) findViewById(R.id.userName);
+        //final TextView emailTextView = (TextView) findViewById(R.id.emailAddress);
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -72,7 +79,8 @@ public class ProfileActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        String username = (String) document.getData().get("userName");
+                        //String username = (String) document.getData().get("userName");
+                        String username = docRef.getId();
                         String email = (String) document.getData().get("email");
 
                         greetingTextView.setText("Welcome, " + username);
@@ -91,5 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         });
 
+
     }
+
 }
