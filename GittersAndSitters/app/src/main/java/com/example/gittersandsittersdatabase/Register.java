@@ -156,6 +156,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                             fStore = FirebaseFirestore.getInstance();
                             DocumentReference documentReference = fStore.collection("Users").document(userID);
                             Map<String, Object> user = new HashMap<>();
+                            //HashMap<String, String> user = new HashMap<>();
                             user.put("userName", uname);
                             user.put("email", email);
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -185,5 +186,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 });
 
 
+    }
+    public String getUserName(){
+        userName = findViewById(R.id.userName);
+        return userName.getText().toString().trim();
     }
 }
