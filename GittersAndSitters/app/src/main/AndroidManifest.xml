@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GittersAndSittersDatabase">
         <activity
+            android:name=".AddRemoveHabitActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".HabitActivity"
+            android:exported="true"/>
+        <activity
             android:name=".Register"
             android:exported="true"/>
         <activity
