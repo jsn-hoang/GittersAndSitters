@@ -7,8 +7,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * This class represents a user of the HabitTracker app.
+ */
 public class User implements Serializable {
 
+    // Declare variables for referencing
     private String uname;
     private Picture picture;
     private ArrayList<String> following;
@@ -29,12 +33,20 @@ public class User implements Serializable {
     public void deleteUserHabit(Habit habit) {
         habitList.remove(habit);
     }
+    public Habit getUserHabit(Integer i) {
+        return habitList.get(i);
+    }
+
+    public void setUserHabit(Integer i, Habit habit) {
+        habitList.set(i, habit);
+    }
 
     public ArrayList<Habit> getAllUserHabits(){
         return habitList;
     }
 
     public ArrayList<Habit> getTodayUserHabits(){
+        //TODO needs to be fixed.
         ArrayList<Habit> tempList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);

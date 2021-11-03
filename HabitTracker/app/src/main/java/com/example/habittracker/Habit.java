@@ -1,27 +1,30 @@
 package com.example.habittracker;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * This class represents a Habit in the HabitTracker app.
+ */
 public class Habit implements Serializable {
 
     // private String uname;
     private String habitName;
-    private ArrayList<DayOfWeek> weekdays;
-    private Date startDate;
+    private ArrayList<Integer> weekdays;    // 1 -> Sunday, 2 -> Monday, ..., 6 -> Saturday
+    private Calendar startDate;
     private String habitReason;
-    private Double progress;
+    private int progress;
     private boolean habitPublic; // public vs private to users that follow
     private ArrayList<HabitEvent> habitEventList;
 
-    public Habit(String habitName, ArrayList<DayOfWeek> weekdays, /*Date startDate,*/ String habitReason, boolean habitPublic) {
+    public Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic) {
         this.habitName = habitName;
         this.weekdays = weekdays;
-        //this.startDate = startDate;
+        this.startDate = startDate;
         this.habitReason = habitReason;
-        this.progress = 0.0;                        // Initialize progress to 0
+        this.progress = 0;                        // Initialize progress to 0
         this.habitPublic = habitPublic;
         this.habitEventList = new ArrayList<>();    // Initialize empty habitEventList
     }
@@ -70,11 +73,11 @@ public class Habit implements Serializable {
         this.habitPublic = habitPublic;
     }
 
-    public ArrayList<DayOfWeek> getWeekdays() {
+    public ArrayList<Integer> getWeekdays() {
         return weekdays;
     }
 
-    public void setWeekdays(ArrayList<DayOfWeek> weekdays) {
+    public void setWeekdays(ArrayList<Integer> weekdays) {
         this.weekdays = weekdays;
     }
 
@@ -86,11 +89,11 @@ public class Habit implements Serializable {
         this.habitName = habitName;
     }
 
-    public Date getStartDate() {
+    public Calendar getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Calendar startDate) {
         this.startDate = startDate;
     }
 
@@ -102,11 +105,11 @@ public class Habit implements Serializable {
         this.habitReason = habitReason;
     }
 
-    public double getProgress() {
+    public int getProgress() {
         return progress;
     }
 
-    public void setProgress(double progress) {
+    public void setProgress(int progress) {
         this.progress = progress;
     }
 }

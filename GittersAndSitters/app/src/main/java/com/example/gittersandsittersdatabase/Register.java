@@ -1,5 +1,7 @@
 package com.example.gittersandsittersdatabase;
 
+import static okio.HashingSource.sha256;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -22,8 +24,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import android.content.Context;
 
 import org.w3c.dom.Text;
+
+import okio.HashingSource;
 
 /**
  * This class is responsible for allowing a user to register for the HabitTracker app
@@ -31,12 +36,14 @@ import org.w3c.dom.Text;
 public class Register extends AppCompatActivity implements View.OnClickListener{
 
     // Declare variables to be referenced
+
     TextView banner, registerUser;
 
     EditText emailName;
     EditText userName;
     EditText userPassword;
     ProgressBar progressBar;
+
     FirebaseAuth mAuth;
 
     @Override
@@ -53,9 +60,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
         registerUser = (Button) findViewById(R.id.registerUser);
         registerUser.setOnClickListener(this);
 
-        emailName = findViewById(R.id.editTextTextEmailAddress);
-        userName = findViewById(R.id.editTextUserName);
-        userPassword = findViewById(R.id.editTextUserPassword);
+        emailName = findViewById(R.id.email);
+        userName = findViewById(R.id.userName);
+        userPassword = findViewById(R.id.password);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -77,6 +84,23 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
     private void registerUser() {
         String email = emailName.getText().toString().trim();
         String password = userPassword.getText().toString().trim();
+        String uname = userName.getText().toString().trim();
+
+
+
+        /**
+         * Require user to enter username
+         */
+
+        if(uname.isEmpty()){
+            userName.setError("Username is required");
+            userName.requestFocus();
+            return;
+        }
+
+        /**
+         * Require user to enter email
+         */
 
         if (email.isEmpty()){
             emailName.setError("Email is required");
@@ -90,10 +114,19 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
             return;
         }
 
+        /**
+         * Require user to enter password
+         */
+
         if(password.isEmpty()){
             userPassword.setError("Password is required");
             userPassword.requestFocus();
+            return;
         }
+
+        /**
+         * Require password to have a minimum length of 6
+         */
 
         if(password.length() < 6){
             userPassword.setError("Minimum password length is 6 characters");
@@ -108,7 +141,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()){
-                            User user = new User(email, password);
+                            User user = new User(uname, email, password);
                             //FirebaseDatabase database = FirebaseDatabase.getInstance();
                             FirebaseDatabase.getInstance().getReference("Users")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -119,7 +152,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
                                             if(task.isSuccessful()){
                                                 Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
-                                                progressBar.setVisibility(View.VISIBLE);
+
+                                                progressBar.setVisibility(View.GONE);
+                                                startActivity(new Intent(Register.this, MainActivity.class));
                                             }else{
                                                 Toast.makeText(Register.this, "Failed to register user! Please try once again", Toast.LENGTH_LONG).show();
                                                 progressBar.setVisibility(View.GONE);
@@ -127,12 +162,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
                                     }
                             });
 
-                            /**
-                             * Could not create user
-                              */
-
                         }else{
-                            Toast.makeText(Register.this, "Failed to register user ! Please try again!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Register.this, "Failed to register user! Please try again!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
                         }
 
@@ -141,32 +172,4 @@ public class Register extends AppCompatActivity implements View.OnClickListener{
 
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

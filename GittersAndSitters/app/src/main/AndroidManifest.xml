@@ -10,6 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GittersAndSittersDatabase">
         <activity
+            android:name=".Register"
+            android:exported="true"/>
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="true"/>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
