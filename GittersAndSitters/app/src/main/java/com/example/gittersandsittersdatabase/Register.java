@@ -154,10 +154,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                             Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
                             userID = mAuth.getCurrentUser().getUid();
                             fStore = FirebaseFirestore.getInstance();
-                            DocumentReference documentReference = fStore.collection("Users").document(uname);
-                            //Map<String, Object> user = new HashMap<>();
-                            HashMap<String, String> user = new HashMap<>();
-                            //user.put("userName", uname);
+                            DocumentReference documentReference = fStore.collection("Users").document(userID);
+                            Map<String, Object> user = new HashMap<>();
+                            //HashMap<String, String> user = new HashMap<>();
+                            user.put("userName", uname);
                             user.put("email", email);
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
