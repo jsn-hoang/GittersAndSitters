@@ -59,7 +59,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Get the string that uniquely identifies this user in the Firestore
         userID = mAuth.getCurrentUser().getUid();
-        //userID = user.getUid();
+
+
+
+
 
         // Get document reference for document with this unique UserID
         DocumentReference docRef = fStore.collection("Users").document(userID);
@@ -76,6 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if (document.exists()) {
                         // Get the value to which the specified keys are mapped
                         String username = (String) document.getData().get("userName");
+                        //String username = docRef.getId();
                         String email = (String) document.getData().get("email");
 
                         greetingTextView.setText("Welcome, " + username);
@@ -93,5 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         });
 
+
     }
+
 }
