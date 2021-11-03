@@ -10,18 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GittersAndSittersDatabase">
         <activity
+            android:name=".FollowRequestActivity"
+            android:exported="true" />
+        <activity
             android:name=".AddRemoveHabitActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".HabitActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".Register"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="true"/>
-
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
