@@ -1,7 +1,5 @@
 package com.example.gittersandsittersdatabase;
 
-import static org.junit.Assert.*;
-
 import androidx.test.espresso.Espresso;
 import androidx.test.rule.ActivityTestRule;
 
@@ -9,6 +7,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 public class MainActivityTest {
 
@@ -30,7 +31,7 @@ public class MainActivityTest {
 
 
 
-    
+
 
 
     @After
