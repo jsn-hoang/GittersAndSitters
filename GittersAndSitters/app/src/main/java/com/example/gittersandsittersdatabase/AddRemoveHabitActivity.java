@@ -34,8 +34,6 @@ import java.util.Locale;
  * This class is responsible for creating, editing, or deleting a Habit.
  */
 
-//TODO Enable user to specify whether a Habit is public or private
-
 public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     // Declare variables for referencing
@@ -91,9 +89,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         final Button datePickerButton = findViewById(R.id.date_picker_button);
         final TextView header = findViewById(R.id.add_edit_habit_title_text);
 
-        /**
-         * Set up activity layout and fields
-         */
 
         // Set up activity layout
         activityLayoutSetup(isNewHabit, header, addButton, deleteButton);
@@ -118,14 +113,11 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         }
 
 
-        // This method is responsible for the logic when clicking the "OK" button
+        // This Listener is responsible for the logic when clicking the confirm button
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                /**
-                 * Retrieve user inputted information
-                 */
-
+                // Retrieve user inputted data
                 String habitName = habitNameEditText.getText().toString();
                 String habitReason = habitReasonEditText.getText().toString();
 
@@ -136,9 +128,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
                 //TODO: Get the habitPublic boolean
 
-                /**
-                 * Create new or edit existing Habit
-                 */
+
                 if (isNewHabit) {
                     // Create a new Habit
                     Habit newHabit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
@@ -185,13 +175,15 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             }
         });
 
-        // This method is responsible for the logic when clicking the date picker button
+        /** This listener is responsible for the logic
+         * when clicking the date picker button
+         */
         datePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Create bundle to pass data
                 Bundle b = new Bundle();
-                b.putLong("habitStartDate", habitStartDate.getTimeInMillis());
+                b.putLong("date", habitStartDate.getTimeInMillis());
                 // Pass bundle to fragment
                 DialogFragment datePickerFragment = new DatePickerFragment();
                 datePickerFragment.setArguments(b);
@@ -200,7 +192,12 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         });
     }
 
-    // This method sets habitStartDate to the chosen DatePicker date
+    /** This method sets habitStartDate to the chosen DatePicker date
+     * @param view
+     * @param year
+     * @param month
+     * @param day
+     */
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day){
 
@@ -217,11 +214,18 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         habitStartDateText.setText(dateString);
     }
 
+    /**
+     * This method sets the Activity and button text to the appropriate titles
+     * given whether the user is creating a new habit, or editing and existing one.
+     * @param isNewActivityMode - Boolean indicating whether user is creating a new habit
+     * @param header        - A TextView object that displays the Title of the activity
+     * @param addButton     - Button for creating or updating a habit
+     * @param deleteButton  - Button for deleting an existing habit
+     */
     private void activityLayoutSetup(boolean isNewActivityMode,
                                      TextView header, Button addButton, Button deleteButton) {
 
         if (isNewActivityMode){
-
             // Make activity layout correspond to mode ADD
             header.setText("Add a New Habit");
             // deleteButton disappears, add button says CREATE
@@ -235,6 +239,13 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         }
     }
 
+    /**
+     * This method initializes a TextView object to a particular date
+     * For an existing habit, the Textview object is set to the existing start date
+     * For a new habit, the Textview object is set to today's date
+     * @param isNewHabit        - boolean representing whether this is a new habit
+     * @param habitStartDateText - TextView object that will be set to the habit's start date
+     */
     public void setDateField(boolean isNewHabit, TextView habitStartDateText) {
 
         if (isNewHabit) {
@@ -249,7 +260,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             habitStartDate.set(Calendar.MONTH, month);
             habitStartDate.set(Calendar.DAY_OF_MONTH, day);
         }
-        else { // This is an existing Habit with a set startDate
+        else { // This is an existing Habit with an existing startDate
             Habit habit = user.getUserHabit(habitIndexPosition);
             // Get habitStartDate
             habitStartDate = habit.getStartDate();
@@ -260,6 +271,13 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         habitStartDateText.setText(dateString);
     }
 
+    /**
+     * This method sets checkboxes to checked or not, depending
+     * on if the existing habit is due on that particular day
+     * @param habit - The habit whose habit.getWeekdays() we are interested
+     * @param checkBoxes - a list of checkboxes whose statuses (checked/unchecked)
+     *                     will be determined by what weekdays the habit occurs on
+     */
     public void setDaysToCheckBoxes(Habit habit, ArrayList<CheckBox> checkBoxes) {
 
         // Check off all CheckBoxes that correspond to current Habit weekdays
@@ -271,7 +289,13 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             }
         }
     }
-
+    /**
+     * This method populates a list of integers depending on whether checkboxes are checked
+     * If a checkbox representing a certain day is checked, then the integer representing that day
+     * is added to the list (Sunday = 1, Monday = 2, ..., Saturday = 6)
+     * @param checkBoxes - a list of checkboxes that are either checked or unchecked
+     * @return - ArrayList<Integer> corresponding to days of the week
+     */
     public ArrayList<Integer> getDaysFromCheckBoxes(ArrayList<CheckBox> checkBoxes) {
 
         // Initialize new weekdays arraylist

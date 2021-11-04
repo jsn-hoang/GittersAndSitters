@@ -98,6 +98,11 @@ public class User implements Serializable {
         return habitList.get(i);
     }
 
+    /**
+     * This method replaces a previous habit with a newly edited one
+     * @param i     An integer representing the ith habit
+     * @param habit The habit that will be placed at the ith position
+     */
     public void setUserHabit(Integer i, Habit habit) {
         habitList.set(i, habit);
     }
@@ -106,8 +111,13 @@ public class User implements Serializable {
         return habitList;
     }
 
+    /**
+     * This method searches through the full habit list and selects
+     * all of the habits that are to be performed today.
+     * @return - An arrayList of Habits that are to be performed today
+     */
     public ArrayList<Habit> getTodayUserHabits(){
-        //TODO needs to be fixed.
+
         ArrayList<Habit> tempList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
@@ -120,6 +130,11 @@ public class User implements Serializable {
         return tempList;
     }
 
+    /**
+     * This method searches through the full habit list and selects
+     * all of the habits that declared as public
+     * @return - An arrayList of Habits that are to be performed today
+     */
     public ArrayList<Habit> getPublicHabits(){
         ArrayList<Habit> tempList = new ArrayList<>();
 
