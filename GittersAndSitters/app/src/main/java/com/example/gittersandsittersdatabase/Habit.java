@@ -10,7 +10,6 @@ import java.util.Date;
  */
 public class Habit implements Serializable {
 
-    // private String uname;
     private String habitName;
     private ArrayList<Integer> weekdays;    // 1 -> Sunday, 2 -> Monday, ..., 6 -> Saturday
     private Calendar startDate;
@@ -45,7 +44,7 @@ public class Habit implements Serializable {
 
     /**
      * Returns a list of integers representing days of the week
-     * (i.e. 1 = Sunday, 2 = Monday, ..., 7 = Saturday
+     * (i.e. 1 = Sunday, 2 = Monday, ..., 7 = Saturday)
      * @return ArrayList<Integer>
      */
     public ArrayList<Integer> getWeekdays() {
