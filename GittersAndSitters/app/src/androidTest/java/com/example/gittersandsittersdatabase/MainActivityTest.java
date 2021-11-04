@@ -15,10 +15,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4ClassRunner.class)
-public class HabitActivityTest {
+public class MainActivityTest {
 
     @Rule
-    public final ActivityTestRule<HabitActivity> main = new ActivityTestRule<>(HabitActivity.class, true);
+    public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class, true);
 
     /*
     @Before
