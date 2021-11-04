@@ -10,7 +10,6 @@ import java.util.Date;
  */
 public class Habit implements Serializable {
 
-    // private String uname;
     private String habitName;
     private ArrayList<Integer> weekdays;    // 1 -> Sunday, 2 -> Monday, ..., 6 -> Saturday
     private Calendar startDate;
@@ -27,7 +26,78 @@ public class Habit implements Serializable {
         this.habitPublic = habitPublic;
     }
 
-    /*
+
+    private void updateProgress() {
+        //TODO
+    }
+
+
+    // Getters and Setters
+
+    public boolean isHabitPublic() {
+        return habitPublic;
+    }
+
+    public void setHabitPublic(boolean habitPublic) {
+        this.habitPublic = habitPublic;
+    }
+
+    /**
+     * Returns a list of integers representing days of the week
+     * (i.e. 1 = Sunday, 2 = Monday, ..., 7 = Saturday)
+     * @return ArrayList<Integer>
+     */
+    public ArrayList<Integer> getWeekdays() {
+        return weekdays;
+    }
+
+    public void setWeekdays(ArrayList<Integer> weekdays) {
+        this.weekdays = weekdays;
+    }
+
+    public String getHabitName() {
+        return habitName;
+    }
+
+    public void setHabitName(String habitName) {
+        this.habitName = habitName;
+    }
+
+    public Calendar getStartDate() {
+        return startDate;
+    }
+
+    /**
+     * Sets Habit startDate to the one chosen by the user in the date picker fragment.
+     * min habitStart date == today's date
+     * The HabitStart date cannot be changed after the Habit has started
+     * @param startDate a Calendar object
+     */
+    public void setStartDate(Calendar startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getHabitReason() {
+        return habitReason;
+    }
+
+    public void setHabitReason(String habitReason) {
+        this.habitReason = habitReason;
+    }
+
+    //TODO
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    /**
+     * HabitEventList will know longer be a Habit attribute
+     */
+        /*
     public boolean isCompletedToday() {
         Date today = new Date();
         for (int i=0; i<habitEventList.size(); i++) {
@@ -58,58 +128,4 @@ public class Habit implements Serializable {
     }
      */
 
-    private void updateProgress() {
-        //TODO
-    }
-
-
-    // Getters and Setters
-
-    public boolean isHabitPublic() {
-        return habitPublic;
-    }
-
-    public void setHabitPublic(boolean habitPublic) {
-        this.habitPublic = habitPublic;
-    }
-
-    public ArrayList<Integer> getWeekdays() {
-        return weekdays;
-    }
-
-    public void setWeekdays(ArrayList<Integer> weekdays) {
-        this.weekdays = weekdays;
-    }
-
-    public String getHabitName() {
-        return habitName;
-    }
-
-    public void setHabitName(String habitName) {
-        this.habitName = habitName;
-    }
-
-    public Calendar getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Calendar startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getHabitReason() {
-        return habitReason;
-    }
-
-    public void setHabitReason(String habitReason) {
-        this.habitReason = habitReason;
-    }
-
-    public int getProgress() {
-        return progress;
-    }
-
-    public void setProgress(int progress) {
-        this.progress = progress;
-    }
 }

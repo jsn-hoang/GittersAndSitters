@@ -44,51 +44,21 @@ public class HabitActivity extends AppCompatActivity {
     ArrayList<Habit> habitList;
     User user;
     Habit habit;
-    // profile activity
-    private FirebaseUser fUser;
-    private DatabaseReference reference;
-    private String userID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit);
 
-        fUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("Users");
-        userID = fUser.getUid();
-
-        /*
-        reference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User userProfile = snapshot.getValue(User.class);
-
-                if(userProfile != null){
-                    String username = userProfile.getUsername();
-                    String email = userProfile.getEmail();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(HabitActivity.this,"Error",Toast.LENGTH_LONG).show();
-            }
-        });
-         */
-        // Check whether there is an existing user to get
-        if (getIntent().hasExtra("user"))
-            user = (User) getIntent().getSerializableExtra("user");
-
-            // else create a new user
-        else user = new User("Timmy","abc");
+        // Get the user intent
+        user = (User) getIntent().getSerializableExtra("user");
 
         habitListView = findViewById(R.id.habit_listview);
-
         // Set adapter to todayUserHabits
         habitAdapter = new HabitCustomList(this, user.getTodayUserHabits());
         habitListView.setAdapter(habitAdapter);
+
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -166,16 +136,6 @@ public class HabitActivity extends AppCompatActivity {
                     }
                 });
 
-        final Button logoutButton = findViewById(R.id.logout_button);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HabitActivity.this, ProfileActivity.class);
-                intent.putExtra("user", user);
-                habitActivityResultLauncher.launch(intent);
-            }
-        });
-
         final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +157,16 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
+        final Button logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HabitActivity.this, ProfileActivity.class);
+                intent.putExtra("user", user);
+                habitActivityResultLauncher.launch(intent);
+            }
+        });
+
         // launches add habit event
 //        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -210,21 +180,5 @@ public class HabitActivity extends AppCompatActivity {
 //            }
 //        });
 
-
-
     }
-
-
 }
-
-/**
- // Retains ListView when returning to MainActivity
- @Override
- public boolean onOptionsItemSelected(MenuItem item) {
- if(item.getItemId() == android.R.id.home) {
- onBackPressed();
- return true;
- }
- return super.onOptionsItemSelected(item);
- }
- */
