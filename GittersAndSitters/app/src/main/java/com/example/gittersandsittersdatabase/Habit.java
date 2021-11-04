@@ -17,7 +17,6 @@ public class Habit implements Serializable {
     private String habitReason;
     private int progress;
     private boolean habitPublic; // public vs private to users that follow
-    private ArrayList<HabitEvent> habitEventList;
 
     public Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic) {
         this.habitName = habitName;
@@ -26,9 +25,9 @@ public class Habit implements Serializable {
         this.habitReason = habitReason;
         this.progress = 0;                        // Initialize progress to 0
         this.habitPublic = habitPublic;
-        this.habitEventList = new ArrayList<>();    // Initialize empty habitEventList
     }
 
+    /*
     public boolean isCompletedToday() {
         Date today = new Date();
         for (int i=0; i<habitEventList.size(); i++) {
@@ -57,7 +56,8 @@ public class Habit implements Serializable {
     public int countHabitEvents(){
         return habitEventList.size();
     }
-
+     */
+    
     private void updateProgress() {
         //TODO
     }
