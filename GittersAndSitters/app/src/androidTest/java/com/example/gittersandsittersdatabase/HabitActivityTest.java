@@ -75,7 +75,7 @@ public class HabitActivityTest {
         // Click logout button
         Espresso.onView(withId(R.id.logout_button)).perform(click());
         // Test if Activity switched to LogoutActivity
-        Espresso.onView(withId(R.id.activity_logout_id)).check(matches(isDisplayed()));
+        Espresso.onView(withId(R.id.activity_profile_id)).check(matches(isDisplayed()));
 
     }
 
