@@ -1,42 +1,39 @@
 package com.example.gittersandsittersdatabase;
 
-import android.content.Context;
+import static org.junit.Assert.*;
 
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
-import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.espresso.Espresso;
 import androidx.test.rule.ActivityTestRule;
 
-import com.example.gittersandsittersdatabase.HabitActivity;
-
-import org.junit.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(AndroidJUnit4ClassRunner.class)
 public class MainActivityTest {
 
     @Rule
-    public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class, true);
+    public ActivityTestRule<MainActivity> mainActivityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    /*
+    private String fakeEmail = "abcd@gmail.com";
+    private String fakePassword = "1379246";
+
     @Before
-    public void init() {
-
+    public void setUp() throws Exception {
     }
-    @Test
-    public void listCount() {
-
-    }
-
 
     @Test
-    public void useAppContext() {
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
-        Assert.assertEquals("in.curioustools.aad_x_testing2", appContext.getPackageName());
-        System.out.println("useAppContext : Test Ran");
+    public void testUserInputScenario() {
+        //input some text in the email field
+        Espresso.onView(withId(R.id.login_emailAddress)).perform(typeText(fakeEmail));
     }
-     */
+
+
+
+    
+
+
+    @After
+    public void tearDown() throws Exception {
+    }
 }
