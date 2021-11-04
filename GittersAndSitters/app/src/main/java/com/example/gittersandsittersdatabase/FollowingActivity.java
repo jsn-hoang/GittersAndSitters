@@ -42,7 +42,7 @@ public class FollowingActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                userList = user.getFollowing();
+                //userList = user.getFollowing();
             }
 
             @Override

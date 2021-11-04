@@ -81,7 +81,7 @@ public class HabitActivity extends AppCompatActivity {
             user = (User) getIntent().getSerializableExtra("user");
 
             // else create a new user
-        else user = new User("Timmy","abc","abc");
+        else user = new User("Timmy","abc");
 
         habitListView = findViewById(R.id.habit_listview);
 

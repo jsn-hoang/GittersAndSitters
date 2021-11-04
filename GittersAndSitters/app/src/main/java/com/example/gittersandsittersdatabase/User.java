@@ -12,8 +12,8 @@ public class User implements Serializable {
     // Declare attributes
     private String username;
     private String email;
-    private ArrayList<User> following;
-    private ArrayList<User> requests;
+    private ArrayList<String> following;
+    private ArrayList<String> requests;
     private ArrayList<Habit> habitList;
     //private HabitCustomList habitList = new HabitCustomList();
 
@@ -23,12 +23,20 @@ public class User implements Serializable {
 
     }
 
-    public User(String username, String email, String password){
+    public User(String username, String email){
         this.username = username;
         this.email = email;
         this.following = new ArrayList<>();     // initialize empty following list
         this.requests = new ArrayList<>();      // initialize empty requests list
         this.habitList = new ArrayList<>();     // initialize empty Habit list
+    }
+
+    public User(String username, String email, ArrayList<String> following, ArrayList<String> requests, ArrayList<Habit> habitList) {
+        this.username = username;
+        this.email = email;
+        this.following = following;
+        this.requests = requests;
+        this.habitList = habitList;
     }
 
     public String getUsername() {
@@ -47,17 +55,17 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public ArrayList<User> getFollowing() {
+    public ArrayList<String> getFollowing() {
         return following;
     }
 
-    public void addFollowing(User user) {
+    public void addFollowing(String user) {
         if (!following.contains(user)) {
             following.add(user);
         }
     }
 
-    public void removeFollowing(User user) {
+    public void removeFollowing(String user) {
         if (following.contains(user)) {
             following.remove(user);
         } else {
@@ -65,11 +73,11 @@ public class User implements Serializable {
         }
     }
 
-    public ArrayList<User> getRequests() {
+    public ArrayList<String> getRequests() {
         return requests;
     }
 
-    public void addRequests(User user) {
+    public void addRequests(String user) {
         if (!requests.contains(user)) {
             requests.add(user);
         }
