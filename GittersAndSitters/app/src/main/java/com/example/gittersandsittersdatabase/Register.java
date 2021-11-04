@@ -46,7 +46,6 @@ import okio.HashingSource;
 public class Register extends AppCompatActivity implements View.OnClickListener {
 
     // Declare variables to be referenced
-
     TextView banner, registerUser;
 
     EditText emailName;
