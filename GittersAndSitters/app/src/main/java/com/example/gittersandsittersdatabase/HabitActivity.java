@@ -165,6 +165,16 @@ public class HabitActivity extends AppCompatActivity {
                     }
                 });
 
+        final Button logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HabitActivity.this, ProfileActivity.class);
+                intent.putExtra("user", user);
+                habitActivityResultLauncher.launch(intent);
+            }
+        });
+
         final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -141,7 +141,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                  */
                 if (isNewHabit) {
                     // Create a new Habit
-                    Habit newHabit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
+                    Habit newHabit = new Habit(user.getUsername(), weekdays, habitStartDate, habitReason, true);
                     // Add habit to userHabitList
                     user.addUserHabit(newHabit);
                 }

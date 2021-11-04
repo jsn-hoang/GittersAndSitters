@@ -57,7 +57,7 @@ public class Habit implements Serializable {
         return habitEventList.size();
     }
      */
-    
+
     private void updateProgress() {
         //TODO
     }
