@@ -36,8 +36,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.0.2'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.firebase:firebase-database:20.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'        // Added this
+    testImplementation 'junit:junit:4.13.2'       // updated from 4.12
+    androidTestImplementation 'com.android.support.test:rules:1.4.0'        // Added this for Espresso testing
     androidTestImplementation 'androidx.test:runner:1.4.0'                  // Changed from 1.1.1
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'  // changed from 3.1.1
 
