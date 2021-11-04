@@ -38,10 +38,9 @@ import java.util.Date;
 
 public class HabitActivity extends AppCompatActivity {
 
-    // Declare the variables so that you will be able to reference it later.
+    // Declared variables for referencing
     ListView habitListView;
     ArrayAdapter<Habit> habitAdapter;
-    ArrayList<Habit> habitList;
     User user;
     Habit habit;
 
