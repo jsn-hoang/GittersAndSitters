@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileActivity"
-    android:id="@+id/activity_logout_id"
+    android:id="@+id/activity_profile_id"
     >
 
 
