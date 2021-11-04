@@ -23,7 +23,7 @@ public class User implements Serializable {
 
     }
 
-    public User(String username, String email, String password){
+    public User(String username, String email){
         this.username = username;
         this.email = email;
         this.following = new ArrayList<>();     // initialize empty following list

@@ -34,6 +34,7 @@ import android.content.Context;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +55,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     ProgressBar progressBar;
     String userID;
     FirebaseFirestore fStore;
-
+    private ArrayList<User> following;
+    private ArrayList<User> requests;
+    private ArrayList<User> habitList;
     FirebaseAuth mAuth;
 
     @Override
@@ -96,6 +99,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         String email = emailName.getText().toString().trim();
         String password = userPassword.getText().toString().trim();
         String uname = userName.getText().toString().trim();
+        following = new ArrayList<>();
+        requests = new ArrayList<>();
+        habitList = new ArrayList<>();
 
 
         /**
@@ -155,10 +161,16 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                             userID = mAuth.getCurrentUser().getUid();
                             fStore = FirebaseFirestore.getInstance();
                             DocumentReference documentReference = fStore.collection("Users").document(userID);
+
+
                             Map<String, Object> user = new HashMap<>();
                             //HashMap<String, String> user = new HashMap<>();
                             user.put("userName", uname);
                             user.put("email", email);
+                            user.put("following",following);
+                            user.put("requests",requests);
+                            user.put("habitList",habitList);
+
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
