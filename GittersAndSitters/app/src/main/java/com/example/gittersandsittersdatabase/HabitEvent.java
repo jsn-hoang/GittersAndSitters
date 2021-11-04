@@ -11,15 +11,17 @@ import java.util.Date;
 public class HabitEvent {
 
     private String eventName;
+    private String parentHabit;     // Each event is associated with a particular Habit
     private Date eventDate;
     private Location eventLocation;
     private String eventComment;
     private File eventPhoto;
 
     // Constructor with the required attributes: name and date
-    public HabitEvent(String eventName, Date eventDate) {
+    public HabitEvent(String eventName, String parentHabit, Date eventDate) {
         this.eventName = eventName;
-        this.eventDate = eventDate;
+        this.parentHabit = parentHabit;
+        this.eventDate = eventDate;         // Should eventDate always be today's date?
     }
 
     // Getters and Setters
@@ -32,11 +34,20 @@ public class HabitEvent {
         this.eventName = eventName;
     }
 
+    public String getParentHabit() {
+        return eventName;
+    }
+
+    public void setParentHabit(String eventName) {
+        this.eventName = eventName;
+    }
+
     public Date getEventDate() {
         return eventDate;
     }
 
     public void setEventDate(Date eventDate) {
+        // Set EventDate to today's date
         this.eventDate = eventDate;
     }
 
