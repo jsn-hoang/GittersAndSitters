@@ -5,7 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.provider.ContactsContract;
+=======
+import android.util.Log;
+>>>>>>> 7cfe8a6117e072d6fb4e81625d96b5d434c699d1
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -19,18 +23,24 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * This class is responsible for the initial HabitTracker login screen
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Declare variables to be referenced
-    // The entry point of the Firebase Authentication SDK
-    // Page where user logs in
 
     private TextView register;
     private EditText editTextEmail, editTextPassword;
     private Button signIn;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth; // The entry point of the Firebase Authentication SDK
+    FirebaseFirestore fStore;   // The entry point for all Cloud Firestore operations
     private ProgressBar progressBar;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +57,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         progressBar = findViewById(R.id.progress_bar);
 
-        mAuth = FirebaseAuth.getInstance();     // Get an instance of Firebase Authentication SDK
+        // Get an instance of Firebase Authentication SDK
+        mAuth = FirebaseAuth.getInstance();
 
+        fStore = FirebaseFirestore.getInstance();
 
     }
 
@@ -108,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editTextPassword.requestFocus();
             return;
         }
+
         progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -117,10 +130,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                     if(user.isEmailVerified()){
-                        // redirect to user profile
+                        // Get the string that uniquely identifies this user in the Firestore
+                        userID = mAuth.getCurrentUser().getUid();
+                        // Get document reference for document with this unique UserID
+                        DocumentReference docRef = fStore.collection("Users").document(userID);
+                        // This listener reads the document referenced by docRef
+                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+
+                                        // Get the values to which the specified keys are mapped
+                                        String username = (String) document.getData().get("userName");
+                                        String email = (String) document.getData().get("email");
+                                        User user = new User(username, email);
+                                        Intent intent = new Intent(MainActivity.this,HabitActivity.class);
+                                        intent.putExtra("user", user);
+                                        startActivity(intent);
+
+                                        Log.d("TAG", "DocumentSnapshot data: " + document.getData());
+                                    } else {
+                                        Log.d("TAG", "No such document");
+                                    }
+                                } else {
+                                    Log.d("TAG", "get failed with ", task.getException());
+                                }
+                            }
+
+                        });
 
                         //NOTE: Changed from Profile
+<<<<<<< HEAD
                         startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+=======
+                        //startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+>>>>>>> 7cfe8a6117e072d6fb4e81625d96b5d434c699d1
                     }else{
                         user.sendEmailVerification();
                         Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();

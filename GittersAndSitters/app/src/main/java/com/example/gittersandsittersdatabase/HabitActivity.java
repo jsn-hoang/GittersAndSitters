@@ -58,6 +58,7 @@ public class HabitActivity extends AppCompatActivity {
         reference = FirebaseDatabase.getInstance().getReference("Users");
         userID = fUser.getUid();
 
+        /*
         reference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -75,7 +76,7 @@ public class HabitActivity extends AppCompatActivity {
                 Toast.makeText(HabitActivity.this,"Error",Toast.LENGTH_LONG).show();
             }
         });
-
+         */
         // Check whether there is an existing user to get
         if (getIntent().hasExtra("user"))
             user = (User) getIntent().getSerializableExtra("user");
@@ -164,6 +165,16 @@ public class HabitActivity extends AppCompatActivity {
                         //TODO
                     }
                 });
+
+        final Button logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HabitActivity.this, ProfileActivity.class);
+                intent.putExtra("user", user);
+                habitActivityResultLauncher.launch(intent);
+            }
+        });
 
         final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
