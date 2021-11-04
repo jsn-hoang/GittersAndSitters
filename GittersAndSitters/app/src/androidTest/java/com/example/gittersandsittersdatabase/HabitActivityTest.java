@@ -33,7 +33,7 @@ public class HabitActivityTest {
         @Override
         protected Intent getActivityIntent() {
         Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        // Create and put a User object before
+        // Create and put a User object before launching HabitActivity
         User user = new User("testUsername","testEmail");
         Intent result = new Intent(targetContext, HabitActivity.class);
         result.putExtra("user", user);
@@ -55,9 +55,10 @@ public class HabitActivityTest {
         Espresso.onView(withId(R.id.activity_add_remove_habit_id)).check(matches(isDisplayed()));
     }
 
+    // TODO
     // Test functionality of the "Today Habits" and "All Habits" tabs
     @Test
-    public void testSwitchingTodayHabitsAndAllHabits() {
+    public void testSwitchingTodayHabitsAndAllHabitsTabs() {
         // Click all Habits
         Espresso.onView(withId(R.id.all_habits_tab)).perform(click());
         // Check that the Activity is in all habits mode
