@@ -30,39 +30,62 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class ProfileActivity extends AppCompatActivity {
 
-    // Declare variables to be referenced
-    private String userID;
-    FirebaseAuth mAuth;         // The entry point of the Firebase Authentication SDK
-    FirebaseFirestore fStore;   // The entry point for all Cloud Firestore operations
-    private Button logout;
+    // Declared variables for referencing
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_profile);
-        mAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        logout = findViewById(R.id.logout);
 
-        // This listener handles the logic when the logout button is pressed
+        // Get the user intent
+        user = (User) getIntent().getSerializableExtra("user");
+
+        // mAuth = FirebaseAuth.getInstance();
+        // fStore = FirebaseFirestore.getInstance();
+        // Declare variables to be referenced
+        //private String userID;
+        //FirebaseAuth mAuth;         // The entry point of the Firebase Authentication SDK
+        //FirebaseFirestore fStore;   // The entry point for all Cloud Firestore operations
+
+        // Fields for displaying customized logout message
+        final TextView greetingTextView = (TextView) findViewById(R.id.greeting);
+        final TextView userNameTextView = (TextView) findViewById(R.id.userName);
+        final TextView emailTextView = (TextView) findViewById(R.id.emailAddress);
+        greetingTextView.setText("Are you sure you want to logout " + user.getUsername()+ "?");
+        userNameTextView.setText(user.getUsername());
+        emailTextView.setText(user.getEmail());
+
+
+        /**
+         * This listener is responsible for the logic when the logout button is clicked
+         */
+        final Button logout = findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Signs out the current user and clears them from disk cache
+                // Sign out the current user and clears them from disk cache
                 FirebaseAuth.getInstance().signOut();
-
                 // Return to login screen
                 startActivity(new Intent(ProfileActivity.this, MainActivity.class));
             }
         });
 
+        /**
+         * This listener is responsible for the logic when the cancel button is clicked
+         */
+        final Button cancelButton = findViewById(R.id.cancel_logout_button);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileActivity.this, HabitActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
+        /*
         // Get the string that uniquely identifies this user in the Firestore
         userID = mAuth.getCurrentUser().getUid();
-
-
-
-
 
         // Get document reference for document with this unique UserID
         DocumentReference docRef = fStore.collection("Users").document(userID);
@@ -96,8 +119,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
         });
-
-
+         */
     }
-
 }
