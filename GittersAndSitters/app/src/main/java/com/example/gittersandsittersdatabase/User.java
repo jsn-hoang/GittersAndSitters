@@ -15,7 +15,7 @@ public class User implements Serializable {
     private ArrayList<User> following;
     private ArrayList<User> requests;
     private ArrayList<Habit> habitList;
-    //private HabitCustomList habitList = new HabitCustomList();
+    private ArrayList<HabitEvent> eventList;
 
 
     // User constructors
@@ -29,6 +29,7 @@ public class User implements Serializable {
         this.following = new ArrayList<>();     // initialize empty following list
         this.requests = new ArrayList<>();      // initialize empty requests list
         this.habitList = new ArrayList<>();     // initialize empty Habit list
+        this.eventList = new ArrayList<>();     // initialize empty HabitEvent list
     }
 
     public String getUsername() {
