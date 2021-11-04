@@ -34,10 +34,9 @@ public class UserCustomList extends ArrayAdapter<User> {
             view = LayoutInflater.from(context).inflate(R.layout.following_content, parent, false);
         }
 
+        // Get the next User
         User user = users.get(position);
-
         TextView userName = view.findViewById(R.id.user_name);
-
         userName.setText(user.getUsername());
 
         return view;
