@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         //NOTE: Changed from Profile
 
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        //startActivity(new Intent(MainActivity.this, ProfileActivity.class));
 
                         //startActivity(new Intent(MainActivity.this,ProfileActivity.class));
 
