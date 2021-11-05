@@ -42,18 +42,18 @@ import java.util.Map;
 public class Register extends AppCompatActivity implements View.OnClickListener {
 
     // Declare variables to be referenced
-    TextView banner, registerUser;
+    private TextView banner, registerUser;
 
-    EditText emailName;
-    EditText userName;
-    EditText userPassword;
-    ProgressBar progressBar;
-    String userID;
-    FirebaseFirestore fStore;
+    private EditText emailName;
+    private EditText userName;
+    private EditText userPassword;
+    private ProgressBar progressBar;
+    private String userID;
+    private FirebaseFirestore fStore;
     private ArrayList<User> following;
     private ArrayList<User> requests;
     private ArrayList<User> habitList;
-    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
