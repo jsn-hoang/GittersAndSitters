@@ -3,15 +3,13 @@ package com.example.gittersandsittersdatabase;
 
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
+
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.*;
+
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,10 +17,10 @@ import android.content.Intent;
 import androidx.test.espresso.Espresso;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
 
 import org.junit.After;
-import org.junit.Assert;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,10 +36,8 @@ public class RegisterTest {
                 @Override
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-                    // Create and put a User object before launching HabitActivity
-                    //User user = new User("testUsername","testEmail");
                     Intent result = new Intent(targetContext, Register.class);
-                    //result.putExtra("user", user);
+
                     return result;
                 }
             };
