@@ -84,7 +84,7 @@ public class User implements Serializable {
         }
     }
 
-    public void removeRequests(User user) {
+    public void removeRequests(String user) {
         if (requests.contains(user)) {
             requests.remove(user);
         } else {
