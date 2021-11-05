@@ -3,7 +3,7 @@ package com.example.gittersandsittersdatabase;
 import android.location.Location;
 
 import java.io.File;
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * This class represents a HabitEvent in the HabitTracker app.
@@ -12,15 +12,15 @@ public class HabitEvent {
 
     private String eventName;
     private String parentHabit;     // Each event is associated with a particular Habit
-    private Date eventDate;
+    private Calendar eventDate;
     private Location eventLocation;
     private String eventComment;
     private File eventPhoto;
 
     // Constructor with the required attributes: name and date
-    public HabitEvent(String eventName, String parentHabit, Date eventDate) {
+    public HabitEvent(String eventName, /*String parentHabit,*/ Calendar eventDate) {
         this.eventName = eventName;
-        this.parentHabit = parentHabit;
+//        this.parentHabit = parentHabit;
         this.eventDate = eventDate;         // Should eventDate always be today's date?
     }
 
@@ -42,11 +42,11 @@ public class HabitEvent {
         this.eventName = eventName;
     }
 
-    public Date getEventDate() {
+    public Calendar getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Date eventDate) {
+    public void setEventDate(Calendar eventDate) {
         // Set EventDate to today's date
         this.eventDate = eventDate;
     }
