@@ -42,7 +42,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.firebase:firebase-database:20.0.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter'                    // Added 11/05/21
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
     androidTestImplementation 'com.android.support.test:rules:1.4.0'        // Added this for Espresso testing
     androidTestImplementation 'androidx.test:runner:1.4.0'                  // Changed from 1.1.1
