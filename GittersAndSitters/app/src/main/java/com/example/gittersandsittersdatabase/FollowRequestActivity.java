@@ -91,26 +91,6 @@ public class FollowRequestActivity extends AppCompatActivity {
         request_list = findViewById(R.id.request_list);
         requestAdapter = new RequestCustomList(this, requestList);
         request_list.setAdapter(requestAdapter);
-        /*
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                    FirebaseFirestoreException error) {
-                requestList.clear();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    //Log.d("TAG", String.valueOf(doc.getData().get("Province Name")));
-                    String username = (String) doc.getData().get("userName");
-                    String email = (String) doc.getData().get("email");
-
-
-                    //String city = doc.getId(String city = doc.getId();
-                    //String province = (String) doc.getData().get("Province Name");
-                    //cityDataList.add(new City(city, province)); // Adding the cities and provinces from FireStore
-                }
-                //cityAdapter.notifyDataSetChanged();
-            }
-        });
-        */
 
 
         follow_request_banner = findViewById(R.id.follow_request_banner);
