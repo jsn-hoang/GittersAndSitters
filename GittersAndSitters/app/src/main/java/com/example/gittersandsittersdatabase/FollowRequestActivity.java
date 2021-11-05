@@ -37,6 +37,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class represents the activity which displays follow requests from other users and
+ * allows the user to request to follow other users
+ */
 public class FollowRequestActivity extends AppCompatActivity {
 
     private TextView follow_request_banner;
@@ -118,6 +122,10 @@ public class FollowRequestActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Called when the send request button is clicked
+     * @param view
+     */
     public void sendRequest(View view) {
         search_username = (EditText) findViewById(R.id.search_username);
         String user_name = search_username.getText().toString();
