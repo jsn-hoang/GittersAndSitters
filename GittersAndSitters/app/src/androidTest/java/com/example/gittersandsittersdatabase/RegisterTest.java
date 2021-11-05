@@ -1,6 +1,7 @@
 
 package com.example.gittersandsittersdatabase;
 
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
@@ -54,16 +55,95 @@ public class RegisterTest {
 
 
     @Test
-    public void testFieldIsValid(){
-        Espresso.onView(withId(R.id.userName)).perform(typeText("wizendeye232"));
-        Espresso.onView(withId(R.id.userName)).check(matches(not(withText(("")))));
+    public void testErrorCheckingUserName(){
+        Espresso.onView(withId(R.id.userName)).perform(typeText(""));
 
         Espresso.onView(withId(R.id.email)).perform(typeText("wiz@wizmail.com"));
-        Espresso.onView(withId(R.id.email)).check(matches(not(withText(("")))));
+
+        Espresso.onView(withId(R.id.password)).perform(typeText("123456"));
+
+
+        Espresso.closeSoftKeyboard();
+        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        //Since the user did not add a username the account should not be created
+        // If account was created then the activity would change to activity_main
+        // Since the account was not created the activity should be activity_register_id
+        Espresso.onView(withId(R.id.activity_register_id)).check(matches(isDisplayed()));
+
+
+    }
+    @Test
+    public void testErrorCheckingEmail(){
+        Espresso.onView(withId(R.id.userName)).perform(typeText("wizendeye232@gmail.com"));
+
+        // Email field left empty so account should not be created
+        Espresso.onView(withId(R.id.email)).perform(typeText(""));
 
 
         Espresso.onView(withId(R.id.password)).perform(typeText("123456"));
-        Espresso.onView(withId(R.id.password)).check(matches(not(withText(("")))));
+
+        Espresso.closeSoftKeyboard();
+        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        //Since the user did not add an email the account should not be created
+        // If account was created then the activity would change to activity_main
+        // Since the account was not created the activity should be activity_register_id
+        Espresso.onView(withId(R.id.activity_register_id)).check(matches(isDisplayed()));
+
+        Espresso.onView(withId(R.id.userName)).perform(clearText());
+        Espresso.onView(withId(R.id.email)).perform(clearText());
+        Espresso.onView(withId(R.id.password)).perform(clearText());
+
+        Espresso.onView(withId(R.id.userName)).perform(typeText("wizendeye232@gmail.com"));
+
+        // Email field incorrect so account should not be created
+        Espresso.onView(withId(R.id.email)).perform(typeText("mark"));
+
+
+        Espresso.onView(withId(R.id.password)).perform(typeText("123456"));
+
+        Espresso.closeSoftKeyboard();
+        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        //Since the user did not add a valid email address the account will not be created
+        // If account was created then the activity would change to activity_main
+        // Since the account was not created the activity should be activity_register_id
+        Espresso.onView(withId(R.id.activity_register_id)).check(matches(isDisplayed()));
+
+
+    }
+
+    @Test
+    public void testErrorCheckingPassword(){
+        Espresso.onView(withId(R.id.userName)).perform(typeText("wizendeye232@gmail.com"));
+
+        Espresso.onView(withId(R.id.email)).perform(typeText("wiz@wizmail.com"));
+
+        // account should not be created since password length is less than 6
+        Espresso.onView(withId(R.id.password)).perform(typeText("1"));
+
+
+        Espresso.closeSoftKeyboard();
+        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        //Since the user did not add a password with length >6 account should not be created
+        // If account was created then the activity would change to activity_main
+        // Since the account was not created the activity should be activity_register_id
+        Espresso.onView(withId(R.id.activity_register_id)).check(matches(isDisplayed()));
+
+        Espresso.onView(withId(R.id.userName)).perform(clearText());
+        Espresso.onView(withId(R.id.email)).perform(clearText());
+        Espresso.onView(withId(R.id.password)).perform(clearText());
+
+        Espresso.onView(withId(R.id.userName)).perform(typeText("wizendeye232@gmail.com"));
+
+        Espresso.onView(withId(R.id.email)).perform(typeText("wiz@wizmail.com"));
+
+        // account should not be created since password field is empty
+        Espresso.onView(withId(R.id.password)).perform(typeText(""));
+
+        Espresso.closeSoftKeyboard();
+        //Since the user did not add a password with length >6 account should not be created
+        // If account was created then the activity would change to activity_main
+        // Since the account was not created the activity should be activity_register_id
+        Espresso.onView(withId(R.id.registerUser)).perform(click());
 
 
     }
