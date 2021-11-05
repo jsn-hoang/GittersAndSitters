@@ -1,6 +1,7 @@
 # GittersAndSitters
 
-CMPUT 301 Project. 
+## CMPUT 301 Project
+
 The best way to track your habits!
 
 | Team Member Name  | Team Member CCID |
@@ -11,4 +12,7 @@ The best way to track your habits!
 | Jason Hoang  | jhoang2 |
 | Justin Rozeboom  | wrozeboo  |
 | Ashwin Thampy |   thampy   |
+
+NOTE:  
+For running Android tests, use the Nexus 6P AVD. If you encounter a failing test, try using a different device.
 
