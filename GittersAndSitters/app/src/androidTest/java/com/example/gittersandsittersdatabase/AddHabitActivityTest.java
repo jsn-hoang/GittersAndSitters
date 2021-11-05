@@ -2,6 +2,7 @@ package com.example.gittersandsittersdatabase;
 
 import static androidx.core.content.res.TypedArrayUtils.getText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -72,6 +73,10 @@ public class AddHabitActivityTest {
                 }
             };
 
+    @Before
+    public void setUp() throws Exception {
+    }
+
     // Test for correct title and button displays in "New Habit" mode
     @Test
     public void testNewHabitFields() {
@@ -104,9 +109,49 @@ public class AddHabitActivityTest {
         Espresso.onView(withId(R.id.saturday_checkbox)).check(matches(isNotChecked()));
     }
 
-    @Before
-    public void setUp() throws Exception {
+    // Test user input fields
+    @Test
+    public void testUserInputFields() throws InterruptedException {
+        // Input habit name
+        Espresso.onView(withId(R.id.habit_name_editText)).perform(typeText("test name"));
+        Espresso.closeSoftKeyboard();
+        // Input habit reason
+        Espresso.onView(withId(R.id.habit_reason_editText)).perform(typeText("test reason"));
+        Espresso.closeSoftKeyboard();
+        // Try clicking some checkboxes
+        Espresso.onView(withId(R.id.monday_checkbox)).perform(click());
+        Espresso.onView(withId(R.id.wednesday_checkbox)).perform(click());
+        Espresso.onView(withId(R.id.saturday_checkbox)).perform(click());
+        Espresso.onView(withId(R.id.add_habit_button)).perform(click());
+        //progress dialog is now shown
+        Thread.sleep(3000);
+
+
     }
+
+
+    /** // TODO Find out why these button tests aren't working (no problems in actual app)
+    // Test for correct functionality of addHabitButton
+    @Test
+    public void testAddHabitButton() throws InterruptedException {
+        // Click the Create button
+        Espresso.onView(withId(R.id.cancel_habit_button)).perform(click());
+        //progress dialog is now shown
+        Thread.sleep(3000);
+        // Check that the activity has changed to AddRemoveHabitActivity
+        Espresso.onView(withId(R.id.activity_habit_id)).check(matches(isDisplayed()));
+    }
+    // Test for correct functionality of cancelButton
+    @Test
+    public void testCancelButton() throws InterruptedException {
+        // Click the Create button
+        Espresso.onView(withId(R.id.cancel_habit_button)).perform(click());
+        //progress dialog is now shown
+        Thread.sleep(3000);
+        // Check that the activity has changed to AddRemoveHabitActivity
+        Espresso.onView(withId(R.id.activity_habit_id)).check(matches(isDisplayed()));
+    }
+     */
 
     @After
     public void tearDown() throws Exception {
