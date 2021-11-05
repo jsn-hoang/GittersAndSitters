@@ -31,7 +31,12 @@
         <entry key="..\:/Users/itsma/newDataBaseStuff/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/itsma/newDataBaseStuff/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_profile.xml" value="0.4" />
         <entry key="..\:/Users/itsma/newDataBaseStuff/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_register.xml" value="0.268" />
+<<<<<<< HEAD
         <entry key="app/src/main/res/layout/activity_add_remove_habit.xml" value="0.21988726673252887" />
+=======
+        <entry key="..\:/Users/itsma/nov4thMerge/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_register.xml" value="0.4" />
+        <entry key="app/src/main/res/layout/activity_add_remove_habit.xml" value="0.1" />
+>>>>>>> 4cfce8b6c3cf3bbc379ad6a4d79e108d5afe1f13
         <entry key="app/src/main/res/layout/activity_habit.xml" value="0.19074074074074074" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.3380208333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />

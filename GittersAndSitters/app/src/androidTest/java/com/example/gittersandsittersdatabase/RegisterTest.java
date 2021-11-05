@@ -50,7 +50,9 @@ public class RegisterTest {
     public void setUp() throws Exception {
     }
 
+
     
+
     @Test
     public void testFieldIsValid(){
         Espresso.onView(withId(R.id.userName)).perform(typeText("wizendeye232"));
@@ -62,7 +64,6 @@ public class RegisterTest {
 
         Espresso.onView(withId(R.id.password)).perform(typeText("123456"));
         Espresso.onView(withId(R.id.password)).check(matches(not(withText(("")))));
-
 
 
     }
