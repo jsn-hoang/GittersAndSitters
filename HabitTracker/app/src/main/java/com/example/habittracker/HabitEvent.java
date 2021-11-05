@@ -3,7 +3,7 @@ package com.example.habittracker;
 import android.location.Location;
 
 import java.io.File;
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * This class represents a HabitEvent in the HabitTracker app.
@@ -11,13 +11,13 @@ import java.util.Date;
 public class HabitEvent {
 
     private String eventName;
-    private Date eventDate;
+    private Calendar eventDate;
     private Location eventLocation;
     private String eventComment;
     private File eventPhoto;
 
     // Constructor with the required attributes: name and date
-    public HabitEvent(String eventName, Date eventDate) {
+    public HabitEvent(String eventName, Calendar eventDate) {
         this.eventName = eventName;
         this.eventDate = eventDate;
     }
@@ -32,11 +32,11 @@ public class HabitEvent {
         this.eventName = eventName;
     }
 
-    public Date getEventDate() {
+    public Calendar getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Date eventDate) {
+    public void setEventDate(Calendar eventDate) {
         this.eventDate = eventDate;
     }
 

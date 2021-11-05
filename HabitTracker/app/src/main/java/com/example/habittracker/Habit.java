@@ -30,7 +30,7 @@ public class Habit implements Serializable {
     }
 
     public boolean isCompletedToday() {
-        Date today = new Date();
+        Calendar today = Calendar.getInstance();
         for (int i=0; i<habitEventList.size(); i++) {
             if (habitEventList.get(i).getEventDate().compareTo(today)==0) {
                 return true;
@@ -56,6 +56,10 @@ public class Habit implements Serializable {
 
     public int countHabitEvents(){
         return habitEventList.size();
+    }
+
+    public ArrayList<HabitEvent> getHabitEvents() {
+        return habitEventList;
     }
 
     private void updateProgress() {
