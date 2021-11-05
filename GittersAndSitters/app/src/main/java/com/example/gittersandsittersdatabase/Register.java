@@ -50,9 +50,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     private ProgressBar progressBar;
     private String userID;
     private FirebaseFirestore fStore;
-    private ArrayList<User> following;
-    private ArrayList<User> requests;
-    private ArrayList<User> habitList;
+    private ArrayList<String> following;
+    private ArrayList<String> requests;
+    private ArrayList<String> habitList;
     private FirebaseAuth mAuth;
 
     @Override
