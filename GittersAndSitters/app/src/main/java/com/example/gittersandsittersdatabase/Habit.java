@@ -18,6 +18,14 @@ public class Habit implements Serializable {
     private boolean habitPublic; // public vs private to users that follow
     private ArrayList<HabitEvent> habitEventList;
 
+    /**
+     * Constructor
+     * @param habitName Title of habit: String
+     * @param weekdays ArrayList containing Integer that represent days of the week (1=Sun : 6=Sat)
+     * @param startDate Date to start: Calendar object
+     * @param habitReason Reason for habit: String
+     * @param habitPublic Public visibility of habit: boolean
+     */
     public Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic) {
         this.habitName = habitName;
         this.weekdays = weekdays;
@@ -28,11 +36,18 @@ public class Habit implements Serializable {
         this.habitEventList = new ArrayList<>();
     }
 
-
+    /**
+     * Updates the progress bar value of this habit (0 - 100)
+     * based on HabitEvents completed since the start date
+     */
     private void updateProgress() {
         //TODO
     }
 
+    /**
+     * Checks if this habit has been completed today
+     * @return Whether or not it was completed: boolean
+     */
     public boolean isCompletedToday() {
         Calendar today = Calendar.getInstance();
         for (int i=0; i<habitEventList.size(); i++) {
@@ -43,25 +58,34 @@ public class Habit implements Serializable {
         return false;
     }
 
+    /**
+     * Adds a HabitEvent object and updates the habit progress
+     * @param habitEvent habitEvent to add
+     */
     public void addHabitEvent(HabitEvent habitEvent) {
         habitEventList.add(habitEvent);
         updateProgress();
     }
 
-    public void deleteHabitEvent(int index) {
-        habitEventList.remove(index);
-        updateProgress();
-    }
-
+    /**
+     * Deletes a HabitEvent object from this habit and updates the habit progress
+     * @param habitEvent habitEvent to delete
+     */
     public void deleteHabitEvent(HabitEvent habitEvent) {
         habitEventList.remove(habitEvent);
         updateProgress();
     }
 
+    /**
+     * @return Number of habitsEvents corresponding to this habit: int
+     */
     public int countHabitEvents(){
         return habitEventList.size();
     }
 
+    /**
+     * @return ArrayList of HabitEvents corresponding to this habit: ArrayList<HabitEvent>
+     */
     public ArrayList<HabitEvent> getHabitEvents() {
         return habitEventList;
     }

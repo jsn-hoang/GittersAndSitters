@@ -2,39 +2,19 @@ package com.example.gittersandsittersdatabase;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
-
-import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.Date;
 
 public class HabitActivity extends AppCompatActivity {
 
@@ -58,21 +38,13 @@ public class HabitActivity extends AppCompatActivity {
         habitAdapter = new HabitCustomList(this, user.getTodayUserHabits());
         habitListView.setAdapter(habitAdapter);
 
-
+        // Initialize the tab layout
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0: // today's habits
-                        habitAdapter = new HabitCustomList(HabitActivity.this, user.getTodayUserHabits());
-                        habitListView.setAdapter(habitAdapter);
-                        break;
-                    case 1: // all habits
-                        habitAdapter = new HabitCustomList(HabitActivity.this, user.getAllUserHabits());
-                        habitListView.setAdapter(habitAdapter);
-                        break;
-                }
+                // refresh current tab
+                refreshCurrentTab(tabLayout, habitListView, user);
             }
 
             @Override
@@ -91,35 +63,17 @@ public class HabitActivity extends AppCompatActivity {
         ActivityResultLauncher<Intent> habitActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (result.getResultCode() == Activity.RESULT_OK) { // a habit was added or updated
                         Intent data = result.getData();
                         user = (User) data.getExtras().get("user");
                         // update current tab with data from updated user object
-                        switch(tabLayout.getSelectedTabPosition()) {
-                            case 0: // today's habits
-                                habitAdapter = new HabitCustomList(HabitActivity.this, user.getTodayUserHabits());
-                                habitListView.setAdapter(habitAdapter);
-                                break;
-                            case 1: // all habits
-                                habitAdapter = new HabitCustomList(HabitActivity.this, user.getAllUserHabits());
-                                habitListView.setAdapter(habitAdapter);
-                                break;
-                        }
+                        refreshCurrentTab(tabLayout, habitListView, user);
                     }
                     else if (result.getResultCode() == 2) { // DELETE habit
                         Intent data = result.getData();
                         user = (User) data.getExtras().get("user");
                         // update current tab with data from updated user object
-                        switch(tabLayout.getSelectedTabPosition()) {
-                            case 0: // today's habits
-                                habitAdapter = new HabitCustomList(HabitActivity.this, user.getTodayUserHabits());
-                                habitListView.setAdapter(habitAdapter);
-                                break;
-                            case 1: // all habits
-                                habitAdapter = new HabitCustomList(HabitActivity.this, user.getAllUserHabits());
-                                habitListView.setAdapter(habitAdapter);
-                                break;
-                        }
+                        refreshCurrentTab(tabLayout, habitListView, user);
                     }
                 });
 
@@ -135,6 +89,7 @@ public class HabitActivity extends AppCompatActivity {
                     }
                 });
 
+        // FAB to add a habit
         final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +100,7 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
+        // LONG CLICK a habit to edit it
         habitListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -156,6 +112,7 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
+        // logout button goes to logout screen (ProfileActivity) to confirm or cancel
         final Button logoutButton = findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,11 +130,29 @@ public class HabitActivity extends AppCompatActivity {
 //                habit = (Habit) habitListView.getItemAtPosition(i);
 //                Intent intent = new Intent(MainActivity.this, HabitEventActivity.class);
 //                intent.putExtra("habit", habit);
-//                intent.putExtra("mode", "ADD");
-//                intent.putExtra("position", i);
-//
 //            }
 //        });
 
+    }
+
+    /**
+     * Refreshes the tab that is currently selected. A user method is called to get the updated habit list.
+     * @param tabLayout tabLayout
+     * @param listView ListView to update
+     * @param user User that holds updated data
+     */
+    protected void refreshCurrentTab(TabLayout tabLayout, ListView listView, User user) {
+        // update current tab with data from updated user object
+        HabitCustomList habitAdapter;
+        switch(tabLayout.getSelectedTabPosition()) {
+            case 0: // today's habits
+                habitAdapter = new HabitCustomList(HabitActivity.this, user.getTodayUserHabits());
+                listView.setAdapter(habitAdapter);
+                break;
+            case 1: // all habits
+                habitAdapter = new HabitCustomList(HabitActivity.this, user.getAllUserHabits());
+                listView.setAdapter(habitAdapter);
+                break;
+        }
     }
 }

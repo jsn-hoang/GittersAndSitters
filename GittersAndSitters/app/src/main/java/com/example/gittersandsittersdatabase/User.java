@@ -93,15 +93,26 @@ public class User implements Serializable {
     }
 
     /**
-     * Habit getters and setters
+     * Adds a Habit to this user
+     * @param habit habit to add
      */
     public void addUserHabit(Habit habit) {
         habitList.add(habit);
     }
 
+    /**
+     * Deletes a Habit from this user
+     * @param habit habit to delete
+     */
     public void deleteUserHabit(Habit habit) {
         habitList.remove(habit);
     }
+
+    /**
+     * Gets the habit object at the specified position in List
+     * @param i specified index: Integer
+     * @return Habit object
+     */
     public Habit getUserHabit(Integer i) {
         return habitList.get(i);
     }
@@ -115,6 +126,10 @@ public class User implements Serializable {
         habitList.set(i, habit);
     }
 
+    /**
+     * Gets all the User's Habits
+     * @return ArrayList of Habit objects
+     */
     public ArrayList<Habit> getAllUserHabits(){
         return habitList;
     }
