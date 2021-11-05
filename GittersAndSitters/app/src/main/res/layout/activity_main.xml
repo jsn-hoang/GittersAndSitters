@@ -4,13 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
-    android:id="@+id/activity_main_id"
-    tools:context=".MainActivity">
-=======
+
     tools:context=".MainActivity"
     android:id="@+id/activity_main_id">
->>>>>>> 4cfce8b6c3cf3bbc379ad6a4d79e108d5afe1f13
+
 
     <TextView
         android:id="@+id/banner"
