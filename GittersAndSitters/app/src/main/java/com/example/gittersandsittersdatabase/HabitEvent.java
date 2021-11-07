@@ -12,16 +12,20 @@ public class HabitEvent {
 
     private String eventName;
     private String parentHabit;     // Each event is associated with a particular Habit
-    private Calendar eventDate;
+    private Calendar eventDate;     // always today's date
     private Location eventLocation;
     private String eventComment;
     private File eventPhoto;
 
     // Constructor with the required attributes: name and date
-    public HabitEvent(String eventName, /*String parentHabit,*/ Calendar eventDate) {
+    public HabitEvent(String eventName, String parentHabit, Calendar eventDate,
+                      Location eventLocation, String eventComment, File eventPhoto) {
         this.eventName = eventName;
-//        this.parentHabit = parentHabit;
-        this.eventDate = eventDate;         // Should eventDate always be today's date?
+        this.parentHabit = parentHabit;
+        this.eventDate = eventDate;
+        this.eventLocation = eventLocation;
+        this.eventComment = eventComment;
+        this.eventPhoto = eventPhoto;
     }
 
     // Getters and Setters

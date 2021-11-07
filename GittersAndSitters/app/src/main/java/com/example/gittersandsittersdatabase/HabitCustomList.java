@@ -31,7 +31,7 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
         // return super.getView(position, convertView, parent);
         View view = convertView;
         if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
+            view = LayoutInflater.from(context).inflate(R.layout.habit_content, parent,false);
         }
         Habit habit = habitList.get(position);
         TextView habitName = view.findViewById(R.id.habit_name_text);

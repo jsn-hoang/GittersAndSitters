@@ -15,7 +15,7 @@ public class User implements Serializable {
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<Habit> habitList;
-    private ArrayList<HabitEvent> eventList;
+    //private ArrayList<HabitEvent> habitEventList;
 
 
     // User constructors
@@ -29,15 +29,17 @@ public class User implements Serializable {
         this.following = new ArrayList<>();     // initialize empty following list
         this.requests = new ArrayList<>();      // initialize empty requests list
         this.habitList = new ArrayList<>();     // initialize empty Habit list
-        this.eventList = new ArrayList<>();     // initialize empty HabitEvent list
+        //this.habitEventList = new ArrayList<>();     // initialize empty HabitEvent list
     }
 
-    public User(String username, String email, ArrayList<String> following, ArrayList<String> requests, ArrayList<Habit> habitList) {
+    public User(String username, String email, ArrayList<String> following,
+                ArrayList<String> requests, ArrayList<Habit> habitList /*ArrayList<HabitEvent> habitEventList*/) {
         this.username = username;
         this.email = email;
         this.following = following;
         this.requests = requests;
         this.habitList = habitList;
+        //this.habitEventList = habitEventList;
     }
 
     public String getUsername() {
@@ -168,6 +170,70 @@ public class User implements Serializable {
         }
         return tempList;
     }
+
+    /**
+     * This method generates and returns an ArrayList of all of the user's HabitEvents.
+     * The list is sorted in reverse chronological order.
+     * @return ArrayList<HabitEvent>
+     */
+    public ArrayList<HabitEvent> getAllUserHabitEvents() {
+        // Initialize empty habitEventList
+        ArrayList<HabitEvent> habitEventList = null;
+        // Iterate through all user habits
+        for (int i = 0; i< habitList.size(); i++) {
+            // get the ith Habit
+            Habit habit = habitList.get(i);
+            // add all HabitEvents from the ith habit
+            habitEventList.addAll(habit.getHabitEvents());
+        }
+        //TODO sort all of the HabitEvents in reverse chronological order
+            return habitEventList;
+    }
+
+    /*
+    /**
+     * This method overwrites a previous HabitEvent with a newly edited one.
+     * The HabitEvent is overwritten in both the User HabitEventList
+     * as well as the parent Habit's HabitEventList
+     * @param i
+     * @param habitEvent
+     *
+    public void setUserHabitEvent(Integer i, HabitEvent habitEvent) {
+
+    }
+
+
+    /**
+     * This method returns an ArrayList of all of the user's HabitEvents.
+     * (As a result of appending HabitEvents, they are sorted in reverse chronological order.)
+     * @return ArrayList<HabitEvent>
+     *
+    public ArrayList<HabitEvent> setUserHabitEvent() {
+        return habitEventList;
+    }
+
+
+    /**
+     * This method adds a HabitEvent to the user's habitEventList
+     * It also adds a HabitEvent to the correct Habit's habitEventList
+     * (HabitEvents will be sorted in reverse chronological order)
+     * @return ArrayList<HabitEvent>
+     *
+    public void addHabitEvent(Habit habit, HabitEvent habitEvent) {
+        habitEventList.add(habitEvent);
+        habit.addHabitEvent(habitEvent);
+    }
+
+    /**
+     * This method deletes a HabitEvent from the user's habitEventList
+     * It also deletes a HabitEvent from the correct Habit's habitEventList
+     * @return ArrayList<HabitEvent>
+     *
+    public void deleteHabitEvent(Habit habit, HabitEvent habitEvent) {
+        habitEventList.remove(habitEvent);
+        habit.deleteHabitEvent(habitEvent);
+    }
+     */
 
     /*
     public void sendReq(String uname) {

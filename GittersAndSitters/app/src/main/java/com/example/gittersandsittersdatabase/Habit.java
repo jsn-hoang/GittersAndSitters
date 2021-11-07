@@ -59,6 +59,25 @@ public class Habit implements Serializable {
     }
 
     /**
+     * Returns a particular habitEvent from habitEventList
+     * @param i Integer corresponding to the HabitEvent at position i of habitEventList
+     * @return habitEvent
+     */
+    public HabitEvent getHabitEvent(Integer i) {
+        return habitEventList.get(i);
+    }
+
+    /**
+     * Overwrites a chosen habitEventList object with a new one
+     * @param i - Integer that represents the position of the HabitEvent to be overwritten
+     * @param habitEvent - the new HabitEvent that will overwrite the previous
+     */
+    public void setHabitEvent(Integer i, HabitEvent habitEvent) {
+        habitEventList.set(i, habitEvent);
+    }
+
+
+    /**
      * Adds a HabitEvent object and updates the habit progress
      * @param habitEvent habitEvent to add
      */

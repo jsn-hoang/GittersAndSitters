@@ -2,6 +2,7 @@ package com.example.gittersandsittersdatabase;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import androidx.fragment.app.DialogFragment;
 import org.w3c.dom.Text;
 
 
+import java.io.File;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,121 +31,107 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-
-
 /**
- * This class is responsible for creating, editing, or deleting a Habit.
+ * This Activity is responsible for creating, editing, or deleting an Event.
+ * This Activity has two "modes": newEvent, and editEvent
+ * newEvent mode starts when the the user navigates to this Activity from HabitActivity
+ * editEvent mode starts when the the user navigates to this Activity from EventHistoryActivity
  */
 
-public class AddRemoveEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+//TODO Fragments for habitEventPhoto and habitEventLocation
+
+public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
 
     User user;
-    Habit habit;
-    boolean isNewHabit;
-    int habitIndexPosition;
-    EditText habitNameEditText;
-    Calendar habitStartDate;
-    TextView habitStartDateText;
-    ArrayList<CheckBox> weekdayCheckBoxes;
-    EditText habitReasonEditText;
+    Habit habit;                    // The parent Habit of the HabitEvent
+    HabitEvent habitEvent;
+    Calendar habitEventDate;
+    Location habitEventLocation = null;
+    File habitEventPhoto = null;
+    boolean isNewHabitEvent;
+    int habitEventListIndex;        // index position of a HabitEvent in a Habit's HabitEventList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_remove_habit);
+        setContentView(R.layout.activity_add_remove_habit_event);
 
         // get user
         user = (User) getIntent().getSerializableExtra("user");
+        // get the Habit that is the parent of this HabitEvent
+        habit = (Habit) getIntent().getSerializableExtra("Habit");
 
-        // habitPosition corresponds to which ListView entry was clicked
+        // position intent is only available for an existing HabitEvent
         if (getIntent().hasExtra("position")) {
-            habitIndexPosition = getIntent().getExtras().getInt("position");
-            isNewHabit = false;
+            isNewHabitEvent = false;
+            habitEventListIndex = getIntent().getExtras().getInt("position");
         }
-        else isNewHabit = true;     // if no position passed, then this is a new Habit
+        // else this is a new HabitEvent
+        else isNewHabitEvent = true;
 
 
-        // Get views that will be used for user input
-        habitNameEditText = findViewById(R.id.habit_name_editText);
-        habitStartDateText = findViewById(R.id.habit_start_date_text);
-        weekdayCheckBoxes = new ArrayList<>();
-        CheckBox monday = findViewById(R.id.monday_checkbox);
-        CheckBox tuesday = findViewById(R.id.tuesday_checkbox);
-        CheckBox wednesday = findViewById(R.id.wednesday_checkbox);
-        CheckBox thursday = findViewById(R.id.thursday_checkbox);
-        CheckBox friday = findViewById(R.id.friday_checkbox);
-        CheckBox saturday = findViewById(R.id.saturday_checkbox);
-        CheckBox sunday = findViewById(R.id.sunday_checkbox);
-
-        // Populate weekdayCheckBoxes ArrayList
-        List<CheckBox> checkBoxes = Arrays.asList
-                (sunday, monday, tuesday, wednesday, thursday, friday, saturday);
-        weekdayCheckBoxes.addAll(checkBoxes);
-
-        habitReasonEditText = findViewById(R.id.habit_reason_editText);
-        final Button deleteButton = findViewById(R.id.delete_habit_button);
-        final Button addButton = findViewById(R.id.add_habit_button);
-        final Button cancelButton = findViewById(R.id.cancel_habit_button);
-        final Button datePickerButton = findViewById(R.id.date_picker_button);
-        final TextView header = findViewById(R.id.add_edit_habit_title_text);
-
+        // Declare variables for xml object referencing
+        EditText habitEventNameEditText = findViewById(R.id.event_name_editText);
+        EditText habitEventCommentEditText = findViewById(R.id.event_comment_editText);
+        final Button deleteButton = findViewById(R.id.delete_event_button);
+        final Button addButton = findViewById(R.id.add_event_button);
+        final Button cancelButton = findViewById(R.id.cancel_event_button);
+        final TextView header = findViewById(R.id.add_edit_event_title_text);
+        final TextView eventDateText = findViewById(R.id.event_date_text);
+        final Button eventLocationButton = findViewById(R.id.event_location_button);
+        final ImageButton eventPhotoButton = findViewById(R.id.event_photo_button);
 
         // Set up activity layout
-        activityLayoutSetup(isNewHabit, header, addButton, deleteButton);
+        activityLayoutSetup(isNewHabitEvent, header, addButton, deleteButton);
 
-        // Set up Date field
-        setDateField(isNewHabit, habitStartDateText);
+        // Set HabitEvent date and date TextView
+        setHabitEventDateAndField(eventDateText);
 
-        // Set up remaining fields for existing habit
-        if (!isNewHabit) {
+        // Set up remaining fields for existing HabitEvent
+        if (!isNewHabitEvent) {
 
-            // Get the habit to be edited
-            habit = user.getUserHabit(habitIndexPosition);
+            // get the HabitEvent to be edited
+            habitEvent = habit.getHabitEvent(habitEventListIndex);
 
-            // Set name and reason fields
-            habitNameEditText.setText(habit.getHabitName());
-            habitReasonEditText.setText(habit.getHabitReason());
+            // Set name and comment fields
+            habitEventNameEditText.setText(habitEvent.getEventName());
+            habitEventCommentEditText.setText(habitEvent.getEventComment());
 
-            // Set checkboxes
-            setDaysToCheckBoxes(habit, weekdayCheckBoxes);
+            //TODO set the location and photo fields
+            Location habitEventLocation = habitEvent.getEventLocation();
+            File  habitEventPhoto = habitEvent.getEventPhoto();
 
-            //TODO: Set the habitPublic boolean
         }
 
-
-        // This Listener is responsible for the logic when clicking the confirm button
+        // This Listener is responsible for the logic when clicking the "confirm" button
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 // Retrieve user inputted data
-                String habitName = habitNameEditText.getText().toString();
-                String habitReason = habitReasonEditText.getText().toString();
+                String habitEventName = habitEventNameEditText.getText().toString();
+                String habitEventComment = habitEventCommentEditText.getText().toString();
 
-                // Get user selected days from checked boxes
-                ArrayList<Integer> weekdays = getDaysFromCheckBoxes(weekdayCheckBoxes);
+                //TODO: get the user inputted location and photo fields
 
-                // habitStartDate is already retrieved
+                // habitEventDate is already set
 
-                //TODO: Get the habitPublic boolean
-
-
-                if (isNewHabit) {
-                    // Create a new Habit
-                    Habit newHabit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
-                    // Add habit to userHabitList
-                    user.addUserHabit(newHabit);
+                if (isNewHabitEvent) {
+                    // Create a new HabitEvent
+                    HabitEvent newHabitEvent = new HabitEvent(habitEventName, habit.getHabitName(),
+                            habitEventDate, null, habitEventComment, null);
+                    // Add HabitEvent to habitEventList
+                    habit.addHabitEvent(habitEvent);
                 }
-                else { // else edit the existing habit
-
-                    habit.setHabitName(habitName);
-                    habit.setWeekdays(weekdays);
-                    habit.setStartDate(habitStartDate);
-                    habit.setHabitReason(habitReason);
-                    // Overwrite the previous habit with the edited one
-                    user.setUserHabit(habitIndexPosition, habit);
+                else { // else edit the existing HabitEvent
+                    habitEvent.setEventName(habitEventName);
+                    habitEvent.setEventLocation(habitEventLocation);
+                    habitEvent.setEventComment(habitEventComment);
+                    habitEvent.setEventPhoto(habitEventPhoto);
+                    // Overwrite the existing HabitEvent with this new one
+                    habit.setHabitEvent(habitEventListIndex, habitEvent);
                 }
 
                 // Navigate back to MainActivity
@@ -175,65 +164,32 @@ public class AddRemoveEventActivity extends AppCompatActivity implements DatePic
             }
         });
 
-        /** This listener is responsible for the logic
-         * when clicking the date picker button
-         */
-        datePickerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Create bundle to pass data
-                Bundle b = new Bundle();
-                b.putLong("date", habitStartDate.getTimeInMillis());
-                // Pass bundle to fragment
-                DialogFragment datePickerFragment = new DatePickerFragment();
-                datePickerFragment.setArguments(b);
-                datePickerFragment.show(getSupportFragmentManager(), "ADD_START_DATE");
-            }
-        });
     }
 
-    /** This method sets habitStartDate to the chosen DatePicker date
-     * @param view
-     * @param year
-     * @param month
-     * @param day
-     */
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int day){
-
-        // Get chosen habitStartDate
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, day);
-        habitStartDate = cal;
-
-        // Convert to Calendar object to String
-        String dateString = DateFormat.getDateInstance().format(cal.getTime());
-        // Set dateString to TextView
-        habitStartDateText.setText(dateString);
-    }
 
     /**
      * This method sets the Activity and button text to the appropriate titles
      * given whether the user is creating a new habit, or editing and existing one.
-     * @param isNewActivityMode - Boolean indicating whether user is creating a new habit
+     * @param isNewActivityMode - Boolean indicating whether user is creating a new event
      * @param header        - A TextView object that displays the Title of the activity
-     * @param addButton     - Button for creating or updating a habit
-     * @param deleteButton  - Button for deleting an existing habit
+     * @param addButton     - Button for creating or updating a event
+     * @param deleteButton  - Button for deleting an existing event
      */
     private void activityLayoutSetup(boolean isNewActivityMode,
                                      TextView header, Button addButton, Button deleteButton) {
 
+        // get the parent Habit name (to be displayed in header)
+        String habitName = habit.getHabitName();
+
         if (isNewActivityMode){
             // Make activity layout correspond to mode ADD
-            header.setText("Add a New Habit");
+            header.setText("Add a New " + habitName + " Event");
             // deleteButton disappears, add button says CREATE
             deleteButton.setVisibility(View.GONE);
             addButton.setText("CREATE");
         }
         else {  // Make activity layout correspond to mode EDIT
-            header.setText("Edit Habit");
+            header.setText("Edit " + habitName + " Event");
             // add button says UPDATE
             addButton.setText("UPDATE");
         }
@@ -241,74 +197,35 @@ public class AddRemoveEventActivity extends AppCompatActivity implements DatePic
 
     /**
      * This method initializes a TextView object to a particular date
-     * For an existing habit, the Textview object is set to the existing start date
-     * For a new habit, the Textview object is set to today's date
-     * @param isNewHabit        - boolean representing whether this is a new habit
-     * @param habitStartDateText - TextView object that will be set to the habit's start date
+     * For an existing HabitEvent, the Textview object is set to the existing date
+     * For a new HabitEvent, the Textview object is set to today's date
+     * @param eventDateText - TextView object that will be set to the HabitEvent's start date
      */
-    public void setDateField(boolean isNewHabit, TextView habitStartDateText) {
+    public void setHabitEventDateAndField(TextView eventDateText) {
 
-        if (isNewHabit) {
-            // Initialize habitStartDate TextView to today's date
-            habitStartDate = Calendar.getInstance();
+        // Create Calendar object
+        Calendar c = Calendar.getInstance();
+
+        // for new HabitEvent set c to today's date
+        if (isNewHabitEvent) {
             // Get today's date
-            int year = habitStartDate.get(Calendar.YEAR);
-            int month = habitStartDate.get(Calendar.MONTH);
-            int day = habitStartDate.get(Calendar.DAY_OF_MONTH);
-            // set cal to today's date;
-            habitStartDate.set(Calendar.YEAR, year);
-            habitStartDate.set(Calendar.MONTH, month);
-            habitStartDate.set(Calendar.DAY_OF_MONTH, day);
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+            // set c to today's date;
+            c.set(Calendar.YEAR, year);
+            c.set(Calendar.MONTH, month);
+            c.set(Calendar.DAY_OF_MONTH, day);
         }
-        else { // This is an existing Habit with an existing startDate
-            Habit habit = user.getUserHabit(habitIndexPosition);
-            // Get habitStartDate
-            habitStartDate = habit.getStartDate();
+        else { // for existing HabitEvent, set c to existing HabitEvent date
+            c = habitEvent.getEventDate();
         }
-        // Convert to Calendar object to String
-        String dateString = DateFormat.getDateInstance().format(habitStartDate.getTime());
-        // Set String representation of date to startDate TextView
-        habitStartDateText.setText(dateString);
-    }
-
-    /**
-     * This method sets checkboxes to checked or not, depending
-     * on if the existing habit is due on that particular day
-     * @param habit - The habit whose habit.getWeekdays() we are interested
-     * @param checkBoxes - a list of checkboxes whose statuses (checked/unchecked)
-     *                     will be determined by what weekdays the habit occurs on
-     */
-    public void setDaysToCheckBoxes(Habit habit, ArrayList<CheckBox> checkBoxes) {
-
-        // Check off all CheckBoxes that correspond to current Habit weekdays
-        for (int i = 0; i < checkBoxes.size(); i++) {
-            // if the habit is scheduled on weekday(i+1)
-            if (habit.getWeekdays().contains(i + 1)) {    // CheckBox i corresponds to day i+1
-                // Check off box(i)
-                checkBoxes.get(i).setChecked(true);
-            }
-        }
-    }
-    /**
-     * This method populates a list of integers depending on whether checkboxes are checked
-     * If a checkbox representing a certain day is checked, then the integer representing that day
-     * is added to the list (Sunday = 1, Monday = 2, ..., Saturday = 6)
-     * @param checkBoxes - a list of checkboxes that are either checked or unchecked
-     * @return - ArrayList<Integer> corresponding to days of the week
-     */
-    public ArrayList<Integer> getDaysFromCheckBoxes(ArrayList<CheckBox> checkBoxes) {
-
-        // Initialize new weekdays arraylist
-        ArrayList<Integer> days = new ArrayList<>();
-        // Loop through all of the checkboxes
-        for (int i = 0; i < weekdayCheckBoxes.size(); i++) {
-            // if checkBox(i) is checked
-            if (weekdayCheckBoxes.get(i).isChecked()) {
-                // add i to weekdays
-                days.add(i + 1);  // // CheckBox i corresponds to day i+1
-            }
-        }
-        return days;
+        // Assign habitEventDate to c
+        habitEventDate = c;
+        // Convert Calendar object to String
+        String dateString = DateFormat.getDateInstance().format(c.getTime());
+        // Set String representation of date to eventDateText
+        eventDateText.setText(dateString);
     }
 }
 

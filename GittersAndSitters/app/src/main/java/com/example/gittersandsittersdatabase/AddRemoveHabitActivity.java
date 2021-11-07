@@ -265,7 +265,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // Get habitStartDate
             habitStartDate = habit.getStartDate();
         }
-        // Convert to Calendar object to String
+        // Convert Calendar object to String
         String dateString = DateFormat.getDateInstance().format(habitStartDate.getTime());
         // Set String representation of date to startDate TextView
         habitStartDateText.setText(dateString);
