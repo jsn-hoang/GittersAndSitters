@@ -37,6 +37,7 @@
         <entry key="app/src/main/res/layout/activity_add_remove_habit.xml" value="0.21988726673252887" />
         <entry key="app/src/main/res/layout/activity_follow_feed.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_habit.xml" value="0.19074074074074074" />
+        <entry key="app/src/main/res/layout/activity_habit_event.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_habit_event_history.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.3380208333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />

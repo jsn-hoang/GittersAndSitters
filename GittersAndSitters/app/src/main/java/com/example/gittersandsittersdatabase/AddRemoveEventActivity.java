@@ -44,7 +44,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
-
     User user;
     Habit habit;                    // The parent Habit of the HabitEvent
     HabitEvent habitEvent;
@@ -142,7 +141,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             }
         });
 
-
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,7 +152,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                user.deleteUserHabit(habit);
+                habit.deleteHabitEvent(habitEvent);
 
                 // Navigate back to MainActivity
                 Intent intent = new Intent();
@@ -165,7 +163,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         });
 
     }
-
 
     /**
      * This method sets the Activity and button text to the appropriate titles
