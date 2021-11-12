@@ -305,7 +305,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // if checkBox(i) is checked
             if (weekdayCheckBoxes.get(i).isChecked()) {
                 // add i to weekdays
-                days.add(i + 1);  // // CheckBox i corresponds to day i+1
+                days.add(i + 1);        // CheckBox i corresponds to day i+1
             }
         }
         return days;

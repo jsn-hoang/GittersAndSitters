@@ -3,7 +3,6 @@ package com.example.gittersandsittersdatabase;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * This class represents a Habit in the HabitTracker app.
@@ -46,16 +45,35 @@ public class Habit implements Serializable {
 
     /**
      * Checks if this habit has been completed today
-     * @return Whether or not it was completed: boolean
+     * @return Whether or not it was completed today: boolean
      */
     public boolean isCompletedToday() {
-        Calendar today = Calendar.getInstance();
-        for (int i=0; i<habitEventList.size(); i++) {
-            if (habitEventList.get(i).getEventDate().compareTo(today)==0) {
-                return true;
-            }
-        }
-        return false;
+
+//        // Get today's date
+//        Calendar c = Calendar.getInstance();
+//        int year = c.get(Calendar.YEAR);
+//        int month = c.get(Calendar.MONTH);
+//        int day = c.get(Calendar.DAY_OF_MONTH);
+//        // set c to today's date;
+//        c.set(Calendar.YEAR, year);
+//        c.set(Calendar.MONTH, month);
+//        c.set(Calendar.DAY_OF_MONTH, day);
+
+        assert habitEventList.isEmpty();
+//        // check if habitEventList is empty
+//        if (habitEventList.isEmpty())
+//            return false;
+
+        return true;
+
+
+//        // (if completed today, the event will be at the last position of habitEventList)
+//        int last = habitEventList.size() - 1;
+//        HabitEvent habitEvent = habitEventList.get(last);
+//        Calendar habitEventDate = habitEvent.getEventDate();
+//
+//        // return whether the event has been completed today
+//        return (habitEventDate.equals(c));
     }
 
     /**
@@ -67,6 +85,7 @@ public class Habit implements Serializable {
         return habitEventList.get(i);
     }
 
+
     /**
      * Overwrites a chosen habitEventList object with a new one
      * @param i - Integer that represents the position of the HabitEvent to be overwritten
@@ -76,6 +95,25 @@ public class Habit implements Serializable {
         habitEventList.set(i, habitEvent);
     }
 
+    /**
+     * Overwrites a chosen habitEventList object with a new one
+     * @param oldHabitEvent - the habitEvent to be overwritten
+     * @param newHabitEvent - the habitEvent we will overwrite with
+     */
+    public void setHabitEvent(HabitEvent oldHabitEvent, HabitEvent newHabitEvent) {
+
+        boolean habitEventFound = false;
+        // search habitEventList until we find the HabitEvent we are searching for
+        for (int i = 0; i < habitEventList.size() && !habitEventFound; i++) {
+            HabitEvent habitEvent = habitEventList.get(i);
+            // if we find the habitEvent we are looking for
+            if (habitEvent == oldHabitEvent) {
+                // set the oldHabitEvent to newHabitEvent
+                setHabitEvent(i, newHabitEvent);
+                habitEventFound = true;
+            }
+        }
+    }
 
     /**
      * Adds a HabitEvent object and updates the habit progress

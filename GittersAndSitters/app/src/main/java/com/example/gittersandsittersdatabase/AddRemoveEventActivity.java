@@ -51,7 +51,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     Location habitEventLocation = null;
     File habitEventPhoto = null;
     boolean isNewHabitEvent;
-    int habitEventListIndex;        // index position of a HabitEvent in a Habit's HabitEventList
+    int habitEventListIndex;        // index position of a HabitEvent in the user's HabitEventList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +60,15 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
         // get user
         user = (User) getIntent().getSerializableExtra("user");
-        // get the Habit that is the parent of this HabitEvent
-        habit = (Habit) getIntent().getSerializableExtra("Habit");
+        // get the Habit that is/will be the parent of this HabitEvent
+        habit = (Habit) getIntent().getSerializableExtra("habit");
 
         // position intent is only available for an existing HabitEvent
         if (getIntent().hasExtra("position")) {
             isNewHabitEvent = false;
             habitEventListIndex = getIntent().getExtras().getInt("position");
+            // get the HabitEvent to be edited
+            habitEvent = user.getHabitEvent(habitEventListIndex);
         }
         // else this is a new HabitEvent
         else isNewHabitEvent = true;
@@ -92,9 +94,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         // Set up remaining fields for existing HabitEvent
         if (!isNewHabitEvent) {
 
-            // get the HabitEvent to be edited
-            habitEvent = habit.getHabitEvent(habitEventListIndex);
-
             // Set name and comment fields
             habitEventNameEditText.setText(habitEvent.getEventName());
             habitEventCommentEditText.setText(habitEvent.getEventComment());
@@ -105,7 +104,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
         }
 
-        // This Listener is responsible for the logic when clicking the "confirm" button
+        // This Listener is responsible for the logic when clicking the "OK" button
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -115,14 +114,15 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
                 //TODO: get the user inputted location and photo fields
 
-                // habitEventDate is already set
+                // Note: habitEventDate is already done
 
                 if (isNewHabitEvent) {
                     // Create a new HabitEvent
                     HabitEvent newHabitEvent = new HabitEvent(habitEventName, habit.getHabitName(),
-                            habitEventDate, null, habitEventComment, null);
-                    // Add HabitEvent to habitEventList
-                    habit.addHabitEvent(habitEvent);
+                            habitEventDate, habitEventComment);
+
+                    // Add HabitEvent to user's and Habit's habitEventList
+                    user.addHabitEvent(habit, newHabitEvent);
                 }
                 else { // else edit the existing HabitEvent
                     habitEvent.setEventName(habitEventName);
@@ -130,8 +130,16 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     habitEvent.setEventComment(habitEventComment);
                     habitEvent.setEventPhoto(habitEventPhoto);
                     // Overwrite the existing HabitEvent with this new one
-                    habit.setHabitEvent(habitEventListIndex, habitEvent);
+                    user.setHabitEvent(habitEventListIndex, habitEvent);
+                    //habit.setHabitEvent(habitEventListIndex, habitEvent);
+                    // Have to do this same thing for the user
                 }
+
+//                // Navigate back to HabitActivity
+//                Intent intent = new Intent(AddRemoveEventActivity.this, HabitActivity.class);
+//                intent.putExtra("user", user);
+//                startActivity(intent);
+
 
                 // Navigate back to MainActivity
                 Intent intent = new Intent();
@@ -213,11 +221,12 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             c.set(Calendar.YEAR, year);
             c.set(Calendar.MONTH, month);
             c.set(Calendar.DAY_OF_MONTH, day);
+
         }
         else { // for existing HabitEvent, set c to existing HabitEvent date
             c = habitEvent.getEventDate();
         }
-        // Assign habitEventDate to c
+        // Assign c to habitEventDate
         habitEventDate = c;
         // Convert Calendar object to String
         String dateString = DateFormat.getDateInstance().format(c.getTime());

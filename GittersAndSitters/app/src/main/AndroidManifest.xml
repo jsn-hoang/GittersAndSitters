@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GittersAndSittersDatabase">
         <activity
+            android:name=".AddRemoveEventActivity"
+            android:exported="true" />
+        <activity
+            android:name=".HabitEventActivity"
+            android:exported="true" />
+        <activity
             android:name=".FollowRequestActivity"
             android:exported="true" />
         <activity

@@ -15,7 +15,7 @@ public class User implements Serializable {
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<Habit> habitList;
-    //private ArrayList<HabitEvent> habitEventList;
+    private ArrayList<HabitEvent> habitEventList;
 
 
     // User constructors
@@ -29,7 +29,7 @@ public class User implements Serializable {
         this.following = new ArrayList<>();     // initialize empty following list
         this.requests = new ArrayList<>();      // initialize empty requests list
         this.habitList = new ArrayList<>();     // initialize empty Habit list
-        //this.habitEventList = new ArrayList<>();     // initialize empty HabitEvent list
+        this.habitEventList = new ArrayList<>();     // initialize empty HabitEvent list
     }
 
     public User(String username, String email, ArrayList<String> following,
@@ -39,7 +39,7 @@ public class User implements Serializable {
         this.following = following;
         this.requests = requests;
         this.habitList = habitList;
-        //this.habitEventList = habitEventList;
+        this.habitEventList = habitEventList;
     }
 
     public String getUsername() {
@@ -136,11 +136,24 @@ public class User implements Serializable {
         return habitList;
     }
 
+
+    /**
+     * This method returns a boolean indicating whether
+     * the user has any habits to be performed today
+     * @return - A boolean representing whether there are any habits to be performed today
+     */
+    public boolean userHasTodayHabits() {
+        ArrayList<Habit> todayList = getTodayUserHabits();
+        // return true if list IS NOT empty, else return false
+        return !todayList.isEmpty();
+    }
+
     /**
      * This method searches through the full habit list and selects
      * all of the habits that are to be performed today.
      * @return - An arrayList of Habits that are to be performed today
      */
+
     public ArrayList<Habit> getTodayUserHabits(){
 
         ArrayList<Habit> tempList = new ArrayList<>();
@@ -177,6 +190,10 @@ public class User implements Serializable {
      * @return ArrayList<HabitEvent>
      */
     public ArrayList<HabitEvent> getAllUserHabitEvents() {
+        return habitEventList;
+
+        /** This code is only needed if we do not implement habitEventList as a User attribute */
+        /*
         // Initialize empty habitEventList
         ArrayList<HabitEvent> habitEventList = null;
         // Iterate through all user habits
@@ -186,22 +203,72 @@ public class User implements Serializable {
             // add all HabitEvents from the ith habit
             habitEventList.addAll(habit.getHabitEvents());
         }
-        //TODO sort all of the HabitEvents in reverse chronological order
-            return habitEventList;
+        // sort all of the HabitEvents in reverse chronological order
+        // return habitEventList
+        */
     }
 
-    /*
+    /**
+     * Returns a habitEvent from habitEventList (specified by integer)
+     * @param i - int/index position of the habitEvent in habitEventList
+     * @return habitEvent
+     */
+    public HabitEvent getHabitEvent(Integer i) {
+        return habitEventList.get(i);
+    }
+
     /**
      * This method overwrites a previous HabitEvent with a newly edited one.
      * The HabitEvent is overwritten in both the User HabitEventList
      * as well as the parent Habit's HabitEventList
      * @param i
-     * @param habitEvent
-     *
-    public void setUserHabitEvent(Integer i, HabitEvent habitEvent) {
+     * @param newHabitEvent
+     */
+    public void setHabitEvent(Integer i, HabitEvent newHabitEvent) {
+
+        // Get the previous HabitEvent
+        HabitEvent oldHabitEvent = habitEventList.get(i);
+        // Set the new HabitEvent to habitEventList
+        habitEventList.set(i, newHabitEvent);
+        // Get the Habit that corresponds to this habitEvent
+        Habit habit = getParentHabitOfHabitEvent(newHabitEvent);
+        // Replace the HabitEvent in the Habit's habitEventList
+        habit.setHabitEvent(oldHabitEvent, newHabitEvent);
 
     }
 
+    /**
+     * This method returns the parent Habit of an existing HabitEvent
+     * @param habitEvent
+     * @return The parent Habit of the passed HabitEvent
+     */
+    public Habit getParentHabitOfHabitEvent(HabitEvent habitEvent) {
+
+        // Get the name of the Habit we are looking for
+        String habitName = habitEvent.getParentHabitName();
+        boolean parentHabitFound = false;
+        Habit habit = null;
+        // iterate through habitList until we find the Habit we are looking for
+        for (int i = 0; i < habitList.size() && !parentHabitFound; i++) {
+            habit = habitList.get(i);
+            if (habitName.equals(habit.getHabitName()))
+                parentHabitFound = true;
+        }
+        return habit; // Inner loop
+    }
+
+    /**
+     * This method adds a HabitEvent to the user's habitEventList
+     * It also adds a HabitEvent to the parent Habit's habitEventList
+     * @return ArrayList<HabitEvent>
+     */
+    public void addHabitEvent(Habit habit, HabitEvent habitEvent) {
+
+        // Add to User's habitEvent list
+        habitEventList.add(habitEvent);
+        // Add to Habit's habitEvent list
+        habit.addHabitEvent(habitEvent);
+    }
 
     /**
      * This method returns an ArrayList of all of the user's HabitEvents.
@@ -211,18 +278,8 @@ public class User implements Serializable {
     public ArrayList<HabitEvent> setUserHabitEvent() {
         return habitEventList;
     }
+    */
 
-
-    /**
-     * This method adds a HabitEvent to the user's habitEventList
-     * It also adds a HabitEvent to the correct Habit's habitEventList
-     * (HabitEvents will be sorted in reverse chronological order)
-     * @return ArrayList<HabitEvent>
-     *
-    public void addHabitEvent(Habit habit, HabitEvent habitEvent) {
-        habitEventList.add(habitEvent);
-        habit.addHabitEvent(habitEvent);
-    }
 
     /**
      * This method deletes a HabitEvent from the user's habitEventList

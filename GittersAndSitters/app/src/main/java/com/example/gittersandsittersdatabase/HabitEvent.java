@@ -3,29 +3,30 @@ package com.example.gittersandsittersdatabase;
 import android.location.Location;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
  * This class represents a HabitEvent in the HabitTracker app.
  */
-public class HabitEvent {
+public class HabitEvent implements Serializable {
 
     private String eventName;
-    private String parentHabit;     // Each event is associated with a particular Habit
+    private String parentHabitName;     // Each event is associated with a particular Habit
     private Calendar eventDate;     // always today's date
     private Location eventLocation;
     private String eventComment;
     private File eventPhoto;
 
     // Constructor with the required attributes: name and date
-    public HabitEvent(String eventName, String parentHabit, Calendar eventDate,
-                      Location eventLocation, String eventComment, File eventPhoto) {
+    public HabitEvent(String eventName, String parentHabitName, Calendar eventDate,
+                      /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
         this.eventName = eventName;
-        this.parentHabit = parentHabit;
+        this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
-        this.eventLocation = eventLocation;
+        //this.eventLocation = eventLocation;
         this.eventComment = eventComment;
-        this.eventPhoto = eventPhoto;
+        //this.eventPhoto = eventPhoto;
     }
 
     // Getters and Setters
@@ -38,12 +39,12 @@ public class HabitEvent {
         this.eventName = eventName;
     }
 
-    public String getParentHabit() {
-        return eventName;
+    public String getParentHabitName() {
+        return parentHabitName;
     }
 
-    public void setParentHabit(String eventName) {
-        this.eventName = eventName;
+    public void setParentHabit(String parentHabitName) {
+        this.parentHabitName = parentHabitName;
     }
 
     public Calendar getEventDate() {

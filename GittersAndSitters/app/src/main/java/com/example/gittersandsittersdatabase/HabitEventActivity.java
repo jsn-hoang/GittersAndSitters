@@ -9,6 +9,9 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 /**
  * This Activity represents a ListView of all existing user HabitEvents
  * The HabitEvents are sorted in reverse chronological order
@@ -21,7 +24,6 @@ public class HabitEventActivity extends AppCompatActivity {
     ArrayAdapter<HabitEvent> habitEventAdapter;
     User user;
     Habit habit;
-    HabitEvent habitEvent;
 
 
     @Override
@@ -33,7 +35,8 @@ public class HabitEventActivity extends AppCompatActivity {
         user = (User) getIntent().getSerializableExtra("user");
 
         habitEventListView = findViewById(R.id.habit_event_listview);
-        // Set adapter to all of the user's habitEvents
+
+        // Set adapter to habitEventList
         habitEventAdapter = new HabitEventCustomList(this, user.getAllUserHabitEvents());
         habitEventListView.setAdapter(habitEventAdapter);
 
@@ -41,14 +44,18 @@ public class HabitEventActivity extends AppCompatActivity {
         habitEventListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // Get the long-clicked habitEvent
+                HabitEvent habitEvent = user.getHabitEvent(i);
+                // get the parent Habit of the long-clicked HabitEvent
+                habit = user.getParentHabitOfHabitEvent(habitEvent);
 
                 Intent intent = new Intent(HabitEventActivity.this,
                         AddRemoveEventActivity.class);
                 intent.putExtra("user", user);
-                // i is the index position of the long-clicked HabitEvent in the ListView
+                intent.putExtra("habit", habit);
                 intent.putExtra("position", i);
                 startActivity(intent);
-                return true; // Why do we return boolean?
+                return true;
             }
         });
 

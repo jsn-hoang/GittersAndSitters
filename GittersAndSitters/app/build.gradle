@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.gittersandsittersdatabase"
-        minSdkVersion 16
+        minSdkVersion 19        // upgraded from 16 to implement Google Maps
         targetSdkVersion 29
         versionCode 1
         multiDexEnabled true
