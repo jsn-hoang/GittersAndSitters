@@ -45,13 +45,14 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
     User user;
-    Habit habit;                    // The parent Habit of the HabitEvent
+    Habit habit;                   // The parent Habit of the HabitEvent
     HabitEvent habitEvent;
     Calendar habitEventDate;
     Location habitEventLocation = null;
     File habitEventPhoto = null;
     boolean isNewHabitEvent;
-    int habitEventListIndex;        // index position of a HabitEvent in the user's HabitEventList
+    int habitListIndex;            // index position of the Habit in the User's habitList
+    int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +63,15 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         user = (User) getIntent().getSerializableExtra("user");
         // get the Habit that is/will be the parent of this HabitEvent
         habit = (Habit) getIntent().getSerializableExtra("habit");
+        // get the index position of the parentHabit in habitList
+        habitListIndex = user.getUserHabitPosition(habit);
 
         // position intent is only available for an existing HabitEvent
         if (getIntent().hasExtra("position")) {
             isNewHabitEvent = false;
             habitEventListIndex = getIntent().getExtras().getInt("position");
             // get the HabitEvent to be edited
-            habitEvent = user.getHabitEvent(habitEventListIndex);
+            habitEvent = habit.getHabitEvent(habitEventListIndex);
         }
         // else this is a new HabitEvent
         else isNewHabitEvent = true;
@@ -121,18 +124,22 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     HabitEvent newHabitEvent = new HabitEvent(habitEventName, habit.getHabitName(),
                             habitEventDate, habitEventComment);
 
-                    // Add HabitEvent to user's and Habit's habitEventList
-                    user.addHabitEvent(habit, newHabitEvent);
+                    // Add the new Habit to the Habit's habitEventList
+                    habit.addHabitEvent(newHabitEvent);
+                    // Overwrite the changed user Habit
+                    user.setUserHabit(habitListIndex, habit);
+
+
                 }
                 else { // else edit the existing HabitEvent
                     habitEvent.setEventName(habitEventName);
                     habitEvent.setEventLocation(habitEventLocation);
                     habitEvent.setEventComment(habitEventComment);
                     habitEvent.setEventPhoto(habitEventPhoto);
-                    // Overwrite the existing HabitEvent with this new one
-                    user.setHabitEvent(habitEventListIndex, habitEvent);
-                    //habit.setHabitEvent(habitEventListIndex, habitEvent);
-                    // Have to do this same thing for the user
+                    // Overwrite the edited HabitEvent
+                    habit.setHabitEvent(habitEventListIndex, habitEvent);
+                    // Overwrite the edited user Habit
+                    user.setUserHabit(habitListIndex, habit);
                 }
 
 //                // Navigate back to HabitActivity
@@ -141,11 +148,11 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 //                startActivity(intent);
 
 
-                // Navigate back to MainActivity
+                // Navigate back to HabitActivity or HabitEventActivity
                 Intent intent = new Intent();
                 intent.putExtra("user", user);
                 setResult(RESULT_OK, intent);
-                finish();
+                finish(); // ActivityResult is propagated back to whoever launched you via onActivityResult()
             }
         });
 

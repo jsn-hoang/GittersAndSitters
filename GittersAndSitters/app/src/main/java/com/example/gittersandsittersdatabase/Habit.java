@@ -49,31 +49,27 @@ public class Habit implements Serializable {
      */
     public boolean isCompletedToday() {
 
-//        // Get today's date
-//        Calendar c = Calendar.getInstance();
-//        int year = c.get(Calendar.YEAR);
-//        int month = c.get(Calendar.MONTH);
-//        int day = c.get(Calendar.DAY_OF_MONTH);
-//        // set c to today's date;
-//        c.set(Calendar.YEAR, year);
-//        c.set(Calendar.MONTH, month);
-//        c.set(Calendar.DAY_OF_MONTH, day);
+        // Get today's date
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        // set c to today's date;
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, day);
 
-        assert habitEventList.isEmpty();
-//        // check if habitEventList is empty
-//        if (habitEventList.isEmpty())
-//            return false;
+        // check if habitEventList is empty
+        if (habitEventList.isEmpty())
+            return false;
 
-        return true;
+        // (if completed today, the event will be at the last position of habitEventList)
+        int last = habitEventList.size() - 1;
+        HabitEvent habitEvent = habitEventList.get(last);
+        Calendar habitEventDate = habitEvent.getEventDate();
 
-
-//        // (if completed today, the event will be at the last position of habitEventList)
-//        int last = habitEventList.size() - 1;
-//        HabitEvent habitEvent = habitEventList.get(last);
-//        Calendar habitEventDate = habitEvent.getEventDate();
-//
-//        // return whether the event has been completed today
-//        return (habitEventDate.equals(c));
+        // return whether habitEventDate matches today's date
+        return (habitEventDate.equals(c));
     }
 
     /**
@@ -87,11 +83,30 @@ public class Habit implements Serializable {
 
 
     /**
+     * Returns the position of a specified HabitEvent in habitEventList
+     * @param habitEvent - the HabitEvent we are searching for
+     * @return - an int representing the position of the habitEvent in habitEventList
+     */
+    public int getHabitEventPosition(HabitEvent habitEvent) {
+
+        boolean isFound = false;
+        int position = -1;
+        for (int i = 0; i < habitEventList.size() && !isFound; i++) {
+            if (habitEventList.get(i) == habitEvent) {
+                isFound = true;
+                position = i;
+            }
+        }
+        return position;
+    }
+
+
+    /**
      * Overwrites a chosen habitEventList object with a new one
-     * @param i - Integer that represents the position of the HabitEvent to be overwritten
+     * @param i - int that represents the position of the HabitEvent to be overwritten
      * @param habitEvent - the new HabitEvent that will overwrite the previous
      */
-    public void setHabitEvent(Integer i, HabitEvent habitEvent) {
+    public void setHabitEvent(int i, HabitEvent habitEvent) {
         habitEventList.set(i, habitEvent);
     }
 

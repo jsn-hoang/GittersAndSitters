@@ -3,11 +3,13 @@ package com.example.gittersandsittersdatabase;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * This class is responsible for a user of the HabitTracker app.
  */
-public class User implements Serializable {
+public class User implements Serializable{
 
     // Declare attributes
     private String username;
@@ -15,7 +17,7 @@ public class User implements Serializable {
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<Habit> habitList;
-    private ArrayList<HabitEvent> habitEventList;
+//    private ArrayList<HabitEvent> habitEventList;
 
 
     // User constructors
@@ -29,7 +31,7 @@ public class User implements Serializable {
         this.following = new ArrayList<>();     // initialize empty following list
         this.requests = new ArrayList<>();      // initialize empty requests list
         this.habitList = new ArrayList<>();     // initialize empty Habit list
-        this.habitEventList = new ArrayList<>();     // initialize empty HabitEvent list
+//        this.habitEventList = new ArrayList<>();     // initialize empty HabitEvent list
     }
 
     public User(String username, String email, ArrayList<String> following,
@@ -39,7 +41,7 @@ public class User implements Serializable {
         this.following = following;
         this.requests = requests;
         this.habitList = habitList;
-        this.habitEventList = habitEventList;
+//        this.habitEventList = habitEventList;
     }
 
     public String getUsername() {
@@ -120,11 +122,29 @@ public class User implements Serializable {
     }
 
     /**
-     * This method replaces a previous habit with a newly edited one
-     * @param i     An integer representing the ith habit
-     * @param habit The habit that will be placed at the ith position
+     * Returns the position of a specified Habit in habitList
+     * @param habit - the Habit we are searching for
+     * @return - an int representing the position of the Habit in habitList
      */
-    public void setUserHabit(Integer i, Habit habit) {
+    public int getUserHabitPosition(Habit habit) {
+
+        boolean isFound = false;
+        int position = 0;
+        for (int i = 0; i < habitList.size() && !isFound; i++) {
+            if (habitList.get(i).equals(habit)) {
+                isFound = true;
+                position = i;
+            }
+        }
+        return position;
+    }
+
+    /**
+     * This method replaces a previous habit with a newly edited one
+     * @param i     An int representing the ith habit
+     * @param habit The Habit that will replace the former Habit at the ith position
+     */
+    public void setUserHabit(int i, Habit habit) {
         habitList.set(i, habit);
     }
 
@@ -138,22 +158,10 @@ public class User implements Serializable {
 
 
     /**
-     * This method returns a boolean indicating whether
-     * the user has any habits to be performed today
-     * @return - A boolean representing whether there are any habits to be performed today
-     */
-    public boolean userHasTodayHabits() {
-        ArrayList<Habit> todayList = getTodayUserHabits();
-        // return true if list IS NOT empty, else return false
-        return !todayList.isEmpty();
-    }
-
-    /**
      * This method searches through the full habit list and selects
      * all of the habits that are to be performed today.
      * @return - An arrayList of Habits that are to be performed today
      */
-
     public ArrayList<Habit> getTodayUserHabits(){
 
         ArrayList<Habit> tempList = new ArrayList<>();
@@ -170,7 +178,7 @@ public class User implements Serializable {
 
     /**
      * This method searches through the full habit list and selects
-     * all of the habits that declared as public
+     * all of the habits that are declared as public
      * @return - An arrayList of Habits that are to be performed today
      */
     public ArrayList<Habit> getPublicHabits(){
@@ -189,51 +197,31 @@ public class User implements Serializable {
      * The list is sorted in reverse chronological order.
      * @return ArrayList<HabitEvent>
      */
-    public ArrayList<HabitEvent> getAllUserHabitEvents() {
-        return habitEventList;
+    public ArrayList<HabitEvent> getAllHabitEvents() {
 
-        /** This code is only needed if we do not implement habitEventList as a User attribute */
-        /*
+        // Comparator for sorting HabitEvents by Date
+        new Comparator<HabitEvent>() {
+            public int compare(HabitEvent o1, HabitEvent o2) {
+                return o1.getEventDate().compareTo(o2.getEventDate());
+            }
+        };
+
         // Initialize empty habitEventList
-        ArrayList<HabitEvent> habitEventList = null;
+        ArrayList<HabitEvent> habitEventList = new ArrayList<>();
         // Iterate through all user habits
         for (int i = 0; i< habitList.size(); i++) {
-            // get the ith Habit
+            // get the current Habit
             Habit habit = habitList.get(i);
-            // add all HabitEvents from the ith habit
+            // add all HabitEvents from current habit
             habitEventList.addAll(habit.getHabitEvents());
         }
-        // sort all of the HabitEvents in reverse chronological order
-        // return habitEventList
-        */
-    }
+        // check if habitEventList is empty
+        if (habitEventList.isEmpty())
+            return null;
 
-    /**
-     * Returns a habitEvent from habitEventList (specified by integer)
-     * @param i - int/index position of the habitEvent in habitEventList
-     * @return habitEvent
-     */
-    public HabitEvent getHabitEvent(Integer i) {
-        return habitEventList.get(i);
-    }
-
-    /**
-     * This method overwrites a previous HabitEvent with a newly edited one.
-     * The HabitEvent is overwritten in both the User HabitEventList
-     * as well as the parent Habit's HabitEventList
-     * @param i
-     * @param newHabitEvent
-     */
-    public void setHabitEvent(Integer i, HabitEvent newHabitEvent) {
-
-        // Get the previous HabitEvent
-        HabitEvent oldHabitEvent = habitEventList.get(i);
-        // Set the new HabitEvent to habitEventList
-        habitEventList.set(i, newHabitEvent);
-        // Get the Habit that corresponds to this habitEvent
-        Habit habit = getParentHabitOfHabitEvent(newHabitEvent);
-        // Replace the HabitEvent in the Habit's habitEventList
-        habit.setHabitEvent(oldHabitEvent, newHabitEvent);
+        // Sort habitEventList in reverse chronological order
+        Collections.sort(habitEventList, Collections.reverseOrder());
+        return habitEventList;
 
     }
 
@@ -254,43 +242,9 @@ public class User implements Serializable {
             if (habitName.equals(habit.getHabitName()))
                 parentHabitFound = true;
         }
-        return habit; // Inner loop
+        return habit;
     }
 
-    /**
-     * This method adds a HabitEvent to the user's habitEventList
-     * It also adds a HabitEvent to the parent Habit's habitEventList
-     * @return ArrayList<HabitEvent>
-     */
-    public void addHabitEvent(Habit habit, HabitEvent habitEvent) {
-
-        // Add to User's habitEvent list
-        habitEventList.add(habitEvent);
-        // Add to Habit's habitEvent list
-        habit.addHabitEvent(habitEvent);
-    }
-
-    /**
-     * This method returns an ArrayList of all of the user's HabitEvents.
-     * (As a result of appending HabitEvents, they are sorted in reverse chronological order.)
-     * @return ArrayList<HabitEvent>
-     *
-    public ArrayList<HabitEvent> setUserHabitEvent() {
-        return habitEventList;
-    }
-    */
-
-
-    /**
-     * This method deletes a HabitEvent from the user's habitEventList
-     * It also deletes a HabitEvent from the correct Habit's habitEventList
-     * @return ArrayList<HabitEvent>
-     *
-    public void deleteHabitEvent(Habit habit, HabitEvent habitEvent) {
-        habitEventList.remove(habitEvent);
-        habit.deleteHabitEvent(habitEvent);
-    }
-     */
 
     /*
     public void sendReq(String uname) {
@@ -325,5 +279,70 @@ public class User implements Serializable {
         following.remove(uname);
     }
 */
+
+    /** These methods rely on user.habitEventList, which will probably not be implemented. */
+    //    /**
+//     * Returns a habitEvent from habitEventList (specified by integer)
+//     * @param i - int/index position of the habitEvent in habitEventList
+//     * @return habitEvent
+//     */
+//    public HabitEvent getHabitEvent(Habit habit, Integer i) {
+//        return habit.getHabitEvent(i);
+//    }
+//
+//    /**
+//     * This method overwrites a previous HabitEvent with a newly edited one.
+//     * The HabitEvent is overwritten in both the User HabitEventList
+//     * as well as the parent Habit's HabitEventList
+//     * @param i
+//     * @param newHabitEvent
+//     */
+//    public void setHabitEvent(Integer i, HabitEvent newHabitEvent) {
+//
+//        // Get the previous HabitEvent
+//        HabitEvent oldHabitEvent = habitEventList.get(i);
+//        // Set the new HabitEvent to habitEventList
+//        habitEventList.set(i, newHabitEvent);
+//        // Get the Habit that corresponds to this habitEvent
+//        Habit habit = getParentHabitOfHabitEvent(newHabitEvent);
+//        // Replace the HabitEvent in the Habit's habitEventList
+//        habit.setHabitEvent(oldHabitEvent, newHabitEvent);
+//    }
+
+//    /**
+//     * This method adds a HabitEvent to the user's habitEventList
+//     * It also adds a HabitEvent to the parent Habit's habitEventList
+//     * @return ArrayList<HabitEvent>
+//     */
+//    public void addHabitEvent(Habit habit, HabitEvent habitEvent) {
+//
+//        // Add to User's habitEvent list
+//        habitEventList.add(habitEvent);
+//        // Add to Habit's habitEvent list
+//        habit.addHabitEvent(habitEvent);
+//    }
+//
+//    /**
+//     * This method returns an ArrayList of all of the user's HabitEvents.
+//     * (As a result of appending HabitEvents, they are sorted in reverse chronological order.)
+//     * @return ArrayList<HabitEvent>
+//     *
+//    public ArrayList<HabitEvent> setUserHabitEvent() {
+//        return habitEventList;
+//    }
+//    */
+//
+//
+//    /**
+//     * This method deletes a HabitEvent from the user's habitEventList
+//     * It also deletes a HabitEvent from the correct Habit's habitEventList
+//     * @return ArrayList<HabitEvent>
+//     *
+//    public void deleteHabitEvent(Habit habit, HabitEvent habitEvent) {
+//        habitEventList.remove(habitEvent);
+//        habit.deleteHabitEvent(habitEvent);
+//    }
+//     */
+
 
 }
