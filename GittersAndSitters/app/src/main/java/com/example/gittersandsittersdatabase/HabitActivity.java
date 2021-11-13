@@ -65,31 +65,38 @@ public class HabitActivity extends AppCompatActivity {
         ActivityResultLauncher<Intent> habitActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
 
-                    if (result.getResultCode() == Activity.RESULT_OK) { // a habit was added or updated
+                    if (result.getResultCode() != RESULT_CANCELED) { // if user object was updated
                         Intent data = result.getData();
                         user = (User) data.getExtras().get("user");
                         // update current tab with data from updated user object
                         refreshCurrentTab(tabLayout, habitListView, user);
                     }
-                    else if (result.getResultCode() == 2) { // DELETE habit
-                        Intent data = result.getData();
-                        user = (User) data.getExtras().get("user");
-                        // update current tab with data from updated user object
-                        refreshCurrentTab(tabLayout, habitListView, user);
-                    }
+
+//                    if (result.getResultCode() == Activity.RESULT_OK) { // a habit was added or updated
+//                        Intent data = result.getData();
+//                        user = (User) data.getExtras().get("user");
+//                        // update current tab with data from updated user object
+//                        refreshCurrentTab(tabLayout, habitListView, user);
+//                    }
+//                    else if (result.getResultCode() == 2) { // DELETE habit
+//                        Intent data = result.getData();
+//                        user = (User) data.getExtras().get("user");
+//                        // update current tab with data from updated user object
+//                        refreshCurrentTab(tabLayout, habitListView, user);
+//                    }
                 });
 
-        // manages the result (updated habit object)
-        ActivityResultLauncher<Intent> habitEventActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        habit = (Habit) data.getExtras().get("habit");
-                        // update events list with data from updated habit object
-                        //TODO
-                    }
-                });
+//        // manages the result (updated habit object)
+//        ActivityResultLauncher<Intent> habitEventActivityResultLauncher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),
+//                result -> {
+//                    if (result.getResultCode() == Activity.RESULT_OK) {
+//                        Intent data = result.getData();
+//                        habit = (Habit) data.getExtras().get("habit");
+//                        // update events list with data from updated habit object
+//                        //TODO
+//                    }
+//                });
 
         // FAB to add a habit
         final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
@@ -121,7 +128,7 @@ public class HabitActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(HabitActivity.this, ProfileActivity.class);
                 intent.putExtra("user", user);
-                habitActivityResultLauncher.launch(intent);
+                startActivity(intent);
             }
 
         });
@@ -133,7 +140,7 @@ public class HabitActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(HabitActivity.this, HabitEventActivity.class);
                 intent.putExtra("user", user);
-                startActivity(intent);
+                //startActivity(intent);
                 habitActivityResultLauncher.launch(intent);
             }
         });
@@ -151,7 +158,8 @@ public class HabitActivity extends AppCompatActivity {
 
                 if (tabPosition == 0) { // true iff "Today's Habits" tab is currently selected
 
-                    habit = (Habit) habitListView.getItemAtPosition(i);
+
+                    habit = (Habit) habitListView.getItemAtPosition(i); // Get the clicked habit
                     Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
                     intent.putExtra("user", user);
                     intent.putExtra("habit", habit);

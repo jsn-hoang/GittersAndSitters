@@ -119,16 +119,14 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
                 // Note: habitEventDate is already done
 
+
                 if (isNewHabitEvent) {
                     // Create a new HabitEvent
                     HabitEvent newHabitEvent = new HabitEvent(habitEventName, habit.getHabitName(),
                             habitEventDate, habitEventComment);
 
-                    // Add the new Habit to the Habit's habitEventList
+                    // Add the new HabitEvent to the Habit's habitEventList
                     habit.addHabitEvent(newHabitEvent);
-                    // Overwrite the changed user Habit
-                    user.setUserHabit(habitListIndex, habit);
-
 
                 }
                 else { // else edit the existing HabitEvent
@@ -138,9 +136,10 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     habitEvent.setEventPhoto(habitEventPhoto);
                     // Overwrite the edited HabitEvent
                     habit.setHabitEvent(habitEventListIndex, habitEvent);
-                    // Overwrite the edited user Habit
-                    user.setUserHabit(habitListIndex, habit);
                 }
+
+                // Overwrite the edited user Habit
+                user.setUserHabit(habitListIndex, habit);
 
 //                // Navigate back to HabitActivity
 //                Intent intent = new Intent(AddRemoveEventActivity.this, HabitActivity.class);
@@ -148,13 +147,14 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 //                startActivity(intent);
 
 
-                // Navigate back to HabitActivity or HabitEventActivity
+                // Navigate back to launcher Activity (HabitActivity or HabitEventActivity)
                 Intent intent = new Intent();
                 intent.putExtra("user", user);
                 setResult(RESULT_OK, intent);
-                finish(); // ActivityResult is propagated back to whoever launched you via onActivityResult()
+                finish();
             }
         });
+
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,7 +167,10 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // remove the habitEvent from the corresponding Habit
                 habit.deleteHabitEvent(habitEvent);
+                // overwrite the edited habit
+                user.setUserHabit(habitListIndex, habit);
 
                 // Navigate back to MainActivity
                 Intent intent = new Intent();

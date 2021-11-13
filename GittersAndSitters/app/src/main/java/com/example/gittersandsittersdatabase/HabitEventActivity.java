@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -27,7 +28,6 @@ public class HabitEventActivity extends AppCompatActivity {
     ArrayAdapter<HabitEvent> habitEventAdapter;
     User user;
     Habit habit;
-    ArrayList<HabitEvent> habitEventList;   // ArrayList of all user habitEvents
 
 
     @Override
@@ -37,13 +37,25 @@ public class HabitEventActivity extends AppCompatActivity {
 
         // Get the user intent
         user = (User) getIntent().getSerializableExtra("user");
-        // get habitEventList
-        habitEventList = user.getAllHabitEvents();
 
         habitEventListView = findViewById(R.id.habit_event_listview);
         // Set adapter to habitEventList
-        habitEventAdapter = new HabitEventCustomList(this, habitEventList);
+        habitEventAdapter = new HabitEventCustomList(this, user.getAllHabitEvents());
         habitEventListView.setAdapter(habitEventAdapter);
+
+        // manages the result (updated user object)
+        ActivityResultLauncher<Intent> habitEventActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() != RESULT_CANCELED) { // if user object was updated
+                        Intent data = result.getData();
+                        user = (User) data.getExtras().get("user");
+
+                        // update habitEventListView with data from updated user object
+                        habitEventAdapter = new HabitEventCustomList(this, user.getAllHabitEvents());
+                        habitEventListView.setAdapter(habitEventAdapter);
+                    }
+                });
 
         // LONG CLICK a HabitEvent to edit it
         habitEventListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -52,7 +64,7 @@ public class HabitEventActivity extends AppCompatActivity {
                 // i is the position of the ith habitEvent in the habitEventList
 
                 // Get the long-clicked habitEvent
-                HabitEvent habitEvent = habitEventList.get(i);
+                HabitEvent habitEvent = user.getAllHabitEvents().get(i);
                 // get the parent Habit of the long-clicked HabitEvent
                 habit = user.getParentHabitOfHabitEvent(habitEvent);
                 // set i to the HabitEvent's position in it's parent Habit's habitEventList
@@ -63,25 +75,21 @@ public class HabitEventActivity extends AppCompatActivity {
                 intent.putExtra("user", user);
                 intent.putExtra("habit", habit);
                 intent.putExtra("position", i);
-                startActivity(intent);
-                return true;
+                habitEventActivityResultLauncher.launch(intent);
+                return false;
             }
         });
 
+        // Habit Activity Button goes to Habit Activity
+        final Button habitActivityButton = findViewById(R.id.habit_activity_button);
+        habitActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        /** NOT SURE WHAT I'M DOING HERE
-         *
-        // manages the result (updated user object)
-        ActivityResultLauncher<Intent> habitActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-
-                    if (result.getResultCode() == Activity.RESULT_OK) { // a habitEvent was added or updated
-                        Intent data = result.getData();
-                        user = (User) data.getExtras().get("user");
-                        // update current tab with data from updated user object
-                        //refreshCurrentTab(tabLayout, habitListView, user);
-                    }
-                });
-         */
+                Intent intent = new Intent(HabitEventActivity.this, HabitActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
     }
 }

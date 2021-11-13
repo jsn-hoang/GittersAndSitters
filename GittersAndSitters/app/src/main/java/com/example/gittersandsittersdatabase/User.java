@@ -123,6 +123,7 @@ public class User implements Serializable{
 
     /**
      * Returns the position of a specified Habit in habitList
+     * Habit's are compared by habitName (a unique attribute)
      * @param habit - the Habit we are searching for
      * @return - an int representing the position of the Habit in habitList
      */
@@ -131,7 +132,10 @@ public class User implements Serializable{
         boolean isFound = false;
         int position = 0;
         for (int i = 0; i < habitList.size() && !isFound; i++) {
-            if (habitList.get(i).equals(habit)) {
+            Habit habitI = habitList.get(i);
+            
+            // See if habitName matches the name we're looking for
+            if (habitI.getHabitName().equals(habit.getHabitName())) {
                 isFound = true;
                 position = i;
             }
@@ -199,13 +203,6 @@ public class User implements Serializable{
      */
     public ArrayList<HabitEvent> getAllHabitEvents() {
 
-        // Comparator for sorting HabitEvents by Date
-        new Comparator<HabitEvent>() {
-            public int compare(HabitEvent o1, HabitEvent o2) {
-                return o1.getEventDate().compareTo(o2.getEventDate());
-            }
-        };
-
         // Initialize empty habitEventList
         ArrayList<HabitEvent> habitEventList = new ArrayList<>();
         // Iterate through all user habits
@@ -215,11 +212,7 @@ public class User implements Serializable{
             // add all HabitEvents from current habit
             habitEventList.addAll(habit.getHabitEvents());
         }
-        // check if habitEventList is empty
-        if (habitEventList.isEmpty())
-            return null;
-
-        // Sort habitEventList in reverse chronological order
+        // return the sorted habitEventList
         Collections.sort(habitEventList, Collections.reverseOrder());
         return habitEventList;
 

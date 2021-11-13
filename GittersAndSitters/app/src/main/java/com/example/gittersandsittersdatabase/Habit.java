@@ -49,27 +49,27 @@ public class Habit implements Serializable {
      */
     public boolean isCompletedToday() {
 
+        // check if the Habit's eventList is empty
+        if (habitEventList.isEmpty())
+            return false;
+
+        // The newest habitEvent will be at the end of habitEventList
+        // (This is the habitEvent we are interested in)
+        int last = habitEventList.size() - 1;
+        HabitEvent habitEvent = habitEventList.get(last);
+        // get the Date of the newest habitEvent
+        Calendar habitEventDate = habitEvent.getEventDate();
+
         // Get today's date
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
-        // set c to today's date;
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.DAY_OF_MONTH, day);
 
-        // check if habitEventList is empty
-        if (habitEventList.isEmpty())
-            return false;
-
-        // (if completed today, the event will be at the last position of habitEventList)
-        int last = habitEventList.size() - 1;
-        HabitEvent habitEvent = habitEventList.get(last);
-        Calendar habitEventDate = habitEvent.getEventDate();
-
-        // return whether habitEventDate matches today's date
-        return (habitEventDate.equals(c));
+        // Return boolean indicating whether habitEventDate is today's date
+        return (habitEventDate.get(Calendar.YEAR) == year
+                && habitEventDate.get(Calendar.MONTH) == month
+                && habitEventDate.get(Calendar.DAY_OF_MONTH) == day);
     }
 
     /**

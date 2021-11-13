@@ -5,11 +5,12 @@ import android.location.Location;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Comparator;
 
 /**
  * This class represents a HabitEvent in the HabitTracker app.
  */
-public class HabitEvent implements Serializable {
+public class HabitEvent implements Serializable, Comparable<HabitEvent> {
 
     private String eventName;
     private String parentHabitName;     // Each event is associated with a particular Habit
@@ -20,7 +21,7 @@ public class HabitEvent implements Serializable {
 
     // Constructor with the required attributes: name and date
     public HabitEvent(String eventName, String parentHabitName, Calendar eventDate,
-                      /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
+            /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
         this.eventName = eventName;
         this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
@@ -78,5 +79,15 @@ public class HabitEvent implements Serializable {
 
     public void setEventPhoto(File eventPhoto) {
         this.eventPhoto = eventPhoto;
+    }
+
+
+    /**
+     * This method implements the HabitEvent sorting logic.
+     * HabitEvents are to be sorted by the the eventDate attribute.
+     */
+    @Override
+    public int compareTo(HabitEvent h) {
+        return (this.getEventDate().compareTo(h.getEventDate()));
     }
 }

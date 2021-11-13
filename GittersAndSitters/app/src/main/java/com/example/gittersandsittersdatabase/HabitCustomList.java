@@ -50,7 +50,8 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
         if (!isTodayHabitsTabSelected)
             habitIcon.setVisibility(View.GONE); // hide icons
 
-        // else display icon corresponding to whether today's Habit isCompleted
+
+        // else display icon corresponding to whether Habit isCompleted
         else {
             if (habit.isCompletedToday())
                 habitIcon.setImageResource(R.drawable.habit_done_icon);
