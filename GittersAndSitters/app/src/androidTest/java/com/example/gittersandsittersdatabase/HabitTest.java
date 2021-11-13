@@ -22,7 +22,7 @@ public class HabitTest {
     }
 
     private HabitEvent mockHabitEvent() {
-        HabitEvent habitEvent = new HabitEvent("MockEventName", Calendar.getInstance());
+        HabitEvent habitEvent = new HabitEvent("MockEventName", mockHabit().getHabitName(), Calendar.getInstance(),"mockEventComment");
         return habitEvent;
     }
 
