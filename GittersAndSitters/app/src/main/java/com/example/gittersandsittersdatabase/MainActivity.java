@@ -44,6 +44,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /** Temporary to bypass login
+        User user = new User("Aaron Skiba", "askiba@gmail.com");
+        Intent intent = new Intent(MainActivity.this,HabitActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+*/
+
+
         register = findViewById(R.id.register);
         register.setOnClickListener(this);
         signIn = findViewById(R.id.login_button);

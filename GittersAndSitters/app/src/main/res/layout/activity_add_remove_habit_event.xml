@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_add_remove_habit_event_id"
+    >
+
+    <TextView
+        android:id="@+id/add_edit_event_title_text"
+        android:layout_width="match_parent"
+        android:textAlignment="center"
+        android:textSize="26dp"
+        android:layout_height="44dp"
+        android:text="Add a New Event" />
+
+    <TextView
+        android:id="@+id/event_title_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textSize="16dp" />
+
+    <EditText
+        android:id="@+id/event_name_editText"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:ems="10"
+        android:hint="Give your event a name"
+        android:inputType="textPersonName" />
+    <TextView
+        android:id="@+id/event_date_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Event Date"
+        android:textSize="16dp" />
+
+    <Button
+        android:id="@+id/event_location_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add your location" />
+
+    <TextView
+        android:id="@+id/event_comment_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Comment"
+        android:textSize="16dp" />
+
+    <EditText
+        android:id="@+id/event_comment_editText"
+        android:layout_width="match_parent"
+        android:layout_height="134dp"
+        android:ems="10"
+        android:textAlignment="gravity"
+        android:hint="Add a comment to this event."
+        android:inputType="textPersonName" />
+
+    <ImageButton
+        android:id="@+id/event_photo_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/delete_event_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Delete" />
+
+        <Button
+            android:id="@+id/cancel_event_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/add_event_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Create" />
+    </LinearLayout>
+
+</LinearLayout>

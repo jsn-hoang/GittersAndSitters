@@ -52,4 +52,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:text="LOGOUT" />
+    <Button
+        android:id="@+id/event_history_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:text="EVENT HISTORY" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
