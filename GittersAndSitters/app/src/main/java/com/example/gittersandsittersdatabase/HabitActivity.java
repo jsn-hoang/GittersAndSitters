@@ -121,6 +121,17 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
+        // TAP CLICK a habit to add a corresponding habit event
+        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                habit = (Habit) habitListView.getItemAtPosition(i);
+                Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
+                intent.putExtra("habit", habit);
+                habitActivityResultLauncher.launch(intent);
+            }
+        });
+
         // logout button goes to logout screen (ProfileActivity) to confirm or cancel
         final Button logoutButton = findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
