@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/HabitTracker/app/src/main/res/layout/activity_add_remove_habit.xml" value="0.571825764596849" />
+        <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/HabitTracker/app/src/main/res/layout/activity_habit.xml" value="0.33" />
+        <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/HabitTracker/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/HabitTracker/app/src/main/res/layout/content.xml" value="0.33" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
+</project>

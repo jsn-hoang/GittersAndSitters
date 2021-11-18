@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -184,9 +185,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
                             user.put("userName", uname);
                             user.put("email", email);
-                            user.put("following",following);
-                            user.put("requests",requests);
-                            user.put("habitList",habitList);
+                            user.put("following", Arrays.asList("Mark", "Jason"));
+                            user.put("requests",Arrays.asList("Alex", "Justin"));
+                            user.put("habitList",Arrays.asList());
 
                             // adding user information to firestore database.
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {

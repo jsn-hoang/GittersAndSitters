@@ -25,6 +25,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,6 +35,7 @@ import org.w3c.dom.Document;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,12 +50,14 @@ public class FollowRequestActivity extends AppCompatActivity {
     private Button send_request_button;
     private ListView request_list;
     private ArrayAdapter<String> requestAdapter;
-    private ArrayList<String> requestList;
+    private List<String> requestList;
+    private ArrayList<String> requestArrayList;
+    private User user;
 
-    private DatabaseReference current_user_ref;
     private FirebaseAuth mAuth;
     private String current_user;
     private String current_username;
+    private String targetUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +69,11 @@ public class FollowRequestActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("Users");
-
         DocumentReference docRef = collectionReference.document(current_user);
+
+        requestArrayList = new ArrayList<>();
+        request_list = findViewById(R.id.request_list);
+
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -74,8 +81,18 @@ public class FollowRequestActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        requestList = (ArrayList<String>) document.getData().get("requests");
-                        current_username = (String) document.getData().get("userName");
+                        //current_username = (String) document.get("userName");
+                        requestList = (List<String>) document.getData().get("requests");
+                        for (String request : requestList) {
+                            requestArrayList.add(request);
+
+                        }
+                        requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
+                        request_list.setAdapter(requestAdapter);
+
+                        //System.out.println(requestArrayList.get(0));
+                        //System.out.println(current_username);
+                        //System.out.println(requestList.get(0));
 
                         Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                     } else {
@@ -86,12 +103,18 @@ public class FollowRequestActivity extends AppCompatActivity {
                 }
             }
         });
-        requestList = new ArrayList<>();
-        requestList.add("rocketman111");
-        request_list = findViewById(R.id.request_list);
-        requestAdapter = new RequestCustomList(this, requestList);
-        request_list.setAdapter(requestAdapter);
-
+        //requestList.add("rocketman111");
+        //request_list = findViewById(R.id.request_list);
+        //requestArrayList = new ArrayList<>();
+        //requestArrayList.add(current_username);
+        //System.out.println(current_username);
+        //requestArrayList.add("rocketman111");
+        //for (String request : requestList) {
+            //requestArrayList.add(request);
+        //}
+        //System.out.println(requestArrayList.get(0));
+        //requestAdapter = new RequestCustomList(this, requestArrayList);
+        //request_list.setAdapter(requestAdapter);
 
         follow_request_banner = findViewById(R.id.follow_request_banner);
         search_username = findViewById(R.id.search_username);
@@ -109,23 +132,51 @@ public class FollowRequestActivity extends AppCompatActivity {
     public void sendRequest(View view) {
         search_username = (EditText) findViewById(R.id.search_username);
         String user_name = search_username.getText().toString();
+        user = (User) getIntent().getSerializableExtra("user");
+        current_username = user.getUsername();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("Users");
-        DocumentReference currentUser = collectionReference.document(mAuth.getCurrentUser().getUid());
+        //DocumentReference currentUser = collectionReference.document(mAuth.getCurrentUser().getUid());
 
-        collectionReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> snapshotList = queryDocumentSnapshots.getDocuments();
-                for (DocumentSnapshot snapshot : snapshotList) {
-                    if (user_name == snapshot.get("userName")) {
-                        ArrayList<String> newRequests = (ArrayList<String>) snapshot.get("requests");
-                        newRequests.add(current_username);
-                        Toast.makeText(FollowRequestActivity.this, "Follow request sent", Toast.LENGTH_LONG).show();
+        //collectionReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            //@Override
+            //public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                //List<DocumentSnapshot> snapshotList = queryDocumentSnapshots.getDocuments();
+                //for (DocumentSnapshot snapshot : snapshotList) {
+                    //if (user_name == snapshot.get("userName")) {
+                        //ArrayList<String> newRequests = (ArrayList<String>) snapshot.get("requests");
+                        //newRequests.add(current_username);
+                        //Toast.makeText(FollowRequestActivity.this, "Follow request sent", Toast.LENGTH_LONG).show();
+                    //}
+                //}
+            //}
+        //});
+
+        collectionReference
+                .whereEqualTo("userName", user_name) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                if (document.exists()) {
+                                    targetUserId = document.getId();
+                                    DocumentReference targetUserReference = collectionReference.document(targetUserId);
+                                    targetUserReference.update("requests", FieldValue.arrayUnion(current_username));
+                                    Toast.makeText(FollowRequestActivity.this, "Follow request sent", Toast.LENGTH_LONG).show();
+
+                                    Log.d("TAG", document.getId() + " => " + document.getData());
+                                }
+                            }
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        }
                     }
-                }
-            }
-        });
+                });
+        //DocumentReference targetUserReference = collectionReference.document(targetUserId);
+        //targetUserReference.update("requests", FieldValue.arrayUnion(current_username));
+        //Toast.makeText(FollowRequestActivity.this, "Follow request sent", Toast.LENGTH_LONG).show();
     }
 }
