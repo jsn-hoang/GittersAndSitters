@@ -15,12 +15,13 @@ import java.util.ArrayList;
 /**
  * This class represents a CustomList which holds User objects
  */
-public class UserCustomList extends ArrayAdapter<User> {
-    private ArrayList<User> users;
+public class UserCustomList extends ArrayAdapter<String> {
+    private ArrayList<String> users;
     private Context context;
 
-    public UserCustomList(Context context, ArrayList<User> users) {
-        super(context, 0, users);
+    public UserCustomList(Context context, ArrayList<String> users) {
+        //super(context, 0, users);
+        super(context,0,users);
         this.users = users;
         this.context = context;
     }
@@ -34,10 +35,16 @@ public class UserCustomList extends ArrayAdapter<User> {
             view = LayoutInflater.from(context).inflate(R.layout.following_content, parent, false);
         }
 
+
+
+
         // Get the next User
-        User user = users.get(position);
+        //User user = users.get(position);
+        String user = users.get(position);
         TextView userName = view.findViewById(R.id.user_name);
-        userName.setText(user.getUsername());
+        userName.setText(user);
+
+
 
         return view;
     }

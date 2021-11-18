@@ -33,6 +33,7 @@
         <entry key="..\:/Users/itsma/newDataBaseStuff/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/itsma/newDataBaseStuff/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_profile.xml" value="0.4" />
         <entry key="..\:/Users/itsma/newDataBaseStuff/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_register.xml" value="0.268" />
+        <entry key="..\:/Users/itsma/nov17Code/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_following.xml" value="0.36" />
         <entry key="app/src/main/res/layout/activity_add_remove_event.xml" value="0.27314814814814814" />
         <entry key="app/src/main/res/layout/activity_add_remove_habit.xml" value="0.21988726673252887" />
         <entry key="app/src/main/res/layout/activity_follow_feed.xml" value="0.16770833333333332" />
@@ -49,7 +50,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
