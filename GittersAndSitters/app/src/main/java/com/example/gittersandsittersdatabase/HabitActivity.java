@@ -127,7 +127,7 @@ public class HabitActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 habit = (Habit) habitListView.getItemAtPosition(i);
                 Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
-                intent.putExtra("habit", habit);
+                intent.putExtra("user", user);
                 habitActivityResultLauncher.launch(intent);
             }
         });
