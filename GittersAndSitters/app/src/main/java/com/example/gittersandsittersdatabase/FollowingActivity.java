@@ -130,8 +130,8 @@ public class FollowingActivity extends AppCompatActivity {
         });
 
 
-        //followingBanner = findViewById(R.id.following_banner);
-        //followingBanner.setText("Following");
+        followingBanner = findViewById(R.id.following_banner);
+        followingBanner.setText("Following");
 
         //followingList = findViewById(R.id.following_list);
        // followingAdapter = new UserCustomList(this, userList);
