@@ -49,8 +49,7 @@ public class FollowingActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private String current_user;
-    private String current_username;
-    private String targetUserId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,92 +102,13 @@ public class FollowingActivity extends AppCompatActivity {
                 }
             }
         });
-        /**
 
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-
-                        followList = (List<String>) document.getData().get("following");
-
-                        for (String follow : followList){
-                            followArrayList.add(follow);
-                        }
-
-                        followAdapter = new UserCustomList(FollowingActivity.this, followArrayList);
-                        follow_list.setAdapter(followAdapter);
-
-
-                        Log.d("TAG", "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d("TAG", "No such document");
-                    }
-                } else {
-                    Log.d("TAG", "get failed with ", task.getException());
-                }
-            }
-        });
-         **/
 
 
         followingBanner = findViewById(R.id.following_banner);
         followingBanner.setText("Following");
 
-        /***
 
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                    FirebaseFirestoreException error) {
-                followArrayList.clear();
-
-                //for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-               // {
-               //     Log.d(TAG, String.valueOf(doc.getData().get("Province Name")));
-              //      String city = doc.getId();
-              //      String province = (String) doc.getData().get("Province Name");
-              //      cityDataList.add(new City(city, province)); // Adding the cities and provinces from FireStore
-              //  }
-                cityAdapter.notifyDataSetChanged();
-            }
-        });
-         ***/
-
-        /**
-
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-
-                if (e != null) {
-                    Log.w("TAG", "Listen failed.", e);
-                    return;
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    followArrayList.clear();
-                    followList = (List<String>) snapshot.getData().get("following");
-                    for (String follow : followList){
-                        followArrayList.add(follow);
-                    }
-
-                    followAdapter = new UserCustomList(FollowingActivity.this, followArrayList);
-
-                    follow_list.setAdapter(followAdapter);
-
-
-
-                    Log.d("TAG", "Current data: " + snapshot.getData());
-                } else {
-                    Log.d("TAG", "Current data: null");
-                }
-            }
-        });
-         **/
 
 
 
