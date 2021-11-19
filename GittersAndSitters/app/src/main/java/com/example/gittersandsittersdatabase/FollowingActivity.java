@@ -72,6 +72,9 @@ public class FollowingActivity extends AppCompatActivity {
 
         followArrayList = new ArrayList<>();
         follow_list = findViewById(R.id.following_list);
+        followAdapter = new UserCustomList(FollowingActivity.this, followArrayList);
+
+        follow_list.setAdapter(followAdapter);
 
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -90,9 +93,8 @@ public class FollowingActivity extends AppCompatActivity {
                         followArrayList.add(follow);
                     }
 
-                    followAdapter = new UserCustomList(FollowingActivity.this, followArrayList);
-
-                    follow_list.setAdapter(followAdapter);
+                    
+                    followAdapter.notifyDataSetChanged();
 
 
 
