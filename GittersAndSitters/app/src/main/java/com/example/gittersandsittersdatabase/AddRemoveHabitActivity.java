@@ -1,9 +1,12 @@
 package com.example.gittersandsittersdatabase;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -12,8 +15,14 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
 
@@ -35,6 +44,9 @@ import java.util.Locale;
  */
 
 public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+
+    private FirebaseFirestore db;
+    private CollectionReference collectionRef;
 
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
@@ -166,6 +178,25 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             @Override
             public void onClick(View view) {
                 user.deleteUserHabit(habit);
+
+                // Remove the habit from Firestore db
+                db = FirebaseFirestore.getInstance();
+
+                collectionRef = db.collection("Users/" + user.getUserID() + "/Habits");
+                collectionRef.document(habit.getHabitName())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Data has been deleted successfully!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Data could not be deleted!" + e.toString());
+                            }
+                        });
 
                 // Navigate back to MainActivity
                 Intent intent = new Intent();
