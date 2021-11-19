@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
         // Get an instance of the Firebase Firestore
         fStore = FirebaseFirestore.getInstance();
 
-
-        /** Register button to switch to RegisterActivity */
+       // Register button to switch to RegisterActivity
         final Button registerButton = findViewById(R.id.register_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,22 +73,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        /** Login button to execute logic for attempted login */
+        // Login button to execute logic for attempted login
         final Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 executeLoginAttempt();
-                
             }
         });
     }
 
-    /** This method handles the logic for an attempted user login.
+    /**
+     * This method handles the logic for an attempted user login.
      * If there is a successful login, a "new" User object is created
      * with the logged in user's userID fields as attributes
+     * All of the user's existing Habits, etc are fetched from
+     * Firebase as well.
      */
     public void executeLoginAttempt() {
         String email = editTextEmail.getText().toString().trim();
@@ -158,43 +156,8 @@ public class MainActivity extends AppCompatActivity {
                                         // Create a "new" user from this data
                                         user = new User(userID, username, email);
 
-                                            // Get a reference to the logged in user's Habit collection
-                                            CollectionReference habitCollectionReference =
-                                                    fStore.collection("Users").document(userID).collection("Habits");
-
-                                            // Attempt to get all documents from the habitCollectionReference
-                                            habitCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                                                    // If Habit documents exist
-                                                    if (task.isSuccessful()) {
-                                                        // For document in collection
-                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                            Log.d(TAG, document.getId() + " => " + document.getData());
-                                                            // set habitName as document ID
-                                                            String habitName = document.getId();
-                                                            ArrayList<Integer> weekdays = new ArrayList<>();
-                                                            weekdays.add(1);
-                                                            Calendar cal = Calendar.getInstance();
-                                                            // Set attributes as a Habit
-                                                            Habit habit = new Habit(habitName, weekdays, cal, "reason", true);
-                                                            // Add Habit to logged in user
-                                                            user.addUserHabit(habit);
-
-                                                        }
-
-                                                        // Send the user to HabitActivity
-                                                        Intent intent = new Intent(MainActivity.this, HabitActivity.class);
-                                                        intent.putExtra("user", user);
-                                                        startActivity(intent);
-
-                                                    } else {
-                                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                                    }
-                                                }
-                                            });
-                                        //}
+                                        // Get User data
+                                        getUserHabits();
 
                                         Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                                     } else {
@@ -211,6 +174,53 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(MainActivity.this, "Failed to login! Please check your credentials", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    /**
+     * This method searches the logged in user's Habit Collection
+     * All of the documents within the collection are converted
+     * to Habit objects and added to the user's habitList
+     */
+    public void getUserHabits() {
+        // Get a reference to the logged in user's Habit collection
+        CollectionReference habitCollectionReference =
+                fStore.collection("Users").document(userID).collection("Habits");
+
+        // Attempt to get all documents from the habitCollectionReference
+        habitCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                // If Habit documents exist
+                if (task.isSuccessful()) {
+                    // For document in collection
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d(TAG, document.getId() + " => " + document.getData());
+                        // Set habitName as document ID
+                        String habitName = document.getId();
+
+                        // Get remaining Habit attributes from document
+                        String reason = (String) document.getData().get("reason");
+                        boolean isPublic = (boolean) document.getData().get("isPublic");
+                        // Convert field to ArrayList<Integer> object
+                        ArrayList<Integer> weekdays = (ArrayList<Integer>) document.getData().get("weekdays");
+                        // Convert field to Calendar object
+                        Calendar startDate = (Calendar)  document.getData().get("startDate");
+
+
+                        Habit habit = new Habit(habitName, weekdays, startDate, reason, isPublic);
+                        // Add Habit to logged in user
+                        user.addUserHabit(habit);
+                    }
+                    // Send the user to HabitActivity
+                    Intent intent = new Intent(MainActivity.this, HabitActivity.class);
+                    intent.putExtra("user", user);
+                    startActivity(intent);
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
         });
