@@ -151,19 +151,8 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                     Habit newHabit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
                     // Add habit to userHabitList
                     user.addUserHabit(newHabit);
-
                     // Add the habit to Firestore db
-                    HashMap<String, Object> data = new HashMap<>();
-                    // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
-                    data.put("habitName", newHabit.getHabitName());
-                    data.put("weekdays", newHabit.getWeekdays());
-                    data.put("startDate", newHabit.getStartDate());
-                    data.put("reason", newHabit.getHabitReason());
-                    data.put("isPublic", newHabit.isHabitPublic());
-
-                    // Add habit to the User's Habit Collection
-                    collectionRef.document(newHabit.getHabitName())
-                            .set(data);
+                    addHabitToUserDatabase(newHabit);
 
                 }
                 else { // else edit the existing habit
@@ -196,22 +185,11 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                user.deleteUserHabit(habit);
 
-                collectionRef.document(habit.getHabitName())
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "Data has been deleted successfully!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "Data could not be deleted!" + e.toString());
-                            }
-                        });
+                // Delete habit from user habitList
+                user.deleteUserHabit(habit);
+                // Delete habit from user Firebase collection
+                deleteHabitFromUserDatabase();
 
                 // Navigate back to MainActivity
                 Intent intent = new Intent();
@@ -355,6 +333,46 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             }
         }
         return days;
+    }
+
+    /**
+     * This method deletes a habit from the logged in user's Habit collection in the database
+     * @param habit - the Habit to be deleted from the user's Habit collection in the database
+     */
+    public void addHabitToUserDatabase(Habit habit) {
+
+        HashMap<String, Object> data = new HashMap<>();
+        // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
+        data.put("habitName", habit.getHabitName());
+        data.put("weekdays", habit.getWeekdays());
+        data.put("startDate", habit.getStartDate());
+        data.put("reason", habit.getHabitReason());
+        data.put("isPublic", habit.isHabitPublic());
+
+        // Add habit to the User's Habit Collection
+        collectionRef.document(habit.getHabitName())
+                .set(data);
+    }
+
+    /**
+     * This method adds a habit to the logged in user's Habit collection in the database
+     */
+    public void deleteHabitFromUserDatabase() {
+
+        collectionRef.document(habit.getHabitName())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Data has been deleted successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Data could not be deleted!" + e.toString());
+                    }
+                });
     }
 }
 

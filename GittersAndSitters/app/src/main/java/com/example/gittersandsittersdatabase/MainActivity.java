@@ -150,16 +150,19 @@ public class MainActivity extends AppCompatActivity {
                                     // if document matching userID exists
                                     if (document.exists()) {
 
+                                        Log.d("TAG", "DocumentSnapshot data: " + document.getData());
+
+                                        /** Create "new" User from document data
+                                         */
                                         // Get data from userID document
                                         String username = (String) document.getData().get("userName");
                                         String email = (String) document.getData().get("email");
-                                        // Create a "new" user from this data
                                         user = new User(userID, username, email);
 
-                                        // Get User data
-                                        getUserHabits();
+                                        /** Get all Firebase data corresponding to the logged in user
+                                         */
+                                        getUserData();
 
-                                        Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                                     } else {
                                         Log.d("TAG", "No such document");
                                     }
@@ -177,6 +180,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /** This method is a caller to fetch all Firebase data corresponding to the logged in user
+     */
+    public void getUserData() {
+        // Get User Habits
+        getUserHabits();
+        // Get User Followers
+        getUserFollowers();
+        // Get User Following
+        getUserFollowing();
     }
 
     /**
@@ -208,7 +222,9 @@ public class MainActivity extends AppCompatActivity {
                         // Convert field to ArrayList<Integer> object
                         ArrayList<Integer> weekdays = (ArrayList<Integer>) document.getData().get("weekdays");
                         // Convert field to Calendar object
-                        Calendar startDate = (Calendar)  document.getData().get("startDate");
+                        // TODO java.util.HashMap cannot be cast to java.util.Calendar
+                        //Calendar startDate = (Calendar)  document.getData().get("startDate");
+                        Calendar startDate = Calendar.getInstance();
 
 
                         Habit habit = new Habit(habitName, weekdays, startDate, reason, isPublic);
@@ -225,5 +241,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void getUserFollowers() {
+    };
+    public void getUserFollowing() {
+    };
 }
 
