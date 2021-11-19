@@ -78,6 +78,8 @@ public class FollowRequestActivity extends AppCompatActivity {
 
         requestArrayList = new ArrayList<>();
         request_list = findViewById(R.id.request_list);
+        requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
+        request_list.setAdapter(requestAdapter);
 
 
         //docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -124,8 +126,7 @@ public class FollowRequestActivity extends AppCompatActivity {
                         requestArrayList.add(request);
 
                     }
-                    requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
-                    request_list.setAdapter(requestAdapter);
+                    requestAdapter.notifyDataSetChanged();
 
                     Log.d("TAG", "Current data: " + snapshot.getData());
                 } else {
