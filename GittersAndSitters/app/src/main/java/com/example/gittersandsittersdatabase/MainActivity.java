@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * This class is responsible for the initial HabitTracker login screen
  */
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     // Declare variables to be referenced
 
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FirebaseFirestore fStore;   // The entry point for all Cloud Firestore operations
     private ProgressBar progressBar;
     private String userID;
+    private boolean isSignedIn;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +48,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         /** Temporary to bypass login
-        User user = new User("Aaron Skiba", "askiba@gmail.com");
-        Intent intent = new Intent(MainActivity.this,HabitActivity.class);
-        intent.putExtra("user", user);
-        startActivity(intent);
-*/
+         User user = new User("Aaron Skiba", "askiba@gmail.com");
+         Intent intent = new Intent(MainActivity.this,HabitActivity.class);
+         intent.putExtra("user", user);
+         startActivity(intent);
+         */
 
 
-        register = findViewById(R.id.register);
-        register.setOnClickListener(this);
-        signIn = findViewById(R.id.login_button);
-        signIn.setOnClickListener(this);
-
+        isSignedIn = false;
         editTextEmail = findViewById(R.id.login_emailAddress);
         editTextPassword = findViewById(R.id.login_password);
 
@@ -64,77 +63,91 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Get an instance of Firebase Authentication SDK
         mAuth = FirebaseAuth.getInstance();
-
+        // Get an instance of the Firebase Firestore
         fStore = FirebaseFirestore.getInstance();
 
-    }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.register:
-                startActivity(new Intent(this, Register.class));
-                break;
+        // Register button to switch to RegisterActivity
+        final Button registerButton = findViewById(R.id.register_button);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, Register.class));
+            }
+        });
 
-            case R.id.login_button:
+        final Button loginButton = findViewById(R.id.login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 userLogin();
-                break;
-        }
-    }
+            }
+        });
 
+        // if successful login and user object is created
+        if (isSignedIn) {
+
+
+
+            
+            // Send the user to HabitActivity
+            Intent intent = new Intent(MainActivity.this, HabitActivity.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
+        }
+
+    } // end OnCreate
+
+    /** This method handles the logic for when a user attempts to log in
+     * If there is a successful login, then a "new" User object is created
+     * with the logged in user's userID fields as attributes
+     */
     private void userLogin() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        /**
-         * Check to see if email field is empty
-         */
-
+        // Check to see if email field is empty
         if (email.isEmpty()) {
             editTextEmail.setError("Email is required");
             editTextEmail.requestFocus();
             return;
         }
 
-        /**
-         * Check to see if email format is correct
-         */
-
+        // Check to see if email format is correct
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             editTextEmail.setError("Please enter a valid email");
             editTextEmail.requestFocus();
             return;
         }
 
-        /**
-         * Check to see if password field is empty
-         */
-
+        // Check to see if password field is empty
         if (password.isEmpty()) {
             editTextPassword.setError("Password is required!");
             editTextPassword.requestFocus();
             return;
         }
 
-        /**
-         * Check to see if password length is less than 6
-         */
-
+        // Check to see if password length is less than 6
         if (password.length() < 6) {
             editTextPassword.setError("Min password length is 6 characters!");
             editTextPassword.requestFocus();
             return;
         }
-
+        // Initialize progress bar
         progressBar.setVisibility(View.VISIBLE);
+
+        // Attempt to sign in user with provided email and password
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+
+                // if sign in is successful
                 if (task.isSuccessful()) {
+                    FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    // if email has previously been verified
+                    if (fUser.isEmailVerified()) {
 
-                    if(user.isEmailVerified()){
                         // Get the string that uniquely identifies this user in the Firestore
                         userID = mAuth.getCurrentUser().getUid();
                         // Get document reference for document with this unique UserID
@@ -145,15 +158,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
                                     DocumentSnapshot document = task.getResult();
+                                    // if document matching userID exists
                                     if (document.exists()) {
 
-                                        // Get the values to which the specified keys are mapped
+                                        // Get data from userID document
                                         String username = (String) document.getData().get("userName");
                                         String email = (String) document.getData().get("email");
-                                        User user = new User(username, email);
-                                        Intent intent = new Intent(MainActivity.this,FollowRequestActivity.class);
-                                        intent.putExtra("user", user);
-                                        startActivity(intent);
+                                        // Create a "new" user from this data
+                                        user = new User(userID, username, email);
 
                                         Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                                     } else {
@@ -166,14 +178,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         });
 
-                        //NOTE: Changed from Profile
-
-                        //startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-
-                        //startActivity(new Intent(MainActivity.this,ProfileActivity.class));
-
-                    }else{
-                        user.sendEmailVerification();
+                    } else {
+                        fUser.sendEmailVerification();
                         Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
                     }
 
@@ -184,5 +190,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
-
 }
+

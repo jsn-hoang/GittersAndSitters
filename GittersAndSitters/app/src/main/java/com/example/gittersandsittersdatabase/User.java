@@ -12,6 +12,7 @@ import java.util.Comparator;
 public class User implements Serializable{
 
     // Declare attributes
+    private String userID;
     private String username;
     private String email;
     private ArrayList<String> following;
@@ -25,7 +26,8 @@ public class User implements Serializable{
 
     }
 
-    public User(String username, String email){
+    public User(String userID, String username, String email){
+        this.userID = userID;
         this.username = username;
         this.email = email;
         this.following = new ArrayList<>();     // initialize empty following list
@@ -34,14 +36,23 @@ public class User implements Serializable{
 //        this.habitEventList = new ArrayList<>();     // initialize empty HabitEvent list
     }
 
-    public User(String username, String email, ArrayList<String> following,
+    public User(String userID, String username, String email, ArrayList<String> following,
                 ArrayList<String> requests, ArrayList<Habit> habitList /*ArrayList<HabitEvent> habitEventList*/) {
+        this.userID = userID;
         this.username = username;
         this.email = email;
         this.following = following;
         this.requests = requests;
         this.habitList = habitList;
 //        this.habitEventList = habitEventList;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getUsername() {
