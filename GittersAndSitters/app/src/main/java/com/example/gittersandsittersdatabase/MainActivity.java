@@ -76,20 +76,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        /** This listener handles the logic for when a user attempts to log in
-         * If there is a successful login, then a "new" User object is created
-         * with the logged in user's userID fields as attributes
-         */
+        /** Login button to execute logic for attempted login */
         final Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 executeLoginAttempt();
+                
             }
         });
     }
-    
+
+    /** This method handles the logic for an attempted user login.
+     * If there is a successful login, a "new" User object is created
+     * with the logged in user's userID fields as attributes
+     */
     public void executeLoginAttempt() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
