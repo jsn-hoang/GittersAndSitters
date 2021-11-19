@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         String username = (String) document.getData().get("userName");
                                         String email = (String) document.getData().get("email");
                                         User user = new User(username, email);
-                                        Intent intent = new Intent(MainActivity.this,FollowRequestActivity.class);
+                                        Intent intent = new Intent(MainActivity.this,FollowingActivity.class);
                                         intent.putExtra("user", user);
                                         startActivity(intent);
 
