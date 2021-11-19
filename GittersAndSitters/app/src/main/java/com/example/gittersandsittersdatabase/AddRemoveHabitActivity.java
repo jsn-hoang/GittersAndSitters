@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -68,6 +69,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
         // get user
         user = (User) getIntent().getSerializableExtra("user");
+
+        db = FirebaseFirestore.getInstance();
+        collectionRef = db.collection("Users/" + user.getUserID() + "/Habits");
+
 
         // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position")) {
@@ -146,6 +151,20 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                     Habit newHabit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
                     // Add habit to userHabitList
                     user.addUserHabit(newHabit);
+
+                    // Add the habit to Firestore db
+                    HashMap<String, Object> data = new HashMap<>();
+                    // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
+                    data.put("habitName", newHabit.getHabitName());
+                    data.put("weekdays", newHabit.getWeekdays());
+                    data.put("startDate", newHabit.getStartDate());
+                    data.put("reason", newHabit.getHabitReason());
+                    data.put("isPublic", newHabit.isHabitPublic());
+
+                    // Add habit to the User's Habit Collection
+                    collectionRef.document(newHabit.getHabitName())
+                            .set(data);
+
                 }
                 else { // else edit the existing habit
 
@@ -179,10 +198,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             public void onClick(View view) {
                 user.deleteUserHabit(habit);
 
-                // Remove the habit from Firestore db
-                db = FirebaseFirestore.getInstance();
-
-                collectionRef = db.collection("Users/" + user.getUserID() + "/Habits");
                 collectionRef.document(habit.getHabitName())
                         .delete()
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
