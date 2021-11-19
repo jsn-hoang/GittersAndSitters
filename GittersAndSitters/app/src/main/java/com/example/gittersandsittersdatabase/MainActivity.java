@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                                                 String email = (String) document.getData().get("email");
                                                 // Create a "new" user from this data
                                                 user = new User(userID, username, email);
-                                                
+
                                                     // Get a reference to the logged in user's Habit collection
                                                     CollectionReference habitCollectionReference =
                                                             fStore.collection("Users").document(userID).collection("Habits");
