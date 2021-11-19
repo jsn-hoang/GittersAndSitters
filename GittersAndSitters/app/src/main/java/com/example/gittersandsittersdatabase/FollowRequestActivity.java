@@ -64,6 +64,11 @@ public class FollowRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow_request);
 
+        follow_request_banner = findViewById(R.id.follow_request_banner);
+        send_request_button = findViewById(R.id.send_request_button);
+        follow_request_banner.setText("Follow Requests");
+        send_request_button.setText("Send Request");
+
         mAuth = FirebaseAuth.getInstance();
         current_user = mAuth.getCurrentUser().getUid();
 
@@ -75,52 +80,59 @@ public class FollowRequestActivity extends AppCompatActivity {
         request_list = findViewById(R.id.request_list);
 
 
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        //current_username = (String) document.get("userName");
-                        requestList = (List<String>) document.getData().get("requests");
-                        for (String request : requestList) {
-                            requestArrayList.add(request);
+        //docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            //@Override
+           //public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                //if (task.isSuccessful()) {
+                    //DocumentSnapshot document = task.getResult();
+                    //if (document.exists()) {
+                        ////current_username = (String) document.get("userName");
+                        //requestList = (List<String>) document.getData().get("requests");
+                        //for (String request : requestList) {
+                            //requestArrayList.add(request);
 
-                        }
-                        requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
-                        request_list.setAdapter(requestAdapter);
+                        //}
+                        //requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
+                        //request_list.setAdapter(requestAdapter);
 
                         //System.out.println(requestArrayList.get(0));
                         //System.out.println(current_username);
                         //System.out.println(requestList.get(0));
 
-                        Log.d("TAG", "DocumentSnapshot data: " + document.getData());
-                    } else {
-                        Log.d("TAG", "No such document");
+                        //Log.d("TAG", "DocumentSnapshot data: " + document.getData());
+                    //} else {
+                        //Log.d("TAG", "No such document");
+                    //}
+                //} else {
+                    //Log.d("TAG", "get failed with ", task.getException());
+                //}
+            //}
+        //});
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("TAG", "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    requestArrayList.clear();
+                    requestList = (List<String>) snapshot.getData().get("requests");
+                    for (String request : requestList) {
+                        requestArrayList.add(request);
+
                     }
+                    requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
+                    request_list.setAdapter(requestAdapter);
+
+                    Log.d("TAG", "Current data: " + snapshot.getData());
                 } else {
-                    Log.d("TAG", "get failed with ", task.getException());
+                    Log.d("TAG", "Current data: null");
                 }
             }
         });
-        //requestList.add("rocketman111");
-        //request_list = findViewById(R.id.request_list);
-        //requestArrayList = new ArrayList<>();
-        //requestArrayList.add(current_username);
-        //System.out.println(current_username);
-        //requestArrayList.add("rocketman111");
-        //for (String request : requestList) {
-            //requestArrayList.add(request);
-        //}
-        //System.out.println(requestArrayList.get(0));
-        //requestAdapter = new RequestCustomList(this, requestArrayList);
-        //request_list.setAdapter(requestAdapter);
-
-        follow_request_banner = findViewById(R.id.follow_request_banner);
-        search_username = findViewById(R.id.search_username);
-        send_request_button = findViewById(R.id.send_request_button);
-        follow_request_banner.setText("Follow Requests");
-        send_request_button.setText("Send Request");
 
 
     }
@@ -175,8 +187,5 @@ public class FollowRequestActivity extends AppCompatActivity {
                         }
                     }
                 });
-        //DocumentReference targetUserReference = collectionReference.document(targetUserId);
-        //targetUserReference.update("requests", FieldValue.arrayUnion(current_username));
-        //Toast.makeText(FollowRequestActivity.this, "Follow request sent", Toast.LENGTH_LONG).show();
     }
 }
