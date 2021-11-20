@@ -29,8 +29,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class is responsible for the initial HabitTracker login screen
@@ -219,13 +224,18 @@ public class MainActivity extends AppCompatActivity {
                         // Get remaining Habit attributes from document
                         String reason = (String) document.getData().get("reason");
                         boolean isPublic = (boolean) document.getData().get("isPublic");
-                        // Convert field to ArrayList<Integer> object
-                        ArrayList<Integer> weekdays = (ArrayList<Integer>) document.getData().get("weekdays");
-                        // Convert field to Calendar object
-                        // TODO java.util.HashMap cannot be cast to java.util.Calendar
-                        //Calendar startDate = (Calendar)  document.getData().get("startDate");
-                        Calendar startDate = Calendar.getInstance();
 
+
+                        ArrayList<Integer> weekdays = (ArrayList<Integer>) document.get("weekdays");
+
+                        // Initialize weekdays arraylist
+                        //ArrayList<Integer> weekdays = new ArrayList<>();
+
+                        // Convert long object to type Calendar
+                        long longDate = (long) document.getData().get("longDate");
+                        Calendar startDate = Calendar.getInstance();
+                        startDate.setTimeInMillis(longDate);
+                        //Calendar startDate = Calendar.getInstance();
 
                         Habit habit = new Habit(habitName, weekdays, startDate, reason, isPublic);
                         // Add Habit to logged in user

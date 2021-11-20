@@ -10,7 +10,7 @@ import java.util.Calendar;
 public class Habit implements Serializable {
 
     private String habitName;
-    private ArrayList<Integer> weekdays;    // 1 -> Sunday, 2 -> Monday, ..., 6 -> Saturday
+    private ArrayList<Integer> weekdays;    // 1 -> Sunday, 2 -> Monday, ..., 7 -> Saturday
     private Calendar startDate;
     private String habitReason;
     private int progress;

@@ -345,7 +345,9 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
         data.put("habitName", habit.getHabitName());
         data.put("weekdays", habit.getWeekdays());
-        data.put("startDate", habit.getStartDate());
+        // Convert startDate to type long for database storage
+        long longDate = habit.getStartDate().getTimeInMillis();
+        data.put("longDate", longDate);
         data.put("reason", habit.getHabitReason());
         data.put("isPublic", habit.isHabitPublic());
 
