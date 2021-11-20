@@ -226,10 +226,15 @@ public class MainActivity extends AppCompatActivity {
                         boolean isPublic = (boolean) document.getData().get("isPublic");
 
 
-                        ArrayList<Integer> weekdays = (ArrayList<Integer>) document.get("weekdays");
+                        List<Long> longDays = (List<Long>) document.getData().get("weekdays");
+
+                        ArrayList<Integer> weekdays = new ArrayList<>();
 
                         // Initialize weekdays arraylist
-                        //ArrayList<Integer> weekdays = new ArrayList<>();
+                        for (Long day : longDays) {
+                            Integer i = (int) (long) day;
+                            weekdays.add(i);
+                        }
 
                         // Convert long object to type Calendar
                         long longDate = (long) document.getData().get("longDate");
