@@ -1,9 +1,12 @@
 package com.example.gittersandsittersdatabase;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -12,8 +15,14 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
 
@@ -25,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,6 +45,9 @@ import java.util.Locale;
  */
 
 public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+
+    private FirebaseFirestore db;
+    private CollectionReference collectionRef;
 
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
@@ -56,6 +69,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
         // get user
         user = (User) getIntent().getSerializableExtra("user");
+
+        db = FirebaseFirestore.getInstance();
+        collectionRef = db.collection("Users/" + user.getUserID() + "/Habits");
+
 
         // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position")) {
@@ -134,6 +151,9 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                     Habit newHabit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
                     // Add habit to userHabitList
                     user.addUserHabit(newHabit);
+                    // Add the habit to Firestore db
+                    addHabitToUserDatabase(newHabit);
+
                 }
                 else { // else edit the existing habit
 
@@ -165,7 +185,11 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Delete habit from user habitList
                 user.deleteUserHabit(habit);
+                // Delete habit from user Firebase collection
+                deleteHabitFromUserDatabase();
 
                 // Navigate back to MainActivity
                 Intent intent = new Intent();
@@ -309,6 +333,48 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             }
         }
         return days;
+    }
+
+    /**
+     * This method deletes a habit from the logged in user's Habit collection in the database
+     * @param habit - the Habit to be deleted from the user's Habit collection in the database
+     */
+    public void addHabitToUserDatabase(Habit habit) {
+
+        HashMap<String, Object> data = new HashMap<>();
+        // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
+        data.put("habitName", habit.getHabitName());
+        data.put("weekdays", habit.getWeekdays());
+        // Convert startDate to type long for database storage
+        long longDate = habit.getStartDate().getTimeInMillis();
+        data.put("longDate", longDate);
+        data.put("reason", habit.getHabitReason());
+        data.put("isPublic", habit.isHabitPublic());
+
+        // Add habit to the User's Habit Collection
+        collectionRef.document(habit.getHabitName())
+                .set(data);
+    }
+
+    /**
+     * This method adds a habit to the logged in user's Habit collection in the database
+     */
+    public void deleteHabitFromUserDatabase() {
+
+        collectionRef.document(habit.getHabitName())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Data has been deleted successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Data could not be deleted!" + e.toString());
+                    }
+                });
     }
 }
 
