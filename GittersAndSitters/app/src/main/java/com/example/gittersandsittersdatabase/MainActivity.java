@@ -164,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
                                         String email = (String) document.getData().get("email");
                                         user = new User(userID, username, email);
 
-                                        /** Get all Firebase data corresponding to the logged in user
+                                        /** Get all Firebase Habits corresponding to the logged in user
                                          */
-                                        getUserData();
+                                        getUserHabits();
 
                                     } else {
                                         Log.d("TAG", "No such document");
@@ -185,17 +185,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    /** This method is a caller to fetch all Firebase data corresponding to the logged in user
-     */
-    public void getUserData() {
-        // Get User Habits
-        getUserHabits();
-        // Get User Followers
-        getUserFollowers();
-        // Get User Following
-        getUserFollowing();
     }
 
     /**
@@ -225,12 +214,11 @@ public class MainActivity extends AppCompatActivity {
                         String reason = (String) document.getData().get("reason");
                         boolean isPublic = (boolean) document.getData().get("isPublic");
 
-
+                        // weekdays are stored as type long
                         List<Long> longDays = (List<Long>) document.getData().get("weekdays");
-
-                        ArrayList<Integer> weekdays = new ArrayList<>();
-
                         // Initialize weekdays arraylist
+                        ArrayList<Integer> weekdays = new ArrayList<>();
+                        // convert long objects to Integers and add them to weekdays
                         for (Long day : longDays) {
                             Integer i = (int) (long) day;
                             weekdays.add(i);
@@ -256,10 +244,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void getUserFollowers() {
-    };
-    public void getUserFollowing() {
-    };
 }
 
