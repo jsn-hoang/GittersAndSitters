@@ -54,7 +54,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<String> habitList;
+    private ArrayList<String> userNameList;
     private FirebaseAuth mAuth;
+    private String targetUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +109,17 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
      * Each user id will have email, following, habitList, requests and username as a field
      * after all fields are put inside an object we have a addOnSuccessListener which will display a
      * success message to the LogCat on success. If it fails to add data to database an error message is displayed
-     * @return nothing is returned
      */
+    private boolean userNameExists(ArrayList<String> userNameList, String userName) {
+
+        if (userNameList.contains(userName)){
+            return true;
+        }
+        return false;
+
+    }
+
+
     private void registerUser() {
         String email = emailName.getText().toString().trim();
         String password = userPassword.getText().toString().trim();
@@ -116,6 +127,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         following = new ArrayList<>();
         requests = new ArrayList<>();
         habitList = new ArrayList<>();
+        userNameList = new ArrayList<>();
 
 
         /**
@@ -127,6 +139,12 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
             userName.requestFocus();
             return;
         }
+
+        //if (userNameExists(userNameList,uname)){
+       //     userName.setError( uname + "already exists");
+       //     userName.requestFocus();
+       //     return;
+       // }
 
         /**
          * Require user to enter email
@@ -163,6 +181,13 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
             userPassword.requestFocus();
             return;
         }
+
+        if (!userNameExists(userNameList,uname)){
+            userNameList.add(uname);
+            return;
+        }
+
+
         // the progress bar shows that our app is loading
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -182,6 +207,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
                             // Creating a hash map and adding username, email following, requests and habitList to the object
                             Map<String, Object> user = new HashMap<>();
+
 
                             user.put("userName", uname);
                             user.put("email", email);
