@@ -121,14 +121,27 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
-        // TAP CLICK a habit to add a corresponding habit event
+
+        /**
+         * Launches AddRemoveEventActivity when user clicks on a ListView entry
+         * "Today's Habits" tab must be selected for Activity to launch
+         */
         habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                habit = (Habit) habitListView.getItemAtPosition(i);
-                Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
-                intent.putExtra("user", user);
-                habitActivityResultLauncher.launch(intent);
+
+                // Get integer corresponding to currently selected tab
+                int tabPosition = tabLayout.getSelectedTabPosition();
+
+                if (tabPosition == 0) { // true iff "Today's Habits" tab is currently selected
+
+
+                    habit = (Habit) habitListView.getItemAtPosition(i); // Get the clicked habit
+                    Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
+                    intent.putExtra("user", user);
+                    intent.putExtra("habit", habit);
+                    habitActivityResultLauncher.launch(intent);
+                }
             }
         });
 
@@ -156,30 +169,9 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * Launches AddRemoveEventActivity when user clicks on a ListView entry
-         * "Today's Habits" tab must be selected for Activity to launch
-         */
-        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                // Get integer corresponding to currently selected tab
-                int tabPosition = tabLayout.getSelectedTabPosition();
-
-                if (tabPosition == 0) { // true iff "Today's Habits" tab is currently selected
 
 
-                    habit = (Habit) habitListView.getItemAtPosition(i); // Get the clicked habit
-                    Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
-                    intent.putExtra("user", user);
-                    intent.putExtra("habit", habit);
-                    habitActivityResultLauncher.launch(intent);
-                }
-            }
-        });
-
-        }
+    }
 
     /**
      * Refreshes the tab that is currently selected. A user method is called to get the updated habit list.

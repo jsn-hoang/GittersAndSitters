@@ -15,7 +15,18 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.w3c.dom.Text;
 
@@ -83,10 +94,12 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         final Button deleteButton = findViewById(R.id.delete_event_button);
         final Button addButton = findViewById(R.id.add_event_button);
         final Button cancelButton = findViewById(R.id.cancel_event_button);
+        final Button locationButton = findViewById(R.id.event_location_button);
         final TextView header = findViewById(R.id.add_edit_event_title_text);
         final TextView eventDateText = findViewById(R.id.event_date_text);
         final Button eventLocationButton = findViewById(R.id.event_location_button);
         final ImageButton eventPhotoButton = findViewById(R.id.event_photo_button);
+        final FragmentContainerView mapFragmentContainerView = findViewById(R.id.mapFragmentContainerView);
 
         // Set up activity layout
         activityLayoutSetup(isNewHabitEvent, header, addButton, deleteButton);
@@ -106,6 +119,24 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             File  habitEventPhoto = habitEvent.getEventPhoto();
 
         }
+
+        // Set up Google Map callback
+//        SupportMapFragment mapFragment =
+//                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this.);
+
+        // Listener for location button
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapFragmentContainerView.setVisibility(View.VISIBLE);
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.mapFragmentContainerView, new MapsFragment());
+                fragmentTransaction.commit();
+            }
+        });
 
         // This Listener is responsible for the logic when clicking the "OK" button
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +212,23 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         });
 
     }
+
+    // Referenced Google Maps Docs
+
+
+    private GoogleMap map;
+
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.a);
+//
+//        SupportMapFragment mapFragment =
+//                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
+//    }
+
+
 
     /**
      * This method sets the Activity and button text to the appropriate titles
