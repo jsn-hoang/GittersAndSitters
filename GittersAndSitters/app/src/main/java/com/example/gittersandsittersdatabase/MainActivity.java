@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                         user.addUserHabit(habit);
                     }
                     // Send the user to HabitActivity
-                    Intent intent = new Intent(MainActivity.this, FollowingActivity.class);
+                    Intent intent = new Intent(MainActivity.this, HabitActivity.class);
                     intent.putExtra("user", user);
                     startActivity(intent);
                 } else {

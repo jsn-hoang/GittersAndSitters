@@ -145,6 +145,32 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
+        // Event History button goes to FollowingActivity
+        final Button followingButton = findViewById(R.id.following_button);
+        followingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(HabitActivity.this, FollowingActivity.class);
+                intent.putExtra("user", user);
+                //startActivity(intent);
+                habitActivityResultLauncher.launch(intent);
+            }
+        });
+
+        // Event History button goes to FollowRequestActivity
+        final Button requestsButton = findViewById(R.id.requests_button);
+        requestsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(HabitActivity.this, FollowRequestActivity.class);
+                intent.putExtra("user", user);
+                //startActivity(intent);
+                habitActivityResultLauncher.launch(intent);
+            }
+        });
+
         /**
          * Launches AddRemoveEventActivity when user clicks on a ListView entry
          * "Today's Habits" tab must be selected for Activity to launch
@@ -168,7 +194,7 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
-        }
+    }
 
     /**
      * Refreshes the tab that is currently selected. A user method is called to get the updated habit list.
