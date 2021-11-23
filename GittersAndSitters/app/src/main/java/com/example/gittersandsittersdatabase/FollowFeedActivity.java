@@ -76,9 +76,15 @@ public class FollowFeedActivity extends AppCompatActivity {
         final CollectionReference collectionRef = fStore.collection("Users");
         DocumentReference targetUserReference = collectionRef.document(targetUserId);
         CollectionReference habitCollectionReference = fStore.collection("Users").document(targetUserId).collection("Habits");
+        followHabit_list = findViewById(R.id.feed_list);
+
+        followHabitArrayList = new ArrayList<>();
+        followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList);
+        followHabit_list.setAdapter(followHabitAdapter);
         habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                followHabitArrayList.clear();
 
                 for (QueryDocumentSnapshot doc : value) {
                     Log.d(TAG, doc.getId() + " => " + doc.getData());
@@ -110,16 +116,20 @@ public class FollowFeedActivity extends AppCompatActivity {
 
                     //followHabitArrayList.add(habit);
                     //Add Habit to logged in user
-                    targetUserName.addUserHabit(habit);
+                    if (isPublic) {
+                        targetUserName.addUserHabit(habit);
+                        followHabitArrayList.add(habit);
+                    }
+                    //followHabitArrayList = targetUserName.getAllUserHabits();
                 }
 
 
                 //followHabitArrayList = new ArrayList<>();
-                followHabit_list = findViewById(R.id.feed_list);
+                //followHabit_list = findViewById(R.id.feed_list);
 
-                followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,targetUserName.getAllUserHabits());
-                followHabit_list.setAdapter(followHabitAdapter);
-                //followHabitAdapter.notifyDataSetChanged();
+                //followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,targetUserName.getAllUserHabits());
+                //followHabit_list.setAdapter(followHabitAdapter);
+                followHabitAdapter.notifyDataSetChanged();
 
 
             }
