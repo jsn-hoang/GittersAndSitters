@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".FollowingActivity">
 
+    <Button
+        android:id="@+id/following_to_habits_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:text="Habits" />
+
     <TextView
         android:id="@+id/following_banner"
         android:layout_width="match_parent"
@@ -17,6 +24,6 @@
     <ListView
         android:id="@+id/following_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

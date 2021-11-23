@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -45,6 +47,7 @@ public class FollowFeedActivity extends AppCompatActivity {
     private ArrayAdapter<Habit> followHabitAdapter;
     private List<String> followList;
     private ArrayList<Habit> followHabitArrayList;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +63,8 @@ public class FollowFeedActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         userID = mAuth.getCurrentUser().getUid();
-
-        targetUserName = (User) getIntent().getSerializableExtra("user");
+        user = (User) getIntent().getSerializableExtra("user");
+        targetUserName = (User) getIntent().getSerializableExtra("userClickedOn");
 
         targetUserId = targetUserName.getUserID();
 
@@ -132,6 +135,18 @@ public class FollowFeedActivity extends AppCompatActivity {
                 followHabitAdapter.notifyDataSetChanged();
 
 
+            }
+        });
+
+        // Button goes to Habit Activity
+        final Button habitActivityButton = findViewById(R.id.follow_feed_to_habits_button);
+        habitActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(FollowFeedActivity.this, HabitActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
             }
         });
 

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ public class FollowingActivity extends AppCompatActivity {
     private String targetEmail;
     private String targetUserName;
     private User userClickedOn;
-
+    private User user;
 
     private FirebaseAuth mAuth;
     private String current_user;
@@ -63,7 +64,7 @@ public class FollowingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_following);
 
-
+        user = (User) getIntent().getSerializableExtra("user");
         mAuth = FirebaseAuth.getInstance();
         current_user = mAuth.getCurrentUser().getUid();
 
@@ -131,7 +132,8 @@ public class FollowingActivity extends AppCompatActivity {
                                             userClickedOn = new User(targetUserId,targetUserName, targetEmail);
                                             //System.out.println("User clicked on " + userClickedOn.getUsername());
                                             Intent intent = new Intent(FollowingActivity.this, FollowFeedActivity.class);
-                                            intent.putExtra("user", userClickedOn);
+                                            intent.putExtra("user", user);
+                                            intent.putExtra("userClickedOn", userClickedOn);
                                             startActivity(intent);
 
                                             //DocumentReference targetUserReference = collectionReference.document(targetUserId);
@@ -150,6 +152,17 @@ public class FollowingActivity extends AppCompatActivity {
                 //Intent intent = new Intent(FollowingActivity.this, FollowFeedActivity.class);
                 //intent.putExtra("user", userClickedOn);
                 //startActivity(intent);
+            }
+        });
+        // Button goes to Habit Activity
+        final Button habitActivityButton = findViewById(R.id.following_to_habits_button);
+        habitActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(FollowingActivity.this, HabitActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
             }
         });
     }

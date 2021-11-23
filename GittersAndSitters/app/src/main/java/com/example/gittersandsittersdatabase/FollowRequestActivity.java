@@ -64,6 +64,8 @@ public class FollowRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow_request);
 
+        user = (User) getIntent().getSerializableExtra("user");
+
         follow_request_banner = findViewById(R.id.follow_request_banner);
         send_request_button = findViewById(R.id.send_request_button);
         follow_request_banner.setText("Follow Requests");
@@ -83,32 +85,32 @@ public class FollowRequestActivity extends AppCompatActivity {
 
 
         //docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            //@Override
-           //public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                //if (task.isSuccessful()) {
-                    //DocumentSnapshot document = task.getResult();
-                    //if (document.exists()) {
-                        ////current_username = (String) document.get("userName");
-                        //requestList = (List<String>) document.getData().get("requests");
-                        //for (String request : requestList) {
-                            //requestArrayList.add(request);
+        //@Override
+        //public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+        //if (task.isSuccessful()) {
+        //DocumentSnapshot document = task.getResult();
+        //if (document.exists()) {
+        ////current_username = (String) document.get("userName");
+        //requestList = (List<String>) document.getData().get("requests");
+        //for (String request : requestList) {
+        //requestArrayList.add(request);
 
-                        //}
-                        //requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
-                        //request_list.setAdapter(requestAdapter);
+        //}
+        //requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
+        //request_list.setAdapter(requestAdapter);
 
-                        //System.out.println(requestArrayList.get(0));
-                        //System.out.println(current_username);
-                        //System.out.println(requestList.get(0));
+        //System.out.println(requestArrayList.get(0));
+        //System.out.println(current_username);
+        //System.out.println(requestList.get(0));
 
-                        //Log.d("TAG", "DocumentSnapshot data: " + document.getData());
-                    //} else {
-                        //Log.d("TAG", "No such document");
-                    //}
-                //} else {
-                    //Log.d("TAG", "get failed with ", task.getException());
-                //}
-            //}
+        //Log.d("TAG", "DocumentSnapshot data: " + document.getData());
+        //} else {
+        //Log.d("TAG", "No such document");
+        //}
+        //} else {
+        //Log.d("TAG", "get failed with ", task.getException());
+        //}
+        //}
         //});
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -134,8 +136,17 @@ public class FollowRequestActivity extends AppCompatActivity {
                 }
             }
         });
+        // Button goes to Habit Activity
+        final Button habitActivityButton = findViewById(R.id.requests_to_habits_button);
+        habitActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-
+                Intent intent = new Intent(FollowRequestActivity.this, HabitActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -145,7 +156,6 @@ public class FollowRequestActivity extends AppCompatActivity {
     public void sendRequest(View view) {
         search_username = (EditText) findViewById(R.id.search_username);
         String user_name = search_username.getText().toString();
-        user = (User) getIntent().getSerializableExtra("user");
         current_username = user.getUsername();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
