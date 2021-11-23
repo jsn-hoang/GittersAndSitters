@@ -1,8 +1,6 @@
 package com.example.gittersandsittersdatabase;
 
 
-
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -39,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 
 
 /**
@@ -146,6 +143,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                     userName.setError("Username is required");
                                     userName.requestFocus();
                                     return;
+                                }
 
                                 /**
                                  * Require user to enter email
