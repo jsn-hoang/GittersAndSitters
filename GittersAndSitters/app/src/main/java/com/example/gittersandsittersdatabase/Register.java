@@ -2,6 +2,7 @@ package com.example.gittersandsittersdatabase;
 
 
 
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -26,8 +27,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
@@ -54,9 +59,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<String> habitList;
-    private ArrayList<String> userNameList;
     private FirebaseAuth mAuth;
-    private String targetUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         userPassword = findViewById(R.id.password);
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
 
     }
 
@@ -109,17 +113,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
      * Each user id will have email, following, habitList, requests and username as a field
      * after all fields are put inside an object we have a addOnSuccessListener which will display a
      * success message to the LogCat on success. If it fails to add data to database an error message is displayed
+     * @return nothing is returned
      */
-    private boolean userNameExists(ArrayList<String> userNameList, String userName) {
-
-        if (userNameList.contains(userName)){
-            return true;
-        }
-        return false;
-
-    }
-
-
     private void registerUser() {
         String email = emailName.getText().toString().trim();
         String password = userPassword.getText().toString().trim();
@@ -127,132 +122,137 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         following = new ArrayList<>();
         requests = new ArrayList<>();
         habitList = new ArrayList<>();
-        userNameList = new ArrayList<>();
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final CollectionReference collectionReference = db.collection("Users");
 
-        /**
-         * Require user to enter username
-         */
-
-        if (uname.isEmpty()) {
-            userName.setError("Username is required");
-            userName.requestFocus();
-            return;
-        }
-
-        //if (userNameExists(userNameList,uname)){
-       //     userName.setError( uname + "already exists");
-       //     userName.requestFocus();
-       //     return;
-       // }
-
-        /**
-         * Require user to enter email
-         */
-
-        if (email.isEmpty()) {
-            emailName.setError("Email is required");
-            emailName.requestFocus();
-            return;
-        }
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailName.setError("Please provide valid email!");
-            emailName.requestFocus();
-            return;
-        }
-
-        /**
-         * Require user to enter password
-         */
-
-        if (password.isEmpty()) {
-            userPassword.setError("Password is required");
-            userPassword.requestFocus();
-            return;
-        }
-
-        /**
-         * Require password to have a minimum length of 6
-         */
-
-        if (password.length() < 6) {
-            userPassword.setError("Minimum password length is 6 characters");
-            userPassword.requestFocus();
-            return;
-        }
-
-        if (!userNameExists(userNameList,uname)){
-            userNameList.add(uname);
-            return;
-        }
-
-
-        // the progress bar shows that our app is loading
-        progressBar.setVisibility(View.VISIBLE);
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        collectionReference
+                .whereEqualTo("userName", uname) // <-- This line
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        //if user is successfully created and added to authentication section then execute code below
-
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
-                            userID = mAuth.getCurrentUser().getUid();
-                            fStore = FirebaseFirestore.getInstance();
 
-                            // Creating a document reference with Users as collection path and the user id as the document reference
-                            DocumentReference documentReference = fStore.collection("Users").document(userID);
+                            if (task.getResult().size() != 0) {
+                                userName.setError("Username is already taken");
+                                userName.requestFocus();
+                            } else {
+                                /**
+                                 * Require user to enter username
+                                 */
 
-                            // Creating a hash map and adding username, email following, requests and habitList to the object
-                            Map<String, Object> user = new HashMap<>();
-
-
-                            user.put("userName", uname);
-                            user.put("email", email);
-                            user.put("following", Arrays.asList("Mark", "Jason"));
-                            user.put("requests",Arrays.asList("Alex", "Justin"));
-                            user.put("habitList",Arrays.asList());
-
-                            // adding user information to firestore database.
-                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                if (uname.isEmpty()) {
+                                    userName.setError("Username is required");
+                                    userName.requestFocus();
+                                    return;
+                                }
 
                                 /**
-                                 * If user is successfully added to firestore display a toast message on screen and in the log
-                                 * Set the progress bar visibility to gone since the app has finished creating user
+                                 * Require user to enter email
                                  */
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
 
-                                    progressBar.setVisibility(View.GONE);
-                                    Log.d("TAG", "Data has been added successfully!");
-
+                                if (email.isEmpty()) {
+                                    emailName.setError("Email is required");
+                                    emailName.requestFocus();
+                                    return;
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
+
+                                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                    emailName.setError("Please provide valid email!");
+                                    emailName.requestFocus();
+                                    return;
+                                }
+
                                 /**
-                                 * If user is not successfully added to firestore display a toast message on screen and in the log
-                                 * Set the progress bar visibility to gone since the app has finished its task
+                                 * Require user to enter password
                                  */
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
 
-                                    Log.d("TAG", "Data could not be added!" + e.toString());
-                                    progressBar.setVisibility(View.GONE);
+                                if (password.isEmpty()) {
+                                    userPassword.setError("Password is required");
+                                    userPassword.requestFocus();
+                                    return;
                                 }
-                            });
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                            // if user is not created and added to authentication section display an error message
-                            // A possible cause of this failure is that the user is already created
+
+                                /**
+                                 * Require password to have a minimum length of 6
+                                 */
+
+                                if (password.length() < 6) {
+                                    userPassword.setError("Minimum password length is 6 characters");
+                                    userPassword.requestFocus();
+                                    return;
+                                }
+                                // the progress bar shows that our app is loading
+                                progressBar.setVisibility(View.VISIBLE);
+                                mAuth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                                //if user is successfully created and added to authentication section then execute code below
+
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
+                                                    userID = mAuth.getCurrentUser().getUid();
+                                                    fStore = FirebaseFirestore.getInstance();
+
+                                                    // Creating a document reference with Users as collection path and the user id as the document reference
+                                                    DocumentReference documentReference = fStore.collection("Users").document(userID);
+
+                                                    // Creating a hash map and adding username, email following, requests and habitList to the object
+                                                    Map<String, Object> user = new HashMap<>();
+
+                                                    user.put("userName", uname);
+                                                    user.put("email", email);
+                                                    user.put("following", Arrays.asList("Mark", "Jason"));
+                                                    user.put("requests",Arrays.asList("Alex", "Justin"));
+                                                    user.put("habitList",Arrays.asList());
+
+                                                    // adding user information to firestore database.
+                                                    documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                                        /**
+                                                         * If user is successfully added to firestore display a toast message on screen and in the log
+                                                         * Set the progress bar visibility to gone since the app has finished creating user
+                                                         */
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(Register.this, "User has been successfully registered", Toast.LENGTH_LONG).show();
+
+                                                            progressBar.setVisibility(View.GONE);
+                                                            Log.d("TAG", "Data has been added successfully!");
+
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        /**
+                                                         * If user is not successfully added to firestore display a toast message on screen and in the log
+                                                         * Set the progress bar visibility to gone since the app has finished its task
+                                                         */
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+
+                                                            Log.d("TAG", "Data could not be added!" + e.toString());
+                                                            progressBar.setVisibility(View.GONE);
+                                                        }
+                                                    });
+                                                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                                    // if user is not created and added to authentication section display an error message
+                                                    // A possible cause of this failure is that the user is already created
+                                                } else {
+                                                    Toast.makeText(Register.this, "Failed to register user! Please try again!", Toast.LENGTH_LONG).show();
+                                                    progressBar.setVisibility(View.GONE);
+                                                }
+
+                                            }
+                                        });
+                            }
+
                         } else {
-                            Toast.makeText(Register.this, "Failed to register user! Please try again!", Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
+                            Log.d("TAG", "Error getting documents: ", task.getException());
                         }
-
                     }
                 });
-
 
     }
 }
