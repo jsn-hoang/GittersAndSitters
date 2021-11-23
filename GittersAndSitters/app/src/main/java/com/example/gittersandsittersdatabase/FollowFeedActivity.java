@@ -25,6 +25,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -48,6 +49,7 @@ public class FollowFeedActivity extends AppCompatActivity {
     private List<String> followList;
     private ArrayList<Habit> followHabitArrayList;
     private User user;
+    private ListenerRegistration registration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +86,13 @@ public class FollowFeedActivity extends AppCompatActivity {
         followHabitArrayList = new ArrayList<>();
         followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList);
         followHabit_list.setAdapter(followHabitAdapter);
-        habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        registration = habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 followHabitArrayList.clear();
 
                 for (QueryDocumentSnapshot doc : value) {
-                    Log.d(TAG, doc.getId() + " => " + doc.getData());
+                        Log.d(TAG, doc.getId() + " => " + doc.getData());
                     // Set habitName as document ID
                     String habitName = doc.getId();
 
@@ -146,6 +148,7 @@ public class FollowFeedActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(FollowFeedActivity.this, HabitActivity.class);
                 intent.putExtra("user", user);
+                registration.remove();
                 startActivity(intent);
             }
         });
