@@ -163,6 +163,20 @@ public class MainActivity extends AppCompatActivity {
                                         String username = (String) document.getData().get("userName");
                                         String email = (String) document.getData().get("email");
                                         user = new User(userID, username, email);
+                                        // get logged in user's data from firestore
+                                        // Start by getting Habit's without HabitEvents
+                                        dataDownloader.getUserHabits(new FirestoreHabitListCallback() {
+                                            @Override
+                                            public void onCallback(ArrayList<Habit> returnedHabitList) {
+                                                lastHabit = false;
+                                                finalListSize = 0;
+                                                habitList = returnedHabitList;
+                                                // After all Habits are retrieved
+                                                // For each Habit in the HabitList
+                                                for (int i = 0; i < habitList.size(); i++) {
+                                                    habit = habitList.get(i);
+                                                    if (i == habitList.size() - 1)
+                                                        lastHabit = true;
 
                                         /** Get all Firebase Habits corresponding to the logged in user
                                          */
