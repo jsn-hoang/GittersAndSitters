@@ -1,7 +1,11 @@
 package com.example.gittersandsittersdatabase;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,19 +18,24 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.w3c.dom.Text;
 
@@ -54,6 +63,7 @@ import java.util.Locale;
 public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
+    public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
     public static final int RESULT_DELETE = 2;
     User user;
     Habit habit;                   // The parent Habit of the HabitEvent
@@ -64,6 +74,10 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     boolean isNewHabitEvent;
     int habitListIndex;            // index position of the Habit in the User's habitList
     int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
+
+    // location
+    private FusedLocationProviderClient fusedLocationClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +113,9 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         final TextView eventDateText = findViewById(R.id.event_date_text);
         final Button eventLocationButton = findViewById(R.id.event_location_button);
         final ImageButton eventPhotoButton = findViewById(R.id.event_photo_button);
-        final FragmentContainerView mapFragmentContainerView = findViewById(R.id.mapFragmentContainerView);
+
+        // setup location services
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Set up activity layout
         activityLayoutSetup(isNewHabitEvent, header, addButton, deleteButton);
@@ -120,21 +136,11 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
         }
 
-        // Set up Google Map callback
-//        SupportMapFragment mapFragment =
-//                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this.);
-
         // Listener for location button
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mapFragmentContainerView.setVisibility(View.VISIBLE);
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.mapFragmentContainerView, new MapsFragment());
-                fragmentTransaction.commit();
+                fetchLocation();
             }
         });
 
@@ -172,11 +178,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 // Overwrite the edited user Habit
                 user.setUserHabit(habitListIndex, habit);
 
-//                // Navigate back to HabitActivity
-//                Intent intent = new Intent(AddRemoveEventActivity.this, HabitActivity.class);
-//                intent.putExtra("user", user);
-//                startActivity(intent);
-
 
                 // Navigate back to launcher Activity (HabitActivity or HabitEventActivity)
                 Intent intent = new Intent();
@@ -213,22 +214,76 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
     }
 
-    // Referenced Google Maps Docs
+    private void fetchLocation() {
+        if (ContextCompat.checkSelfPermission(
+                AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            // You can use the API that requires the permission.
+                    fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    // Logic to handle location object
+                                    Double userlat = location.getLatitude();
+                                    Double userlong = location.getLongitude();
+
+                                    // give coordinates to mapsActivity
+                                    Intent intent = new Intent(AddRemoveEventActivity.this, MapsActivity.class);
+                                    intent.putExtra("LONGITUDE", userlong);
+                                    intent.putExtra("LATITUDE", userlat);
+                                    startActivity(intent);
+                                }
+                            }
+                        });
 
 
-    private GoogleMap map;
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // In an educational UI, explain to the user why your app requires this
+            // permission for a specific feature to behave as expected. In this UI,
+            // include a "cancel" or "no thanks" button that allows the user to
+            // continue using your app without granting the permission.
+//            showInContextUI(...);
+            new AlertDialog.Builder(this)
+                    .setTitle("Required Location Permission")
+                    .setMessage("You need location permission to access the map")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
+                                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                                    PERMISSIONS_REQUEST_CODE_FINE_LOCATION);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            // You can directly ask for the permission.
+            ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
+                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                    PERMISSIONS_REQUEST_CODE_FINE_LOCATION);
+        }
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.a);
-//
-//        SupportMapFragment mapFragment =
-//                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
-//    }
+    }
 
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_CODE_FINE_LOCATION) {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // do nothing, permission granted
+            } else {
+                // do nothing
+            }
+        }
+    }
 
     /**
      * This method sets the Activity and button text to the appropriate titles

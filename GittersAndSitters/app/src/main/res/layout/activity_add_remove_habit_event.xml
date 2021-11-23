@@ -42,13 +42,6 @@
         android:layout_height="wrap_content"
         android:text="Add your location" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/mapFragmentContainerView"
-        android:name="com.example.gittersandsittersdatabase.MapsFragment"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:visibility="gone" />
-
     <TextView
         android:id="@+id/event_comment_text"
         android:layout_width="match_parent"
