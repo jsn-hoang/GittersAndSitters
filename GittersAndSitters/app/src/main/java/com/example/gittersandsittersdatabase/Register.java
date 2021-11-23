@@ -146,7 +146,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                     userName.setError("Username is required");
                                     userName.requestFocus();
                                     return;
-                                }
 
                                 /**
                                  * Require user to enter email
