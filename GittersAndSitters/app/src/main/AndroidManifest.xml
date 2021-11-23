@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GittersAndSittersDatabase">
         <activity
+            android:name=".FollowFeedActivity"
+            android:exported="true"/>
+        <activity
             android:name=".FollowingActivity"
             android:exported="true"/>
         <activity
