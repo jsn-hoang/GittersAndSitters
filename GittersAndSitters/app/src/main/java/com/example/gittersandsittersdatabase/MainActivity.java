@@ -157,11 +157,10 @@ public class MainActivity extends AppCompatActivity {
 
                                         Log.d("TAG", "DocumentSnapshot data: " + document.getData());
 
-                                        /** Create "new" User from document data
-                                         */
                                         // Get data from userID document
                                         String username = (String) document.getData().get("userName");
                                         String email = (String) document.getData().get("email");
+                                        // Create "new" User
                                         user = new User(userID, username, email);
 
                                         // Create DataDownloader object for getting the logged in user's data
