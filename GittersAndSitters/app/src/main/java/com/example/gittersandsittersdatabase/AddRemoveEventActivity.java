@@ -162,7 +162,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 }
 
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, RESULT_LOAD_IMAGE);
+                startActivityForResult(intent, PERMISSIONS_REQUEST_CODE_CAMERA);
             }
         });
 
@@ -314,7 +314,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             } else {
                 // permission not granted
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
-                finish(); // maybe ?
             }
         }
     }
