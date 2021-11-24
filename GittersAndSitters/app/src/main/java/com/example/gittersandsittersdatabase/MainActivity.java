@@ -10,12 +10,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -58,21 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
        // Register button to switch to RegisterActivity
         final Button registerButton = findViewById(R.id.register_button);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, Register.class));
-            }
-        });
+        registerButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, Register.class)));
 
         // Login button to execute logic for attempted login
         final Button loginButton = findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                executeLoginAttempt();
-            }
-        });
+        loginButton.setOnClickListener(view -> executeLoginAttempt());
     }
 
     /**
@@ -116,83 +102,70 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         // Attempt to sign in user with provided email and password
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
-                // if sign in is successful
-                if (task.isSuccessful()) {
-                    FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+            // if sign in is successful
+            if (task.isSuccessful()) {
+                FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                    // if email has previously been verified
-                    if (fUser.isEmailVerified()) {
+                // if email has previously been verified
+                if (fUser.isEmailVerified()) {
 
-                        // Get the string that uniquely identifies this user in the Firestore
-                        userID = mAuth.getCurrentUser().getUid();
-                        // Get document reference for document with this unique UserID
-                        DocumentReference docRef = db.collection("Users").document(userID);
-                        // This listener reads the document referenced by docRef
-                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    // if document matching userID exists
-                                    if (document.exists()) {
+                    // Get the string that uniquely identifies this user in the Firestore
+                    userID = mAuth.getCurrentUser().getUid();
+                    // Get document reference for document with this unique UserID
+                    DocumentReference docRef = db.collection("Users").document(userID);
+                    // This listener reads the document referenced by docRef
+                    docRef.get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            DocumentSnapshot document = task1.getResult();
+                            // if document matching userID exists
+                            if (document.exists()) {
 
-                                        Log.d("TAG", "DocumentSnapshot data: " + document.getData());
+                                Log.d("TAG", "DocumentSnapshot data: " + document.getData());
 
-                                        // Get data from userID document
-                                        String username = (String) document.getData().get("userName");
-                                        String email = (String) document.getData().get("email");
-                                        // Create "new" User
-                                        user = new User(userID, username, email);
+                                // Get data from userID document
+                                String username = (String) document.getData().get("userName");
+                                String email1 = (String) document.getData().get("email");
+                                // Create "new" User
+                                user = new User(userID, username, email1);
 
-                                        // Create DataDownloader object for getting the logged in user's data
-                                        DataDownloader dataDownloader = new DataDownloader(userID);
+                                // Create DataDownloader object for getting the logged in user's data
+                                DataDownloader dataDownloader = new DataDownloader(userID);
 
-                                        // get logged in user's data from Firestore
-                                        dataDownloader.getUserHabits(new FirestoreHabitListCallback() {
-                                            @Override
-                                            // Call back enables us to get the downloaded EventList
-                                            public void onHabitListCallback(ArrayList<Habit> returnedHabitList) {
+                                // get logged in user's Habits from Firestore
+                                dataDownloader.getUserHabits(returnedHabitList -> {
 
-                                                habitList = returnedHabitList;
+                                    habitList = returnedHabitList;
+                                    // get logged in user's HabitEvents from Firestore
+                                    dataDownloader.getHabitEvents(returnedEventList -> {
+                                        eventList = returnedEventList;
 
-                                                dataDownloader.getHabitEvents(new FirestoreEventListCallback() {
-                                                    @Override
-                                                    public void onHabitCallback(ArrayList<HabitEvent> returnedEventList) {
-                                                        eventList = returnedEventList;
-
-                                                        // Match the HabitEvents with their corresponding Habits
-                                                        matchEventsToHabits();
-
-                                                        user.setAllUserHabits(habitList);
-                                                        Intent intent = new Intent(MainActivity.this, HabitActivity.class);
-                                                        intent.putExtra("user", user);
-                                                        MainActivity.this.startActivity(intent);
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    } else {
-                                        Log.d("TAG", "No such document");
-                                    }
-                                } else {
-                                Log.d("TAG", "get failed with ", task.getException());
-                                }
+                                        // Match all HabitEvents with their corresponding Habits
+                                        matchEventsToHabits();
+                                        // set the habitList to user and go to HabitActivity
+                                        user.setAllUserHabits(habitList);
+                                        Intent intent = new Intent(MainActivity.this, HabitActivity.class);
+                                        intent.putExtra("user", user);
+                                        MainActivity.this.startActivity(intent);
+                                    });
+                                });
+                            } else {
+                                Log.d("TAG", "No such document");
                             }
-                        });
-                    }
-            else {
-                fUser.sendEmailVerification();
-                Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
-            }
+                        } else {
+                        Log.d("TAG", "get failed with ", task1.getException());
+                        }
+                    });
                 }
-                else {
-                    Toast.makeText(MainActivity.this, "Failed to login! Please check your credentials", Toast.LENGTH_LONG).show();
+        else {
+            fUser.sendEmailVerification();
+            Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
         }
             }
+            else {
+                Toast.makeText(MainActivity.this, "Failed to login! Please check your credentials", Toast.LENGTH_LONG).show();
+    }
         });
     }
 
@@ -204,15 +177,17 @@ public class MainActivity extends AppCompatActivity {
         // for each HabitEvent
         for (int i = 0; i < eventList.size(); i++) {
             HabitEvent habitEvent = eventList.get(i);
-            String eventParentHabitName = habitEvent.getParentHabitName();
+            String ParentHabitName = habitEvent.getParentHabitName();
             boolean found = false;
 
             // for each Habit
             for (int j = 0; j < habitList.size() && !found; j++) {
                 Habit habit = habitList.get(j);
-                if (habit.getHabitName().equals(eventParentHabitName)) {
+                if (habit.getHabitName().equals(ParentHabitName)) {
                     found = true;
                     habit.addHabitEvent(habitEvent);
+                    // replace Habit with it's "HabitEvent-loaded" version
+                    habitList.set(j, habit);
                 }
             }
         }
