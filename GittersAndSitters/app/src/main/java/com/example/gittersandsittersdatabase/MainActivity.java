@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private String userID;
     private boolean isSignedIn;
     private User user;
+    private ArrayList<Habit> habitList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,13 +164,14 @@ public class MainActivity extends AppCompatActivity {
                                         String username = (String) document.getData().get("userName");
                                         String email = (String) document.getData().get("email");
                                         user = new User(userID, username, email);
+                                        // Create DataLoader object for getting the logged in user's data
+                                        DataDownloader dataDownloader = new DataDownloader(userID);
                                         // get logged in user's data from firestore
                                         // Start by getting Habit's without HabitEvents
                                         dataDownloader.getUserHabits(new FirestoreHabitListCallback() {
                                             @Override
                                             public void onCallback(ArrayList<Habit> returnedHabitList) {
-                                                lastHabit = false;
-                                                finalListSize = 0;
+                                                
                                                 habitList = returnedHabitList;
                                                 // After all Habits are retrieved
                                                 // For each Habit in the HabitList
