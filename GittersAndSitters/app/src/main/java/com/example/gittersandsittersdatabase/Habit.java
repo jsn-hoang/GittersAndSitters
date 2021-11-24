@@ -37,6 +37,17 @@ public class Habit implements Serializable {
         this.habitEventList = new ArrayList<>();
     }
 
+    public Habit(String habitID, String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic) {
+        this.habitID = habitID;
+        this.habitName = habitName;
+        this.weekdays = weekdays;
+        this.startDate = startDate;
+        this.habitReason = habitReason;
+        this.progress = 0;                        // Initialize progress to 0
+        this.habitPublic = habitPublic;
+        this.habitEventList = new ArrayList<>();
+    }
+
     public String getHabitID() {
         return habitID;
     }
