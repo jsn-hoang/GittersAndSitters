@@ -12,6 +12,7 @@ import java.util.Comparator;
  */
 public class HabitEvent implements Serializable, Comparable<HabitEvent> {
 
+    private String eventID;
     private String eventName;
     private String parentHabitName;     // Each event is associated with a particular Habit
     private Calendar eventDate;     // always today's date
@@ -20,8 +21,21 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     private File eventPhoto;
 
     // Constructor with the required attributes: name and date
+    public HabitEvent(String eventID, String eventName, String parentHabitName, Calendar eventDate,
+            /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
+        this.eventID = eventID;
+        this.eventName = eventName;
+        this.parentHabitName = parentHabitName;
+        this.eventDate = eventDate;
+        //this.eventLocation = eventLocation;
+        this.eventComment = eventComment;
+        //this.eventPhoto = eventPhoto;
+    }
+
+    // Constructor with the required attributes: name and date
     public HabitEvent(String eventName, String parentHabitName, Calendar eventDate,
             /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
+        this.eventID = "temp";
         this.eventName = eventName;
         this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
@@ -31,6 +45,14 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     }
 
     // Getters and Setters
+
+    public String getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
 
     public String getEventName() {
         return eventName;
