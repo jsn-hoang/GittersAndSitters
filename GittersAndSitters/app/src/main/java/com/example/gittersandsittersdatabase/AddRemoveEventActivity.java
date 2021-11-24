@@ -6,9 +6,13 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -16,9 +20,12 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -64,6 +71,8 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
     public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
+    public static final int PERMISSIONS_REQUEST_CODE_CAMERA = 0;
+    public static final int RESULT_LOAD_IMAGE = 1;
     public static final int RESULT_DELETE = 2;
     User user;
     Habit habit;                   // The parent Habit of the HabitEvent
@@ -74,6 +83,8 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     boolean isNewHabitEvent;
     int habitListIndex;            // index position of the Habit in the User's habitList
     int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
+    ImageView imageView;
+    ImageButton eventPhotoButton; // TODO delete if not used outside onCreate
 
     // location
     private FusedLocationProviderClient fusedLocationClient;
@@ -113,6 +124,8 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         final TextView eventDateText = findViewById(R.id.event_date_text);
         final Button eventLocationButton = findViewById(R.id.event_location_button);
         final ImageButton eventPhotoButton = findViewById(R.id.event_photo_button);
+        final ImageView imageView = findViewById(R.id.imageView);
+
 
         // setup location services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -135,6 +148,22 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             File  habitEventPhoto = habitEvent.getEventPhoto();
 
         }
+
+        // Listener for image button
+        // requests image permissions
+        eventPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // get permissions if not granted already
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE_CAMERA);
+                }
+
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, RESULT_LOAD_IMAGE);
+            }
+        });
 
         // Listener for location button
         locationButton.setOnClickListener(new View.OnClickListener() {
@@ -224,7 +253,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Location location) {
                                 // Got last known location. In some rare situations this can be null.
-                                if (true) {
+                                if (location != null) {
 //                                if (location != null) {
                                     // Logic to handle location object
                                     Double userLat = location.getLatitude();
@@ -279,10 +308,31 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_CODE_FINE_LOCATION) {
             if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // do nothing, permission granted
+                // permission granted
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
             } else {
-                // do nothing
+                // permission not granted
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                finish(); // maybe ?
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case RESULT_LOAD_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String picturePath = cursor.getString(columnIndex);
+                    cursor.close();
+                    imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                }
         }
     }
 
