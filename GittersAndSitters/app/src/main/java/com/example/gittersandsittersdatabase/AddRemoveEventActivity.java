@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -73,7 +74,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     // Declare variables for referencing
     public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
     public static final int PERMISSIONS_REQUEST_CODE_CAMERA = 0;
-    public static final int RESULT_LOAD_IMAGE = 1;
     public static final int RESULT_DELETE = 2;
     User user;
     Habit habit;                   // The parent Habit of the HabitEvent
