@@ -16,6 +16,7 @@ public class Habit implements Serializable {
     private int progress;
     private boolean habitPublic; // public vs private to users that follow
     private ArrayList<HabitEvent> habitEventList;
+    private String habitID;
 
     /**
      * Constructor
@@ -26,6 +27,7 @@ public class Habit implements Serializable {
      * @param habitPublic Public visibility of habit: boolean
      */
     public Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic) {
+        this.habitID = "temp";
         this.habitName = habitName;
         this.weekdays = weekdays;
         this.startDate = startDate;
@@ -35,6 +37,12 @@ public class Habit implements Serializable {
         this.habitEventList = new ArrayList<>();
     }
 
+    public String getHabitID() {
+        return habitID;
+    }
+    public void setHabitID(String habitID) {
+        this.habitID = habitID;
+    }
     /**
      * Updates the progress bar value of this habit (0 - 100)
      * based on HabitEvents completed since the start date
