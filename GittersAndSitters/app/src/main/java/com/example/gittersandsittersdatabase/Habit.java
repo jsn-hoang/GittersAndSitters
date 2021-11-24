@@ -167,6 +167,14 @@ public class Habit implements Serializable {
         updateProgress();
     }
 
+    public ArrayList<HabitEvent> getHabitEventList() {
+        return habitEventList;
+    }
+
+    public void setHabitEventList(ArrayList<HabitEvent> habitEventList) {
+        this.habitEventList = habitEventList;
+    }
+
     /**
      * @return Number of habitsEvents corresponding to this habit: int
      */

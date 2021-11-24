@@ -170,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
                                         // get logged in user's data from Firestore
                                         dataDownloader.getUserHabits(new FirestoreHabitListCallback() {
                                             @Override
-                                            // Call back enables us to get the downloaded habitList
-                                            public void onCallback(ArrayList<Habit> returnedHabitList) { // Need this to return Habits with Events!!!
+                                            // Call back enables us to get the downloaded habitList (with HabitEvents)
+                                            public void onHabitListCallback(ArrayList<Habit> returnedHabitList) {
 
                                                 user.setAllUserHabits(returnedHabitList);
                                                 // send logged in user to HabitActivity

@@ -90,15 +90,15 @@ public class DataDownloader implements FirestoreHabitCallback, FirestoreHabitLis
                     getHabitEvents(new FirestoreHabitCallback() {
                         @Override
                         // Call back enables us to get the downloaded Habit with its HabitEvents
-                        public void onCallback(Habit habitWithEvents) {
+                        public void onEventListCallback(ArrayList<HabitEvent> passedEventList) {
                             x+=1;
-
-                            habitList.add(habitWithEvents);
+                            habit.setHabitEventList(passedEventList);
+                            habitList.add(habit);
 
                             if(x == numHabits)
                             // executed after all habitWithEvents are added
 
-                                firestoreHabitListCallback.onCallback(habitList);
+                                firestoreHabitListCallback.onHabitListCallback(habitList);
                            // if (habitList.size() == numHabits) {
                                 // Called after all habits are added to HabitList
                                 //firestoreHabitListCallback.onCallback(habitList);
@@ -159,18 +159,18 @@ public class DataDownloader implements FirestoreHabitCallback, FirestoreHabitLis
                     // Add HabitEvent to the corresponding Habit
                     habit.addHabitEvent(habitEvent);
                 }
-                firestoreHabitCallback.onCallback(habit);
+                firestoreHabitCallback.onEventListCallback(habitEventList);
             } else {
                 Log.d(TAG, "Error getting documents: ", task.getException());
             }
         });
     }
 
-    @Override
-    public void onCallback(ArrayList<Habit> habitList) {
-    }
-    @Override
-    public void onCallback(Habit habit) {
-    }
 
+    @Override
+    public void onHabitListCallback(ArrayList<Habit> habitList) {
+    }
+    @Override
+    public void onEventListCallback(ArrayList<HabitEvent> habitEventList) {
+    }
 }
