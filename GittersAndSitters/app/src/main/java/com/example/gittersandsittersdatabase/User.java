@@ -172,7 +172,7 @@ public class User implements Serializable{
     }
 
     public void setAllUserHabits(ArrayList<Habit> habitList) {
-        this.habitList = this.habitList;
+        this.habitList = habitList;
     }
 
 

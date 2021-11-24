@@ -44,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
 
     // Declare variables to be referenced
 
-    private TextView register;
+//    private TextView register;
     private EditText editTextEmail, editTextPassword;
-    private Button signIn;
+//    private Button signIn;
     private FirebaseAuth mAuth; // The entry point of the Firebase Authentication SDK
-    FirebaseFirestore fStore;   // The entry point for all Cloud Firestore operations
+    private FirebaseFirestore fStore;   // The entry point for all Cloud Firestore operations
     private ProgressBar progressBar;
     private String userID;
-    private boolean isSignedIn;
+//    private boolean isSignedIn;
     private User user;
     private ArrayList<Habit> habitList;
 
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        isSignedIn = false;
         editTextEmail = findViewById(R.id.login_emailAddress);
         editTextPassword = findViewById(R.id.login_password);
         progressBar = findViewById(R.id.progress_bar);
@@ -164,17 +163,17 @@ public class MainActivity extends AppCompatActivity {
                                         String username = (String) document.getData().get("userName");
                                         String email = (String) document.getData().get("email");
                                         user = new User(userID, username, email);
-                                        // Create DataLoader object for getting the logged in user's data
+
+                                        // Create DataDownloader object for getting the logged in user's data
                                         DataDownloader dataDownloader = new DataDownloader(userID);
-                                        // get logged in user's data from firestore
-                                        // Start by getting Habit's without HabitEvents
+
+                                        // get logged in user's data from Firestore
                                         dataDownloader.getUserHabits(new FirestoreHabitListCallback() {
                                             @Override
-                                            public void onCallback(ArrayList<Habit> returnedHabitList) {
+                                            // Call back enables us to get the downloaded habitList
+                                            public void onCallback(ArrayList<Habit> returnedHabitList) { // Need this to return Habits with Events!!!
 
-                                                habitList = returnedHabitList;
-
-                                                user.setAllUserHabits(habitList);
+                                                user.setAllUserHabits(returnedHabitList);
                                                 // send logged in user to HabitActivity
                                                 Intent intent = new Intent(MainActivity.this, HabitActivity.class);
                                                 intent.putExtra("user", user);
