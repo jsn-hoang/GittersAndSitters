@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * This Class loads all of the Habit and HabitEvent data corresponding the the logged in user.
  */
-public class DataDownloader implements FirestoreHabitCallback, FirestoreHabitListCallback{
+public class DataDownloader implements FirestoreHabitListCallback, FirestoreEventListCallback {
 
     private CollectionReference collectionRef;
     private FirebaseFirestore db;
@@ -83,24 +83,25 @@ public class DataDownloader implements FirestoreHabitCallback, FirestoreHabitLis
                     startDate.setTimeInMillis(longDate);
 
                     // Create habit from converted document fields
-                    habit = new Habit(habitID, habitName, weekdays, startDate, reason, isPublic);;
+                    habit = new Habit(habitID, habitName, weekdays, startDate, reason, isPublic);
+                    habitList.add(habit);
 
-                    // get HabitEvents pertaining to this Habit
-                    getHabitEvents(new FirestoreHabitCallback() {
-                        @Override
-                        // Habits inside this method have there HabitEvents
-                        public void onHabitCallback(Habit passedHabit) {
-                            x+=1;
-                            habitList.add(passedHabit);
-
-                            if(x == numHabits)
-                            // executed after all habitWithEvents are added
-
-                                firestoreHabitListCallback.onHabitListCallback(habitList);
-                        }
-                    }, habit);
+//                    // get HabitEvents pertaining to this Habit
+//                    getHabitEvents(new FirestoreHabitCallback() {
+//                        @Override
+//                        // Habits inside this method have there HabitEvents
+//                        public void onHabitCallback(Habit passedHabit) {
+//                            x+=1;
+//                            habitList.add(passedHabit);
+//
+//                            if(x == numHabits)
+//                            // executed after all habitWithEvents are added
+//
+//                        }
+//                    }, habit);
                 }
             }
+            firestoreHabitListCallback.onHabitListCallback(habitList);
         });
     }
 
@@ -110,19 +111,18 @@ public class DataDownloader implements FirestoreHabitCallback, FirestoreHabitLis
      * and added to an ArrayList<HabitEvent>
      * @param firestoreHabitCallback - Interface for handling Firestore's asynchronous behaviour
      *                                 Enables us to get the data from Firestore
-     * @param passedHabit - The Habit whose HabitEvents we are getting
      */
-    public void getHabitEvents (FirestoreHabitCallback firestoreHabitCallback, Habit passedHabit) {
+    public void getHabitEvents (FirestoreEventListCallback firestoreHabitCallback) {
 
         // Initialize habitEventList
         habitEventList = new ArrayList<>();
         // Get an instance of the Firebase Firestore
         db = FirebaseFirestore.getInstance();
         // Get the collection reference for this Habit's HabitEvents
-        collectionRef = collectionRef.document(passedHabit.getHabitID()).collection("HabitEvents");
+        //collectionRef = collectionRef.document(passedHabit.getHabitID()).collection("HabitEvents");
 
         // Attempt to get HabitEvent collection for this Habit
-        collectionRef.get().addOnCompleteListener(task -> {
+        db.collectionGroup("HabitEvents").get().addOnCompleteListener(task -> {
 
             // If collection is found
             if (task.isSuccessful()) {
@@ -133,7 +133,7 @@ public class DataDownloader implements FirestoreHabitCallback, FirestoreHabitLis
                     // Convert document fields to HabitEvent attributes
                     String eventID = document.getId();
                     String eventName = (String) document.getData().get("eventName");
-                    String parentHabitName = passedHabit.getHabitName();
+                    String parentHabitName =(String) document.getData().get("habitName");
 
                     // Convert long object to type Calendar
                     //long longDate = (long) document.getData().get("longDate");
@@ -154,17 +154,20 @@ public class DataDownloader implements FirestoreHabitCallback, FirestoreHabitLis
                 Log.d(TAG, "Error getting documents: ", task.getException());
             }
             // Set EventList to the passed habit
-            passedHabit.setHabitEventList(habitEventList);
+            //passedHabit.setHabitEventList(habitEventList);
             // Callback enables us to add this Habit to an ArrayList
-            firestoreHabitCallback.onHabitCallback(passedHabit);
+            firestoreHabitCallback.onHabitCallback(habitEventList);
         });
     }
 
+    @Override
+    public void onHabitCallback(ArrayList<HabitEvent> eventList) {
+
+    }
 
     @Override
     public void onHabitListCallback(ArrayList<Habit> habitList) {
-    }
-    @Override
-    public void onHabitCallback(Habit habit) {
+
     }
 }
+

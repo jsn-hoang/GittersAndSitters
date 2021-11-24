@@ -1,65 +1,52 @@
 package com.example.gittersandsittersdatabase;
 
-import static android.content.ContentValues.TAG;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
- * This class is responsible for the initial HabitTracker login screen
+ * This class is responsible for the initial HabitTracker login screen and handles the logic for an
+ * attempted user login. If there is a successful login, a "new" User object is created with the
+ * logged in user's userID fields as attributes. All of the user's existing Habits and HabitEvents
+ * are fetched from the Firestore as well.
  */
 public class MainActivity extends AppCompatActivity {
 
     // Declare variables to be referenced
-
-//    private TextView register;
-    private EditText editTextEmail, editTextPassword;
-//    private Button signIn;
-    private FirebaseAuth mAuth; // The entry point of the Firebase Authentication SDK
-    private FirebaseFirestore fStore;   // The entry point for all Cloud Firestore operations
+    private EditText editTextEmail;
+    private EditText editTextPassword;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     private ProgressBar progressBar;
     private String userID;
-//    private boolean isSignedIn;
-    private User user;
     private ArrayList<Habit> habitList;
+    private ArrayList<HabitEvent> eventList;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         editTextEmail = findViewById(R.id.login_emailAddress);
         editTextPassword = findViewById(R.id.login_password);
@@ -67,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         // Get an instance of Firebase Authentication SDK
         mAuth = FirebaseAuth.getInstance();
         // Get an instance of the Firebase Firestore
-        fStore = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
        // Register button to switch to RegisterActivity
         final Button registerButton = findViewById(R.id.register_button);
@@ -89,11 +76,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method handles the logic for an attempted user login.
-     * If there is a successful login, a "new" User object is created
-     * with the logged in user's userID fields as attributes
-     * All of the user's existing Habits, etc are fetched from
-     * Firebase as well.
+     * This method handles the logic for an attempted user login. If there is a successful login,
+     * a "new" User object is created with the logged in user's userID fields as attributes.
+     * All of the user's existing Habits and HabitEvents are fetched from the Firestore as well.
      */
     public void executeLoginAttempt() {
         String email = editTextEmail.getText().toString().trim();
@@ -145,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                         // Get the string that uniquely identifies this user in the Firestore
                         userID = mAuth.getCurrentUser().getUid();
                         // Get document reference for document with this unique UserID
-                        DocumentReference docRef = fStore.collection("Users").document(userID);
+                        DocumentReference docRef = db.collection("Users").document(userID);
                         // This listener reads the document referenced by docRef
                         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -169,37 +154,67 @@ public class MainActivity extends AppCompatActivity {
                                         // get logged in user's data from Firestore
                                         dataDownloader.getUserHabits(new FirestoreHabitListCallback() {
                                             @Override
-                                            // Call back enables us to get the downloaded habitList (with HabitEvents)
+                                            // Call back enables us to get the downloaded EventList
                                             public void onHabitListCallback(ArrayList<Habit> returnedHabitList) {
 
-                                                user.setAllUserHabits(returnedHabitList);
-                                                // send logged in user to HabitActivity
-                                                Intent intent = new Intent(MainActivity.this, HabitActivity.class);
-                                                intent.putExtra("user", user);
-                                                MainActivity.this.startActivity(intent);
+                                                habitList = returnedHabitList;
 
+                                                dataDownloader.getHabitEvents(new FirestoreEventListCallback() {
+                                                    @Override
+                                                    public void onHabitCallback(ArrayList<HabitEvent> returnedEventList) {
+                                                        eventList = returnedEventList;
+
+                                                        // Match the HabitEvents with their corresponding Habits
+                                                        matchEventsToHabits();
+
+                                                        user.setAllUserHabits(habitList);
+                                                        Intent intent = new Intent(MainActivity.this, HabitActivity.class);
+                                                        intent.putExtra("user", user);
+                                                        MainActivity.this.startActivity(intent);
+                                                    }
+                                                });
                                             }
                                         });
-                                    }
-
-                                        else {
+                                    } else {
                                         Log.d("TAG", "No such document");
                                     }
                                 } else {
-                                    Log.d("TAG", "get failed with ", task.getException());
+                                Log.d("TAG", "get failed with ", task.getException());
                                 }
                             }
                         });
                     }
-                    else {
-                        fUser.sendEmailVerification();
-                        Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
-                    }
+            else {
+                fUser.sendEmailVerification();
+                Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
+            }
                 }
                 else {
                     Toast.makeText(MainActivity.this, "Failed to login! Please check your credentials", Toast.LENGTH_LONG).show();
-                }
+        }
             }
         });
+    }
+
+    /**
+     * This method matches a list of HabitEvents with their corresponding Habits
+     */
+    public void matchEventsToHabits() {
+
+        // for each HabitEvent
+        for (int i = 0; i < eventList.size(); i++) {
+            HabitEvent habitEvent = eventList.get(i);
+            String eventParentHabitName = habitEvent.getParentHabitName();
+            boolean found = false;
+
+            // for each Habit
+            for (int j = 0; j < habitList.size() && !found; j++) {
+                Habit habit = habitList.get(j);
+                if (habit.getHabitName().equals(eventParentHabitName)) {
+                    found = true;
+                    habit.addHabitEvent(habitEvent);
+                }
+            }
+        }
     }
 }

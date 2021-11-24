@@ -274,6 +274,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
         HashMap<String, Object> data = new HashMap<>();
 
+        data.put("habitName", habitEvent.getParentHabitName());
         data.put("eventName", habitEvent.getEventName());
         // Convert startDate to type long for database storage
         long longDate = habitEvent.getEventDate().getTimeInMillis();
