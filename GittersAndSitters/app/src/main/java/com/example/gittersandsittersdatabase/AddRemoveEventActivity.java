@@ -224,15 +224,16 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Location location) {
                                 // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
+                                if (true) {
+//                                if (location != null) {
                                     // Logic to handle location object
-                                    Double userlat = location.getLatitude();
-                                    Double userlong = location.getLongitude();
+                                    Double userLat = location.getLatitude();
+                                    Double userLong = location.getLongitude();
 
                                     // give coordinates to mapsActivity
                                     Intent intent = new Intent(AddRemoveEventActivity.this, MapsActivity.class);
-                                    intent.putExtra("LONGITUDE", userlong);
-                                    intent.putExtra("LATITUDE", userlat);
+                                    intent.putExtra("LONGITUDE", userLong);
+                                    intent.putExtra("LATITUDE", userLat);
                                     startActivity(intent);
                                 }
                             }
