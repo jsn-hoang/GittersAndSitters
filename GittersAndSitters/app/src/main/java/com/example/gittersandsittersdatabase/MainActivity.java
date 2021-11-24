@@ -171,20 +171,29 @@ public class MainActivity extends AppCompatActivity {
                                         dataDownloader.getUserHabits(new FirestoreHabitListCallback() {
                                             @Override
                                             public void onCallback(ArrayList<Habit> returnedHabitList) {
-                                                
+
                                                 habitList = returnedHabitList;
                                                 // After all Habits are retrieved
                                                 // For each Habit in the HabitList
-                                                for (int i = 0; i < habitList.size(); i++) {
-                                                    habit = habitList.get(i);
-                                                    if (i == habitList.size() - 1)
-                                                        lastHabit = true;
+//                                                for (int i = 0; i < habitList.size(); i++) {
+//                                                    habit = habitList.get(i);
+//                                                    if (i == habitList.size() - 1)
+//                                                        lastHabit = true;
+                                                user.setAllUserHabits(habitList);
+                                                // send logged in user to HabitActivity
+                                                Intent intent = new Intent(MainActivity.this, HabitActivity.class);
+                                                intent.putExtra("user", user);
+                                                MainActivity.this.startActivity(intent);
 
-                                        /** Get all Firebase Habits corresponding to the logged in user
-                                         */
-                                        getUserHabits();
+                                                /** Get all Firebase Habits corresponding to the logged in user
+                                                 */
+                                                //getUserHabits();
 
-                                    } else {
+                                            }
+                                        });
+                                    }
+
+                                        else {
                                         Log.d("TAG", "No such document");
                                     }
                                 } else {
@@ -192,73 +201,76 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                    } else {
+                    }
+                    else {
                         fUser.sendEmailVerification();
                         Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
                     }
-                } else {
+                }
+                else {
                     Toast.makeText(MainActivity.this, "Failed to login! Please check your credentials", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-    /**
-     * This method searches the logged in user's Habit Collection
-     * All of the documents within the collection are converted
-     * to Habit objects and added to the user's habitList
-     */
-    public void getUserHabits() {
-        // Get a reference to the logged in user's Habit collection
-        CollectionReference habitCollectionReference =
-                fStore.collection("Users").document(userID).collection("Habits");
 
-        // Attempt to get all documents from the habitCollectionReference
-        habitCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//    /**
+//     * This method searches the logged in user's Habit Collection
+//     * All of the documents within the collection are converted
+//     * to Habit objects and added to the user's habitList
+//     */
+//    public void getUserHabits() {
+//        // Get a reference to the logged in user's Habit collection
+//        CollectionReference habitCollectionReference =
+//                fStore.collection("Users").document(userID).collection("Habits");
+//
+//        // Attempt to get all documents from the habitCollectionReference
+//        habitCollectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//
+//                // If Habit documents exist
+//                if (task.isSuccessful()) {
+//                    // For document in collection
+//                    for (QueryDocumentSnapshot document : task.getResult()) {
+//                        Log.d(TAG, document.getId() + " => " + document.getData());
+//                        // Set habitName as document ID
+//                        String habitName = document.getId();
+//
+//                        // Get remaining Habit attributes from document
+//                        String reason = (String) document.getData().get("reason");
+//                        boolean isPublic = (boolean) document.getData().get("isPublic");
+//
+//                        // weekdays are stored as type long
+//                        List<Long> longDays = (List<Long>) document.getData().get("weekdays");
+//                        // Initialize weekdays arraylist
+//                        ArrayList<Integer> weekdays = new ArrayList<>();
+//                        // convert long objects to Integers and add them to weekdays
+//                        for (Long day : longDays) {
+//                            Integer i = (int) (long) day;
+//                            weekdays.add(i);
+//                        }
+//
+//                        // Convert long object to type Calendar
+//                        long longDate = (long) document.getData().get("longDate");
+//                        Calendar startDate = Calendar.getInstance();
+//                        startDate.setTimeInMillis(longDate);
+//                        //Calendar startDate = Calendar.getInstance();
+//
+//                        Habit habit = new Habit(habitName, weekdays, startDate, reason, isPublic);
+//                        // Add Habit to logged in user
+//                        user.addUserHabit(habit);
+//                    }
+//                    // Send the user to HabitActivity
+//                    Intent intent = new Intent(MainActivity.this, FollowingActivity.class);
+//                    intent.putExtra("user", user);
+//                    startActivity(intent);
+//                } else {
+//                    Log.d(TAG, "Error getting documents: ", task.getException());
+//                }
+//            }
+//        });
+//    }
 
-                // If Habit documents exist
-                if (task.isSuccessful()) {
-                    // For document in collection
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d(TAG, document.getId() + " => " + document.getData());
-                        // Set habitName as document ID
-                        String habitName = document.getId();
-
-                        // Get remaining Habit attributes from document
-                        String reason = (String) document.getData().get("reason");
-                        boolean isPublic = (boolean) document.getData().get("isPublic");
-
-                        // weekdays are stored as type long
-                        List<Long> longDays = (List<Long>) document.getData().get("weekdays");
-                        // Initialize weekdays arraylist
-                        ArrayList<Integer> weekdays = new ArrayList<>();
-                        // convert long objects to Integers and add them to weekdays
-                        for (Long day : longDays) {
-                            Integer i = (int) (long) day;
-                            weekdays.add(i);
-                        }
-
-                        // Convert long object to type Calendar
-                        long longDate = (long) document.getData().get("longDate");
-                        Calendar startDate = Calendar.getInstance();
-                        startDate.setTimeInMillis(longDate);
-                        //Calendar startDate = Calendar.getInstance();
-
-                        Habit habit = new Habit(habitName, weekdays, startDate, reason, isPublic);
-                        // Add Habit to logged in user
-                        user.addUserHabit(habit);
-                    }
-                    // Send the user to HabitActivity
-                    Intent intent = new Intent(MainActivity.this, FollowingActivity.class);
-                    intent.putExtra("user", user);
-                    startActivity(intent);
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        });
-    }
-}
-
+        }

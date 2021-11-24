@@ -171,6 +171,10 @@ public class User implements Serializable{
         return habitList;
     }
 
+    public void setAllUserHabits(ArrayList<Habit> habitList) {
+        this.habitList = this.habitList;
+    }
+
 
     /**
      * This method searches through the full habit list and selects
