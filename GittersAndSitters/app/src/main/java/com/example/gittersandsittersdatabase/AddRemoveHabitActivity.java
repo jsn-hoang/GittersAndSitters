@@ -144,9 +144,11 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                     @Override
                     // Get the modified Habit with HabitId
                     public void onHabitCallback(Habit habitWithID) {
+
                         user.addUserHabit(habitWithID);
                     }
                 }, habit);
+
 
 
             }

@@ -20,7 +20,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -31,7 +30,9 @@ import java.util.concurrent.Executor;
 public class DataUploader implements Serializable, FirestoreHabitCallback, FirestoreEventCallback {
 
     private final String userID;
+    private String docID;
     private CollectionReference collectionRef;
+    private DocumentReference docRef;
 
     // Constructor for DataUploader
     DataUploader(String userID) {
@@ -51,23 +52,25 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
         HashMap<String, Object> data = new HashMap<>();
         data.put("habitName", habit.getHabitName());
         data.put("weekdays", habit.getWeekdays());
-
         // Convert startDate to type long for database storage
         long longDate = habit.getStartDate().getTimeInMillis();
         data.put("longDate", longDate);
         data.put("reason", habit.getHabitReason());
         data.put("isPublic", habit.isHabitPublic());
 
-        // Add habit to the User's Habit Collection
-        collectionRef.add(data)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+        docRef = collectionRef.document();
+        docID = docRef.getId();
+        habit.setHabitID(docID);
 
-                    // setID attribute for Habit
-                    habit.setHabitID(documentReference.getId());
-                })
-                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
-        // Perform Callback to get habit with habitID
+        // Add habit to the User's Habit Collection
+        docRef.set(data);
+//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                    @Override
+//                    public void onSuccess(DocumentReference documentReference) {
+//                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+//                    }
+//                })
+//                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
         firestoreHabitCallback.onHabitCallback(habit);
     }
 
@@ -95,22 +98,30 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
         //data.put("eventPhoto", habitEvent.getEventPhoto());
         //data.put("eventLocation", habitEvent.getEventLocation());
 
+
+        docRef = collectionRef.document();
+        docID = docRef.getId();
+        habitEvent.setEventID(docID);
+
         // Add habitEvent to the Habit's "HabitEvents" Collection
-        collectionRef.add(data)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                        // setID attribute for habitEvent
-                        habitEvent.setEventID(documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+        docRef.set(data);
+
+
+//        collectionRef.add(data)
+//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                    @Override
+//                    public void onSuccess(DocumentReference documentReference) {
+//                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+//                        // setID attribute for habitEvent
+//                        habitEvent.setEventID(documentReference.getId());
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.w(TAG, "Error adding document", e);
+//                    }
+//                });
         // Perform Callback to get habit with habitID
         firestoreEventCallback.onHabitEventCallback(habitEvent);
     }
