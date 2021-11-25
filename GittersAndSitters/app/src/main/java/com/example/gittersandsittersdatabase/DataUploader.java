@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
-/** This class enables the addition, deletion of Habits and HabitEvents in the Firestore
+/** This class enables the addition, deletion, and updating of Habits and HabitEvents in the Firestore
  */
 
-public class DataUploader implements Serializable, FirestoreHabitCallback, FirestoreEventCallback {
+public class DataUploader implements Serializable{
 
     private final String userID;
     private CollectionReference collectionRef;
@@ -134,6 +134,7 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
                 .delete()
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
                 .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
+    }
 
 
 //        deleteHabitEventSubCollection(new FirestoreHabitCallback() {
@@ -152,7 +153,6 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
 //            }
 //        }, habit);
 //
-    }
 
     /**
      * This method deletes a HabitEvent from Firestore
@@ -251,12 +251,7 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
         else // else get collectionRef for HabitEvents
             collectionRef = db.collection("Users/" + userID + "/Habits/" + habit.getHabitID() + "/HabitEvents/");
     }
-
-
-
-
-
-
+    
 
     // https://stackoverflow.com/questions/49125183/how-delete-a-collection-or-subcollection-from-firestore
     public void deleteCollection(final CollectionReference collection, Executor executor) {
@@ -291,17 +286,5 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
         Tasks.await(batch.commit());
 
         return querySnapshot.getDocuments();
-    }
-
-
-
-
-
-    @Override
-    public void onHabitCallback(Habit habit) {
-    }
-    @Override
-    public void onHabitEventCallback(HabitEvent habitEvent) {
-
     }
 }

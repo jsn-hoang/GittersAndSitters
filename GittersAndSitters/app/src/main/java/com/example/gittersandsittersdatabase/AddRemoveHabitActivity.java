@@ -30,7 +30,7 @@ import java.util.concurrent.Executor;
  * This class is responsible for creating, editing, or deleting a Habit.
  */
 
-public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, FirestoreHabitCallback, Executor{
+public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, Executor{
 
     private FirebaseFirestore db;
     private CollectionReference collectionRef;
@@ -422,11 +422,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                 "isPublic", habit.isHabitPublic())
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
-    }
-
-    @Override
-    public void onHabitCallback(Habit habit) {
-
     }
 
     @Override

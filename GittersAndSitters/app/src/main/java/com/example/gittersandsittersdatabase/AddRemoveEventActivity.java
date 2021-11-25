@@ -51,7 +51,7 @@ import java.util.Locale;
 
 //TODO Fragments for habitEventPhoto and habitEventLocation
 
-public class AddRemoveEventActivity extends AppCompatActivity implements FirestoreEventCallback {
+public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
     private FirebaseFirestore db;
@@ -348,9 +348,5 @@ public class AddRemoveEventActivity extends AppCompatActivity implements Firesto
                 });
     }
 
-    @Override
-    public void onHabitEventCallback(HabitEvent habitEvent) {
-
-    }
 }
 
