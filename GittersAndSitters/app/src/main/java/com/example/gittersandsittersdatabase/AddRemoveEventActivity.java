@@ -299,13 +299,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             // You can use the API that requires the permission.
-            LocationRequest mLocationRequest = LocationRequest.create();
-            mLocationRequest.setInterval(60000);
-            mLocationRequest.setFastestInterval(5000);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-            LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback(), null);
-
             fusedLocationClient.getLastLocation()
                         .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                             @Override
