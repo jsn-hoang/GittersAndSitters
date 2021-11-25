@@ -161,7 +161,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     // Overwrite the edited HabitEvent
                     habit.setHabitEvent(habitEventListIndex, habitEvent);
                     // Update the edited HabitEvent in FireStore
-                    setHabitEventInDB();
                     dataUploader.setHabitEvent(habitEvent);
                 }
 
