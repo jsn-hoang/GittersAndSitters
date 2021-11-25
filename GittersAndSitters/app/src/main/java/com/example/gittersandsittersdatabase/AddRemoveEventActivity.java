@@ -142,7 +142,7 @@ public class AddRemoveEventActivity extends AppCompatActivity implements Firesto
                 // if this is a new HabitEvent
                 if (isNewHabitEvent) {
 
-                    habitEvent = new HabitEvent(habitEventName, habit.getHabitName(),
+                    habitEvent = new HabitEvent(habit.getHabitID(), habitEventName,
                             habitEventDate, habitEventComment);
 
                     // Add the habitEvent to Firestore
@@ -283,7 +283,7 @@ public class AddRemoveEventActivity extends AppCompatActivity implements Firesto
 
         HashMap<String, Object> data = new HashMap<>();
 
-        data.put("habitName", habitEvent.getParentHabitName());
+        data.put("habitID", habitEvent.getParentHabitID());
         data.put("eventName", habitEvent.getEventName());
         // Convert startDate to type long for database storage
         long longDate = habitEvent.getEventDate().getTimeInMillis();

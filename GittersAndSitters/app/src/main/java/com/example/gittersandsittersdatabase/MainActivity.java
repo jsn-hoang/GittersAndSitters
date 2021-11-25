@@ -179,13 +179,13 @@ public class MainActivity extends AppCompatActivity {
         // for each HabitEvent
         for (int i = 0; i < eventList.size(); i++) {
             HabitEvent habitEvent = eventList.get(i);
-            String ParentHabitName = habitEvent.getParentHabitName();
+            String parentHabitID = habitEvent.getParentHabitID();
             boolean found = false;
 
             // for each Habit
             for (int j = 0; j < habitList.size() && !found; j++) {
                 Habit habit = habitList.get(j);
-                if (habit.getHabitName().equals(ParentHabitName)) {
+                if (habit.getHabitID().equals(parentHabitID)) {
                     found = true;
                     habit.addHabitEvent(habitEvent);
                     // replace Habit with it's "HabitEvent-loaded" version

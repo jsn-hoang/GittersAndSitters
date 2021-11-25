@@ -106,7 +106,7 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
                     // Convert document fields to HabitEvent attributes
                     String eventID = document.getId();
                     String eventName = (String) document.getData().get("eventName");
-                    String parentHabitName = (String) document.getData().get("habitName");
+                    String parentHabitID = (String) document.getData().get("habitID");
 
                     // Convert long object to type Calendar
                     //long longDate = (long) document.getData().get("longDate");
@@ -119,7 +119,7 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
 
                     // Create HabitEvent object and add to habitEventList
                     HabitEvent habitEvent = new HabitEvent
-                            (eventID, eventName, parentHabitName, eventDate, eventComment);
+                            (eventID, parentHabitID, eventName, eventDate, eventComment);
                     habitEventList.add(habitEvent);
                 }
             } else {

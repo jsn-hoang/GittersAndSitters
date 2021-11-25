@@ -241,14 +241,14 @@ public class User implements Serializable{
      */
     public Habit getParentHabitOfHabitEvent(HabitEvent habitEvent) {
 
-        // Get the name of the Habit we are looking for
-        String habitName = habitEvent.getParentHabitName();
+        // Get the ID of the Habit we are looking for
+        String habitID = habitEvent.getParentHabitID();
         boolean parentHabitFound = false;
         Habit habit = null;
         // iterate through habitList until we find the Habit we are looking for
         for (int i = 0; i < habitList.size() && !parentHabitFound; i++) {
             habit = habitList.get(i);
-            if (habitName.equals(habit.getHabitName()))
+            if (habitID.equals(habit.getHabitID()))
                 parentHabitFound = true;
         }
         return habit;

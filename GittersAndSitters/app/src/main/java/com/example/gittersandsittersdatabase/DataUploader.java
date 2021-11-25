@@ -84,7 +84,7 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
 
         // .put() the habitEvent attributes
         HashMap<String, Object> data = new HashMap<>();
-        data.put("habitName", habitEvent.getParentHabitName());
+        data.put("habitID", habitEvent.getParentHabitID());
         data.put("eventName", habitEvent.getEventName());
 
         // Convert startDate to type long for database storage
