@@ -12,25 +12,58 @@ import java.util.Comparator;
  */
 public class HabitEvent implements Serializable, Comparable<HabitEvent> {
 
+    private String eventID;
+    private String parentHabitID;
     private String eventName;
-    private String parentHabitName;     // Each event is associated with a particular Habit
+    //private String parentHabitName;     // Each event is associated with a particular Habit
     private Calendar eventDate;     // always today's date
-    private Location eventLocation;
     private String eventComment;
+    private Location eventLocation;
     private File eventPhoto;
 
     // Constructor with the required attributes: name and date
-    public HabitEvent(String eventName, String parentHabitName, Calendar eventDate,
-            /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
+    public HabitEvent(String eventID, String parentHabitID, String eventName, /*String parentHabitName,*/ Calendar eventDate,
+             String eventComment /*Location eventLocation, *//*File eventPhoto*/) {
+        this.eventID = eventID;
+        this.parentHabitID = parentHabitID;
         this.eventName = eventName;
-        this.parentHabitName = parentHabitName;
+        //this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
-        //this.eventLocation = eventLocation;
         this.eventComment = eventComment;
+        //this.eventLocation = eventLocation;
+        //this.eventPhoto = eventPhoto;
+    }
+
+    // Constructor with the required attributes: name and date
+    public HabitEvent(String parentHabitID, String eventName, /*String parentHabitName,*/ Calendar eventDate,
+             String eventComment /*Location eventLocation,*//*File eventPhoto*/) {
+        this.eventID = "temp";
+        this.parentHabitID = parentHabitID;
+        this.eventName = eventName;
+        //this.parentHabitName = parentHabitName;
+        this.eventDate = eventDate;
+        this.eventComment = eventComment;
+        // his.eventLocation = eventLocation;
         //this.eventPhoto = eventPhoto;
     }
 
     // Getters and Setters
+
+    public String getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+
+    public String getParentHabitID() {
+        return parentHabitID;
+    }
+
+    public void setParentHabitID(String parentHabitID) {
+        this.parentHabitID = parentHabitID;
+    }
 
     public String getEventName() {
         return eventName;
@@ -38,14 +71,6 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
-    }
-
-    public String getParentHabitName() {
-        return parentHabitName;
-    }
-
-    public void setParentHabit(String parentHabitName) {
-        this.parentHabitName = parentHabitName;
     }
 
     public Calendar getEventDate() {

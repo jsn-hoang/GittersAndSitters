@@ -18,6 +18,7 @@ public class User implements Serializable{
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<Habit> habitList;
+    private DataUploader dataUploader;
 //    private ArrayList<HabitEvent> habitEventList;
 
 
@@ -171,6 +172,10 @@ public class User implements Serializable{
         return habitList;
     }
 
+    public void setAllUserHabits(ArrayList<Habit> habitList) {
+        this.habitList = habitList;
+    }
+
 
     /**
      * This method searches through the full habit list and selects
@@ -236,14 +241,14 @@ public class User implements Serializable{
      */
     public Habit getParentHabitOfHabitEvent(HabitEvent habitEvent) {
 
-        // Get the name of the Habit we are looking for
-        String habitName = habitEvent.getParentHabitName();
+        // Get the ID of the Habit we are looking for
+        String habitID = habitEvent.getParentHabitID();
         boolean parentHabitFound = false;
         Habit habit = null;
         // iterate through habitList until we find the Habit we are looking for
         for (int i = 0; i < habitList.size() && !parentHabitFound; i++) {
             habit = habitList.get(i);
-            if (habitName.equals(habit.getHabitName()))
+            if (habitID.equals(habit.getHabitID()))
                 parentHabitFound = true;
         }
         return habit;

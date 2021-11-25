@@ -4,40 +4,26 @@ import static android.content.ContentValues.TAG;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.w3c.dom.Text;
-
-
 import java.text.DateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-
+import java.util.concurrent.Executor;
 
 
 /**
@@ -61,6 +47,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
     TextView habitStartDateText;
     ArrayList<CheckBox> weekdayCheckBoxes;
     EditText habitReasonEditText;
+    private DataUploader dataUploader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +58,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         user = (User) getIntent().getSerializableExtra("user");
 
         db = FirebaseFirestore.getInstance();
-        collectionRef = db.collection("Users/" + user.getUserID() + "/Habits");
+        collectionRef = db.collection("Users/" + user.getUserID() + "/Habits/");
 
 
         // habitPosition corresponds to which ListView entry was clicked
@@ -79,8 +66,11 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             habitIndexPosition = getIntent().getExtras().getInt("position");
             isNewHabit = false;
         }
-        else isNewHabit = true;     // if no position passed, then this is a new Habit
+        // if no position passed, then this is a new Habit
+        else isNewHabit = true;
 
+
+        dataUploader = new DataUploader(user.getUserID());
 
         // Get views that will be used for user input
         habitNameEditText = findViewById(R.id.habit_name_editText);
@@ -131,72 +121,67 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
 
         // This Listener is responsible for the logic when clicking the confirm button
-        addButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        addButton.setOnClickListener(v -> {
 
-                // Retrieve user inputted data
-                String habitName = habitNameEditText.getText().toString();
-                String habitReason = habitReasonEditText.getText().toString();
+            // Retrieve user inputted data
+            String habitName = habitNameEditText.getText().toString();
+            String habitReason = habitReasonEditText.getText().toString();
 
-                // Get user selected days from checked boxes
-                ArrayList<Integer> weekdays = getDaysFromCheckBoxes(weekdayCheckBoxes);
+            // Get user selected days from checked boxes
+            ArrayList<Integer> weekdays = getDaysFromCheckBoxes();
 
-                // habitStartDate is already retrieved
+            // habitStartDate is already retrieved
 
-                //TODO: Get the habitPublic boolean
+            //TODO: Get the habitPublic boolean
 
 
-                if (isNewHabit) {
-                    // Create a new Habit
-                    Habit newHabit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
-                    // Add habit to userHabitList
-                    user.addUserHabit(newHabit);
-                    // Add the habit to Firestore db
-                    addHabitToUserDatabase(newHabit);
-
-                }
-                else { // else edit the existing habit
-
-                    habit.setHabitName(habitName);
-                    habit.setWeekdays(weekdays);
-                    habit.setStartDate(habitStartDate);
-                    habit.setHabitReason(habitReason);
-                    // Overwrite the previous habit with the edited one
-                    user.setUserHabit(habitIndexPosition, habit);
-                }
-
-                // Navigate back to MainActivity
-                Intent intent = new Intent();
-                intent.putExtra("user", user);
-                setResult(RESULT_OK, intent);
-                finish();
+            if (isNewHabit) {
+                // Create a new Habit
+                habit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
+                // Add the habit to db and get its ID
+                String habitID = dataUploader.addHabitAndGetID(habit);
+                habit.setHabitID(habitID);
+                user.addUserHabit(habit);
             }
+
+            else { // else edit the existing habit
+                habit.setHabitName(habitName);
+                habit.setWeekdays(weekdays);
+                habit.setStartDate(habitStartDate);
+                habit.setHabitReason(habitReason);
+                // Overwrite the previous habit with the edited one
+                user.setUserHabit(habitIndexPosition, habit);
+                // Edit the document in Firestore
+                dataUploader.setHabit(habit);
+            }
+            // Navigate back to MainActivity
+            Intent intent = new Intent();
+            intent.putExtra("user", user);
+            setResult(RESULT_OK, intent);
+            finish();
         });
 
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setResult(RESULT_CANCELED);
-                finish();
-            }
+        cancelButton.setOnClickListener(view -> {
+            setResult(RESULT_CANCELED);
+            finish();
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        deleteButton.setOnClickListener(view -> {
 
-                // Delete habit from user habitList
-                user.deleteUserHabit(habit);
-                // Delete habit from user Firebase collection
-                deleteHabitFromUserDatabase();
+            // Delete habit from user habitList
+            user.deleteUserHabit(habit);
 
-                // Navigate back to MainActivity
-                Intent intent = new Intent();
-                intent.putExtra("user", user);
-                setResult(RESULT_DELETE, intent);
-                finish();
-            }
+            collectionRef = collectionRef.document(habit.getHabitID()).collection("HabitEvents");
+
+            // Delete habit from Firebase
+            dataUploader.deleteHabit(habit);
+
+            // Navigate back to MainActivity
+            Intent intent = new Intent();
+            intent.putExtra("user", user);
+            setResult(RESULT_DELETE, intent);
+            finish();
         });
 
         /** This listener is responsible for the logic
@@ -317,10 +302,9 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
      * This method populates a list of integers depending on whether checkboxes are checked
      * If a checkbox representing a certain day is checked, then the integer representing that day
      * is added to the list (Sunday = 1, Monday = 2, ..., Saturday = 6)
-     * @param checkBoxes - a list of checkboxes that are either checked or unchecked
      * @return - ArrayList<Integer> corresponding to days of the week
      */
-    public ArrayList<Integer> getDaysFromCheckBoxes(ArrayList<CheckBox> checkBoxes) {
+    public ArrayList<Integer> getDaysFromCheckBoxes() {
 
         // Initialize new weekdays arraylist
         ArrayList<Integer> days = new ArrayList<>();
@@ -334,47 +318,4 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         }
         return days;
     }
-
-    /**
-     * This method deletes a habit from the logged in user's Habit collection in the database
-     * @param habit - the Habit to be deleted from the user's Habit collection in the database
-     */
-    public void addHabitToUserDatabase(Habit habit) {
-
-        HashMap<String, Object> data = new HashMap<>();
-        // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
-        data.put("habitName", habit.getHabitName());
-        data.put("weekdays", habit.getWeekdays());
-        // Convert startDate to type long for database storage
-        long longDate = habit.getStartDate().getTimeInMillis();
-        data.put("longDate", longDate);
-        data.put("reason", habit.getHabitReason());
-        data.put("isPublic", habit.isHabitPublic());
-
-        // Add habit to the User's Habit Collection
-        collectionRef.document(habit.getHabitName())
-                .set(data);
-    }
-
-    /**
-     * This method adds a habit to the logged in user's Habit collection in the database
-     */
-    public void deleteHabitFromUserDatabase() {
-
-        collectionRef.document(habit.getHabitName())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Data has been deleted successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Data could not be deleted!" + e.toString());
-                    }
-                });
-    }
 }
-
