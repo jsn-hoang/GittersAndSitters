@@ -66,7 +66,8 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             habitIndexPosition = getIntent().getExtras().getInt("position");
             isNewHabit = false;
         }
-        else isNewHabit = true;     // if no position passed, then this is a new Habit
+        // if no position passed, then this is a new Habit
+        else isNewHabit = true;
 
 
         dataUploader = new DataUploader(user.getUserID());
