@@ -162,6 +162,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     habit.setHabitEvent(habitEventListIndex, habitEvent);
                     // Update the edited HabitEvent in FireStore
                     setHabitEventInDB();
+                    dataUploader.setHabitEvent(habitEvent);
                 }
 
                 // Overwrite the edited user Habit
@@ -268,85 +269,5 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         // Set String representation of date to eventDateText
         eventDateText.setText(dateString);
     }
-
-    /**
-     * This method adds a HabitEvent to Firestore.
-     */
-    public void addHabitEventToDB() {
-
-        HashMap<String, Object> data = new HashMap<>();
-
-        data.put("habitID", habitEvent.getParentHabitID());
-        data.put("eventName", habitEvent.getEventName());
-        // Convert startDate to type long for database storage
-        long longDate = habitEvent.getEventDate().getTimeInMillis();
-        data.put("longDate", longDate);
-        //data.put("eventLocation", habitEvent.getEventLocation());
-        data.put("eventComment", habitEvent.getEventComment());
-        //data.put("eventPhoto", habitEvent.getEventPhoto());
-
-        // Add habitEvent to the Habit's habitEvent Collection
-        collectionRef.add(data)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                        //habitEventID = documentReference.getId();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-    }
-
-    /**
-     * This method deletes a HabitEvent from Firestore.
-     */
-    public void deleteHabitEventFromDB(HabitEvent habitEvent) {
-
-        collectionRef.document(habitEvent.getEventID())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Data has been deleted successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Data could not be deleted!" + e.toString());
-                    }
-                });
-    }
-
-    /**
-     * This method replaces a HabitEvent in the logged in user's HabitEvent collection in the database
-     */
-    public void setHabitEventInDB() {
-
-        long longDate = habitEvent.getEventDate().getTimeInMillis();
-        DocumentReference docRef = collectionRef.document(habitEvent.getEventID());
-        docRef.update(
-                "eventName", habitEvent.getEventName(),
-                "longDate", longDate,
-                "eventComment", habitEvent.getEventComment())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error updating document", e);
-                    }
-                });
-    }
-
 }
 

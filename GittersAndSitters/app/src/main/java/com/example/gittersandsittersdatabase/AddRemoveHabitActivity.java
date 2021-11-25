@@ -145,7 +145,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             }
 
             else { // else edit the existing habit
-                String previousName = habit.getHabitName();
                 habit.setHabitName(habitName);
                 habit.setWeekdays(weekdays);
                 habit.setStartDate(habitStartDate);
@@ -175,17 +174,8 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
             collectionRef = collectionRef.document(habit.getHabitID()).collection("HabitEvents");
 
+            // Delete habit from Firebase
             dataUploader.deleteHabit(habit);
-//            dataUploader.deleteCollection(collectionRef, new Executor() {
-//                @Override
-//                public void execute(Runnable command) {
-//                    // Delete habit from user db
-//                    dataUploader.deleteHabit(habit);
-//                }
-//            });
-
-            // Delete habit from user db
-            //dataUploader.deleteHabit(habit);
 
             // Navigate back to MainActivity
             Intent intent = new Intent();
@@ -327,101 +317,5 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             }
         }
         return days;
-    }
-
-//    /**
-//     * This method adds a newly created habit to the logged in user's Habit collection in the database
-//     */
-//    public void addHabitToDB() {
-//
-//        HashMap<String, Object> data = new HashMap<>();
-//        // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
-//        data.put("habitName", habit.getHabitName());
-//        data.put("weekdays", habit.getWeekdays());
-//        // Convert startDate to type long for database storage
-//        long longDate = habit.getStartDate().getTimeInMillis();
-//        data.put("longDate", longDate);
-//        data.put("reason", habit.getHabitReason());
-//        data.put("isPublic", habit.isHabitPublic());
-//
-//        // Add habit to the User's Habit Collection
-//        collectionRef.add(data)
-//                .addOnSuccessListener(documentReference -> {
-//                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-//
-//                    // assign the ID of this habit
-//                    habitID = documentReference.getId();
-//                })
-//                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
-//    }
-
-    /**
-     * This method deletes a specified Habit from the user's Habit Collection
-     * It also calls another method to delete all of HabitEvent documents
-     * within specified Habit's sub-collection
-     */
-    public void deleteHabitFromDB() {
-
-        // Delete all HabitEvents within this Habit's HabitEvents sub-collection
-
-        // Get the Habit's eventList
-        ArrayList<HabitEvent> eventList = habit.getHabitEvents();
-        deleteHabitEventSubCollection(eventList);
-
-        DocumentReference docRef = collectionRef.document(habit.getHabitID());
-        docRef.delete()
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
-                .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
-    }
-
-    /**
-     * This method deletes all of the HabitEvent documents within a specified Habit's sub-collection
-     */
-    public void deleteHabitEventSubCollection(ArrayList<HabitEvent> eventList) {
-
-        // Get sub-collection reference corresponding to the Habit whose events we will delete
-        // CollectionReference eventCollectionRef = collectionRef.document(habit.getHabitID()).collection("HabitEvents");
-        //db.collection("Users/" +
-        //user.getUserID() + "/Habits/" + habit.getHabitID() + "/HabitEvents/");
-
-        // Iterate through all of the events
-        for (int i = 0; i < eventList.size(); i++) {
-
-            // Delete the current habitEvent from the db
-            HabitEvent habitEvent = eventList.get(i);
-
-
-            //Log.d(TAG, "Current HabitEventID = " + habitEventID);
-
-
-            // Get document corresponding to current HabitEvent
-            DocumentReference docRef = collectionRef.document(habit.getHabitID())
-                    .collection("HabitEvents").document(habitEvent.getEventID());
-
-            // Delete the document
-            docRef.delete()
-                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
-                    .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
-        }
-    }
-
-    /**
-     * This method replaces a Habit in the logged in user's Habit collection in the database
-     */
-    public void setHabitInDB() {
-
-        // We will also need to edit the parent name of all of the Habit Events
-
-        long longDate = habit.getStartDate().getTimeInMillis();
-
-        DocumentReference habitDoc = collectionRef.document(habit.getHabitID());
-        habitDoc.update(
-                "habitName", habit.getHabitName(),
-                "weekdays", habit.getWeekdays(),
-                "longDate", longDate,
-                "reason", habit.getHabitReason(),
-                "isPublic", habit.isHabitPublic())
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
 }

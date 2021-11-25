@@ -4,30 +4,14 @@ import static android.content.ContentValues.TAG;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.WorkerThread;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 
 /** This class enables the addition, deletion, and updating of Habits and HabitEvents in the Firestore
  */
@@ -68,13 +52,6 @@ public class DataUploader implements Serializable, FirestoreCallback{
         docRef.set(data);
         return docID;
     }
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-//                    }
-//                })
-//                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
 
     /**
      * This method adds a HabitEvent to its proper location in the Firestore
@@ -99,29 +76,12 @@ public class DataUploader implements Serializable, FirestoreCallback{
         //data.put("eventPhoto", habitEvent.getEventPhoto());
         //data.put("eventLocation", habitEvent.getEventLocation());
 
-
         DocumentReference docRef = collectionRef.document();
         String docID = docRef.getId();
         // Add habitEvent to the Habit's "HabitEvents" Collection
         docRef.set(data);
         return docID;
     }
-
-//        collectionRef.add(data)
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-//                        // setID attribute for habitEvent
-//                        habitEvent.setEventID(documentReference.getId());
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.w(TAG, "Error adding document", e);
-//                    }
-//                });
 
     /**
      * This method deletes a Habit from the Firestore. However, we must first delete all of the
@@ -131,56 +91,38 @@ public class DataUploader implements Serializable, FirestoreCallback{
     public void deleteHabit(Habit habit) {
 
         // Delete this Habit's "HabitEvents" subcollection
-        deleteHabitCollection(habit, new FirestoreCallback() {
-            @Override
+        deleteHabitCollection(habit, () -> {
             // Callback ensures all documents in "HabitEvents" collection are deleted
-            public void onCallback() {
-                //TODO Ensure that this callback doesn't slow down the app too much.
-                // (User must wait for entire "HabitEvents" collection to be deleted from Firestore)
+            //TODO Ensure that this callback doesn't slow down the app too much.
+            // (User must wait for entire "HabitEvents" collection to be deleted from Firestore)
 
-                // Set collectionRef to delete Habit
-                setCollectionReference(true, habit);
-                // delete the Habit
-                collectionRef.document(habit.getHabitID())
-                        .delete()
-                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
-                        .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
+            // Set collectionRef to delete Habit
+            setCollectionReference(true, habit);
+            // delete the Habit
+            collectionRef.document(habit.getHabitID())
+                    .delete()
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
+                    .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
 
-            }
         });
     }
 
-
-//        deleteHabitEventSubCollection(new FirestoreHabitCallback() {
-//            @Override
-//            // Wait for sub-collection to be deleted before deleting the Habit document
-//            public void onHabitCallback(Habit habit) {
-//
-//                // Set collectionRef
-//                setCollectionReference(true, habit);
-//                // delete the Habit
-//                collectionRef.document(habit.getHabitID())
-//                        .delete()
-//                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
-//                        .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
-//
-//            }
-//        }, habit);
-//
-
+    /**
+     * This method deletes a Habit along with its "HabitEvents" subcollection from Firestore
+     * @param habit - The Habit that is to be deleted (along with its "HabitEvents" subcollection)
+     * @param firestoreCallback - Interface for handling Firestore's asynchronous behaviour. Ensures
+     *                            all "HabitEvents" docs are deleted before the parent Habit doc
+     */
     public void deleteHabitCollection(Habit habit, FirestoreCallback firestoreCallback) {
 
         // set CollectionReference to this Habit's "HabitEvents" collection
         setCollectionReference(false, habit);
 
-        collectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot snapshot: Objects.requireNonNull(task.getResult())){
-                    collectionRef.document(snapshot.getId()).delete();
-                }
-                firestoreCallback.onCallback();
+        collectionRef.get().addOnCompleteListener(task -> {
+            for (QueryDocumentSnapshot snapshot: Objects.requireNonNull(task.getResult())){
+                collectionRef.document(snapshot.getId()).delete();
             }
+            firestoreCallback.onCallback();
         });
     }
 
@@ -197,32 +139,9 @@ public class DataUploader implements Serializable, FirestoreCallback{
         // Delete the HabitEvent
         collectionRef.document(habitEvent.getEventID())
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Data has been deleted successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Data could not be deleted!" + e.toString());
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
+                .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
     }
-
-    /** This method deletes all documents within a specified Habit's "HabitEvents" sub-collection
-     */
-//    public void deleteHabitEventSubCollection(FirestoreHabitCallback firestoreHabitCallback, Habit habit) {
-//
-//        setCollectionReference(false, habit);
-//
-//        // Iterate through the "HabitEvents" collection for this Habit, deleting all documents
-//
-//
-//        // return to caller to delete the parent document of this sub-collection
-//        firestoreHabitCallback.onHabitCallback(habit);
-//        }
 
     /** This method updates a Habit in the Firestore
      */
@@ -253,20 +172,9 @@ public class DataUploader implements Serializable, FirestoreCallback{
                 "eventName", habitEvent.getEventName(),
                 "longDate", longDate,
                 "eventComment", habitEvent.getEventComment())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error updating document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
+                .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
-
 
     /**
      * This method obtains the proper Firestore CollectionReference
@@ -284,42 +192,5 @@ public class DataUploader implements Serializable, FirestoreCallback{
 
     @Override
     public void onCallback() {
-
     }
-
-
-//    // https://stackoverflow.com/questions/49125183/how-delete-a-collection-or-subcollection-from-firestore
-//    public void deleteCollection(final CollectionReference collection, Executor executor) {
-//        Tasks.call(executor, new Callable<Object>() {
-//            @Override
-//            public Object call() throws Exception {
-//                int batchSize = 10;
-//                Query query = collection.orderBy(FieldPath.documentId()).limit(batchSize);
-//                List<DocumentSnapshot> deleted = DataUploader.this.deleteQueryBatch(query); // call deleteQueryBatch
-//
-//                while (deleted.size() >= batchSize) {
-//                    DocumentSnapshot last = deleted.get(deleted.size() - 1);
-//                    query = collection.orderBy(FieldPath.documentId()).startAfter(last.getId()).limit(batchSize);
-//
-//                    deleted = DataUploader.this.deleteQueryBatch(query);
-//                }
-//
-//                return null;
-//            }
-//        });
-//    }
-//
-//    // Called by deleteCollection
-//    @WorkerThread
-//    public List<DocumentSnapshot> deleteQueryBatch(final Query query) throws Exception {
-//        QuerySnapshot querySnapshot = Tasks.await(query.get());
-//
-//        WriteBatch batch = query.getFirestore().batch();
-//        for (DocumentSnapshot snapshot : querySnapshot) {
-//            batch.delete(snapshot.getReference());
-//        }
-//        Tasks.await(batch.commit());
-//
-//        return querySnapshot.getDocuments();
-//    }
 }
