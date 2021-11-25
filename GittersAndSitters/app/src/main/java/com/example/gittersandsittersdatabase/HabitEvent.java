@@ -17,33 +17,33 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     private String eventName;
     //private String parentHabitName;     // Each event is associated with a particular Habit
     private Calendar eventDate;     // always today's date
-    private Location eventLocation;
     private String eventComment;
+    private Location eventLocation;
     private File eventPhoto;
 
     // Constructor with the required attributes: name and date
     public HabitEvent(String eventID, String parentHabitID, String eventName, /*String parentHabitName,*/ Calendar eventDate,
-            /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
+             String eventComment /*Location eventLocation, *//*File eventPhoto*/) {
         this.eventID = eventID;
         this.parentHabitID = parentHabitID;
         this.eventName = eventName;
         //this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
-        //this.eventLocation = eventLocation;
         this.eventComment = eventComment;
+        //this.eventLocation = eventLocation;
         //this.eventPhoto = eventPhoto;
     }
 
     // Constructor with the required attributes: name and date
     public HabitEvent(String parentHabitID, String eventName, /*String parentHabitName,*/ Calendar eventDate,
-            /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
+             String eventComment /*Location eventLocation,*//*File eventPhoto*/) {
         this.eventID = "temp";
         this.parentHabitID = parentHabitID;
         this.eventName = eventName;
         //this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
-        //this.eventLocation = eventLocation;
         this.eventComment = eventComment;
+        // his.eventLocation = eventLocation;
         //this.eventPhoto = eventPhoto;
     }
 
