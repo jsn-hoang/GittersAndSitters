@@ -22,6 +22,7 @@ import com.google.firebase.firestore.WriteBatch;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
 /** This class enables the addition, deletion of Habits and HabitEvents in the Firestore
@@ -201,10 +202,9 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
 //        firestoreHabitCallback.onHabitCallback(habit);
 //        }
 
-    /**
-     * This method replaces a Habit in the logged in user's Firestore "Habit" collection
+    /** This method updates a Habit in the Firestore
      */
-    public void setHabitInDB(Habit habit) {
+    public void setHabit(Habit habit) {
 
         setCollectionReference(true, habit);
         // Convert date to type long
@@ -221,6 +221,31 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
 
+    /** This method updates a HabitEvent in the Firestore
+     */
+    public void setHabitEvent(HabitEvent habitEvent) {
+
+        long longDate = habitEvent.getEventDate().getTimeInMillis();
+        DocumentReference docRef = collectionRef.document(habitEvent.getEventID());
+        docRef.update(
+                "eventName", habitEvent.getEventName(),
+                "longDate", longDate,
+                "eventComment", habitEvent.getEventComment())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error updating document", e);
+                    }
+                });
+    }
+    
+
     /**
      * This method obtains the proper Firestore CollectionReference
      * @param isForHabit - Boolean indicating whether we need Habit or HabitEvent CollectionRef
@@ -236,21 +261,29 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
     }
 
 
+
+
+
+
+
     // https://stackoverflow.com/questions/49125183/how-delete-a-collection-or-subcollection-from-firestore
     public void deleteCollection(final CollectionReference collection, Executor executor) {
-        Tasks.call(executor, () -> {
-            int batchSize = 10;
-            Query query = collection.orderBy(FieldPath.documentId()).limit(batchSize);
-            List<DocumentSnapshot> deleted = deleteQueryBatch(query); // call deleteQueryBatch
+        Tasks.call(executor, new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                int batchSize = 10;
+                Query query = collection.orderBy(FieldPath.documentId()).limit(batchSize);
+                List<DocumentSnapshot> deleted = DataUploader.this.deleteQueryBatch(query); // call deleteQueryBatch
 
-            while (deleted.size() >= batchSize) {
-                DocumentSnapshot last = deleted.get(deleted.size() - 1);
-                query = collection.orderBy(FieldPath.documentId()).startAfter(last.getId()).limit(batchSize);
+                while (deleted.size() >= batchSize) {
+                    DocumentSnapshot last = deleted.get(deleted.size() - 1);
+                    query = collection.orderBy(FieldPath.documentId()).startAfter(last.getId()).limit(batchSize);
 
-                deleted = deleteQueryBatch(query);
+                    deleted = DataUploader.this.deleteQueryBatch(query);
+                }
+
+                return null;
             }
-
-            return null;
         });
     }
 
@@ -267,6 +300,10 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
 
         return querySnapshot.getDocuments();
     }
+
+
+
+
 
     @Override
     public void onHabitCallback(Habit habit) {

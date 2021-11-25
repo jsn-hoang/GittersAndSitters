@@ -161,7 +161,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                 // Overwrite the previous habit with the edited one
                 user.setUserHabit(habitIndexPosition, habit);
                 // Edit the document in Firestore
-                dataUploader.setHabitInDB(habit);
+                dataUploader.setHabit(habit);
             }
             // Navigate back to MainActivity
             Intent intent = new Intent();
