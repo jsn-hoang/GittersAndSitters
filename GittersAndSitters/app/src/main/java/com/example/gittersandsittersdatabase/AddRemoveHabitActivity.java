@@ -23,13 +23,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 
 /**
  * This class is responsible for creating, editing, or deleting a Habit.
  */
 
-public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, FirestoreHabitCallback{
+public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, FirestoreHabitCallback, Executor{
 
     private FirebaseFirestore db;
     private CollectionReference collectionRef;
@@ -46,7 +47,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
     TextView habitStartDateText;
     ArrayList<CheckBox> weekdayCheckBoxes;
     EditText habitReasonEditText;
-    String habitID;
     private DataUploader dataUploader;
 
     @Override
@@ -141,10 +141,9 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                 // Add the habit to db
                 dataUploader.addHabitAndGetID(new FirestoreHabitCallback() {
                     @Override
-                    public void onHabitCallback(Habit returnedHabit) {
-                        // Returned Habit has the HabitID
-                        habit = returnedHabit;
-                        user.addUserHabit(habit);
+                    // Get the modified Habit with HabitId
+                    public void onHabitCallback(Habit habitWithID) {
+                        user.addUserHabit(habitWithID);
                     }
                 }, habit);
 
@@ -178,8 +177,19 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
             // Delete habit from user habitList
             user.deleteUserHabit(habit);
+
+            collectionRef = collectionRef.document(habit.getHabitID()).collection("HabitEvents");
+
+            dataUploader.deleteCollection(collectionRef, new Executor() {
+                @Override
+                public void execute(Runnable command) {
+                    // Delete habit from user db
+                    dataUploader.deleteHabit(habit);
+                }
+            });
+
             // Delete habit from user db
-            dataUploader.deleteHabit(habit);
+            //dataUploader.deleteHabit(habit);
 
             // Navigate back to MainActivity
             Intent intent = new Intent();
@@ -421,6 +431,11 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
     @Override
     public void onHabitCallback(Habit habit) {
+
+    }
+
+    @Override
+    public void execute(Runnable command) {
 
     }
 }

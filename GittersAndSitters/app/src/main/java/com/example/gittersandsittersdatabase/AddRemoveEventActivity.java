@@ -51,7 +51,7 @@ import java.util.Locale;
 
 //TODO Fragments for habitEventPhoto and habitEventLocation
 
-public class AddRemoveEventActivity extends AppCompatActivity {
+public class AddRemoveEventActivity extends AppCompatActivity implements FirestoreEventCallback {
 
     // Declare variables for referencing
     private FirebaseFirestore db;
@@ -67,21 +67,23 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     boolean isNewHabitEvent;
     int habitListIndex;            // index position of the Habit in the User's habitList
     int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
+    private DataUploader dataUploader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_remove_habit_event);
 
-        // get user
         user = (User) getIntent().getSerializableExtra("user");
-        // get the Habit that is/will be the parent of this HabitEvent
+        // create dataUploader instance
+        dataUploader = new DataUploader(user.getUserID());
+        // get the HabitEvent's associated Habit
         habit = (Habit) getIntent().getSerializableExtra("habit");
         // get the index position of the parentHabit in habitList
         habitListIndex = user.getUserHabitPosition(habit);
         // get instance of FirebaseFirestore
         db = FirebaseFirestore.getInstance();
-        // get collection reference of HabitEvents
+        // get collection reference
         collectionRef = db.collection("Users/" + user.getUserID() + "/Habits/" + habit.getHabitID() + "/HabitEvents/");
 
         // position intent is only available for an existing HabitEvent
@@ -137,17 +139,22 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
                 // Note: habitEventDate is already done
 
-
+                // if this is a new HabitEvent
                 if (isNewHabitEvent) {
-                    // Create a new HabitEvent
+
                     habitEvent = new HabitEvent(habitEventName, habit.getHabitName(),
                             habitEventDate, habitEventComment);
+
                     // Add the habitEvent to Firestore
-                    addHabitEventToDB();
-                    // assign the HabitEventID
-                    habitEvent.setEventID(habitEventID);
-                    // Add the new HabitEvent to the Habit's habitEventList
-                    habit.addHabitEvent(habitEvent);
+                    dataUploader.addHabitEventAndGetID(habitEvent, habit, new FirestoreEventCallback() {
+                        @Override
+                        // Callback has habitEvent with ID
+                        public void onHabitEventCallback(HabitEvent habitEvent) {
+                            // add the HabitEvent with ID to the parent Habit
+                            habit.addHabitEvent(habitEvent);
+
+                        }
+                    });
 
 
                 }
@@ -165,7 +172,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 }
 
                 // Overwrite the edited user Habit
-                user.setUserHabit(habitListIndex, habit);
+                user.setUserHabit(habitListIndex, habit);   // executed whether we're adding or editing
 
                 // Navigate back to launcher Activity (HabitActivity or HabitEventActivity)
                 Intent intent = new Intent();
@@ -187,12 +194,14 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 // remove the habitEvent from the corresponding Habit
                 habit.deleteHabitEvent(habitEvent);
                 // overwrite the edited userHabit
                 user.setUserHabit(habitListIndex, habit);
+
                 // Delete the habitEvent from Firestore
-                deleteHabitEventFromDB(habitEvent);
+                dataUploader.deleteHabitEvent(habit, habitEvent);
 
 
                 // Navigate back to MainActivity
@@ -344,6 +353,11 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                         Log.w(TAG, "Error updating document", e);
                     }
                 });
+    }
+
+    @Override
+    public void onHabitEventCallback(HabitEvent habitEvent) {
+
     }
 }
 

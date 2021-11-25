@@ -174,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public void matchEventsToHabits() {
 
+        //TODO habitEvents may have to be sorted in reverse chronological order
+
         // for each HabitEvent
         for (int i = 0; i < eventList.size(); i++) {
             HabitEvent habitEvent = eventList.get(i);
