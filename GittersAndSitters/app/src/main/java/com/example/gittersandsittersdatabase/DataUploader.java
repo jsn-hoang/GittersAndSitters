@@ -128,7 +128,7 @@ public class DataUploader implements Serializable, FirestoreCallback{
     }
 
     /**
-     * This method deletes a Habit along with its "HabitEvents" subcollection from Firestore
+     * This method deletes a Habit's "HabitEvents" subcollection from Firestore
      * @param habit - The Habit that is to be deleted (along with its "HabitEvents" subcollection)
      * @param firestoreCallback - Interface for handling Firestore's asynchronous behaviour. Ensures
      *                            all "HabitEvents" docs are deleted before the parent Habit doc

@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                                             MainActivity.this.matchEventsToHabits();
                                             // set the habitList to user and go to HabitActivity
                                             user.setAllUserHabits(habitList);
-                                            Intent intent = new Intent(MainActivity.this, FollowingActivity.class);
+                                            Intent intent = new Intent(MainActivity.this, HabitActivity.class);
                                             intent.putExtra("user", user);
                                             MainActivity.this.startActivity(intent);
                                         });
