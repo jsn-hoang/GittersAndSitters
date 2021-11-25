@@ -88,8 +88,8 @@ public class FollowFeedActivity extends AppCompatActivity {
 
                 for (QueryDocumentSnapshot doc : value) {
                     Log.d(TAG, doc.getId() + " => " + doc.getData());
-                    // Set habitName as document ID
-                    String habitName = doc.getId();
+                    // get HabitName
+                    String habitName = (String) doc.getData().get("habitName");
 
                     // Get remaining Habit attributes from document
                     String reason = (String) doc.getData().get("reason");
@@ -112,7 +112,7 @@ public class FollowFeedActivity extends AppCompatActivity {
                     startDate.setTimeInMillis(longDate);
                     //Calendar startDate = Calendar.getInstance();
 
-                    Habit habit = new Habit(habitName, weekdays, startDate, reason, isPublic);
+                    Habit habit = new Habit(doc.getId(), habitName, weekdays, startDate, reason, isPublic);
 
                     //followHabitArrayList.add(habit);
                     //Add Habit to logged in user
