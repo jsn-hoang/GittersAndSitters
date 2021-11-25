@@ -150,43 +150,52 @@ public class FollowRequestActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("Users");
-        //DocumentReference currentUser = collectionReference.document(mAuth.getCurrentUser().getUid());
+        DocumentReference currentUser = collectionReference.document(mAuth.getCurrentUser().getUid());
 
-        //collectionReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            //@Override
-            //public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                //List<DocumentSnapshot> snapshotList = queryDocumentSnapshots.getDocuments();
-                //for (DocumentSnapshot snapshot : snapshotList) {
-                    //if (user_name == snapshot.get("userName")) {
-                        //ArrayList<String> newRequests = (ArrayList<String>) snapshot.get("requests");
-                        //newRequests.add(current_username);
-                        //Toast.makeText(FollowRequestActivity.this, "Follow request sent", Toast.LENGTH_LONG).show();
-                    //}
-                //}
-            //}
-        //});
+        currentUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        List<String> followingList = (List<String>) document.get("following");
+                        collectionReference
+                                .whereEqualTo("userName", user_name) // <-- This line
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            if (task.getResult().size() != 0) {
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    if (document.exists()) {
+                                                        String targetUserName = (String) document.get("userName");
+                                                        if (followingList.contains(targetUserName)) {
+                                                            Toast.makeText(FollowRequestActivity.this, "You are already following this person", Toast.LENGTH_LONG).show();
+                                                        } else if (targetUserName.equals(current_username)) {
+                                                            Toast.makeText(FollowRequestActivity.this, "You cannot send a request to yourself", Toast.LENGTH_LONG).show();
+                                                        } else {
+                                                            targetUserId = document.getId();
+                                                            DocumentReference targetUserReference = collectionReference.document(targetUserId);
+                                                            targetUserReference.update("requests", FieldValue.arrayUnion(current_username));
+                                                            Toast.makeText(FollowRequestActivity.this, "Follow request sent", Toast.LENGTH_LONG).show();
+                                                        }
 
-        collectionReference
-                .whereEqualTo("userName", user_name) // <-- This line
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                if (document.exists()) {
-                                    targetUserId = document.getId();
-                                    DocumentReference targetUserReference = collectionReference.document(targetUserId);
-                                    targetUserReference.update("requests", FieldValue.arrayUnion(current_username));
-                                    Toast.makeText(FollowRequestActivity.this, "Follow request sent", Toast.LENGTH_LONG).show();
-
-                                    Log.d("TAG", document.getId() + " => " + document.getData());
-                                }
-                            }
-                        } else {
-                            Log.d("TAG", "Error getting documents: ", task.getException());
-                        }
+                                                        Log.d("TAG", document.getId() + " => " + document.getData());
+                                                    }
+                                                }
+                                            } else {
+                                                Toast.makeText(FollowRequestActivity.this, "This user does not exist", Toast.LENGTH_LONG).show();
+                                            }
+                                        } else {
+                                            Log.d("TAG", "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
                     }
-                });
+                }
+            }
+        });
     }
+
 }
