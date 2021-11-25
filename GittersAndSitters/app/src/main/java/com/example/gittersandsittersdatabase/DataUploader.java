@@ -130,13 +130,13 @@ public class DataUploader implements Serializable, FirestoreCallback{
      */
     public void deleteHabit(Habit habit) {
 
-        //TODO Delete all of the HabitEvent documents for this Habit
-
         // Delete this Habit's "HabitEvents" subcollection
         deleteHabitCollection(habit, new FirestoreCallback() {
             @Override
-            // Callback performed to ensure all documents in "HabitEvents" collection are deleted
+            // Callback ensures all documents in "HabitEvents" collection are deleted
             public void onCallback() {
+                //TODO Ensure that this callback doesn't slow down the app too much.
+                // (User must wait for entire "HabitEvents" collection to be deleted from Firestore)
 
                 // Set collectionRef to delete Habit
                 setCollectionReference(true, habit);
