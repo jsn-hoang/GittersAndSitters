@@ -74,6 +74,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     // Declare variables for referencing
     public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
     public static final int REQUEST_CODE_CAMERA = 3;
+    public static final int REQUEST_CODE_SELECTLOC = 4;
     public static final int RESULT_DELETE = 2;
     User user;
     Habit habit;                   // The parent Habit of the HabitEvent
@@ -85,7 +86,8 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     int habitListIndex;            // index position of the Habit in the User's habitList
     int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
     ImageView imageView;
-    ImageButton eventPhotoButton; // TODO delete if not used outside onCreate
+    Double userLat;
+    Double userLong;
 
     // location
     private FusedLocationProviderClient fusedLocationClient;
@@ -124,7 +126,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         final TextView header = findViewById(R.id.add_edit_event_title_text);
         final TextView eventDateText = findViewById(R.id.event_date_text);
         final Button eventLocationButton = findViewById(R.id.event_location_button);
-        eventPhotoButton = findViewById(R.id.event_photo_button);
+        final ImageButton eventPhotoButton = findViewById(R.id.event_photo_button);
         imageView = findViewById(R.id.imageView);
 
 
@@ -155,14 +157,12 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         eventPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA);
-
                 // get permissions if not granted already
-//                if (ContextCompat.checkSelfPermission(AddRemoveEventActivity.this, Manifest.permission.CAMERA)
-//                != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(AddRemoveEventActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_CODE_CAMERA);
-//                }
+                if (ContextCompat.checkSelfPermission(AddRemoveEventActivity.this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(AddRemoveEventActivity.this, new String[] {Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+                }
+                launchCamera(); // launches if permission granted
             }
         });
 
@@ -247,6 +247,48 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
     }
 
+    private void launchCamera() {
+        if (ContextCompat.checkSelfPermission(
+                AddRemoveEventActivity.this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED) {
+            // You can use the API that requires the permission.
+
+            // start camera
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_CODE_CAMERA);
+
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(AddRemoveEventActivity.this, Manifest.permission.CAMERA)) {
+            // explain to the user why your app requires this permission for a specific feature to behave as expected.
+            new AlertDialog.Builder(this)
+                    .setTitle("Required Camera Permission")
+                    .setMessage("You need camera permission to access the in-app camera")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
+                                    new String[] { Manifest.permission.CAMERA },
+                                    REQUEST_CODE_CAMERA);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            // Directly ask for the permission.
+            ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
+                    new String[] { Manifest.permission.CAMERA },
+                    REQUEST_CODE_CAMERA);
+        }
+
+    }
+
+
+
     private void fetchLocation() {
         if (ContextCompat.checkSelfPermission(
                 AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) ==
@@ -267,18 +309,15 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                                     Intent intent = new Intent(AddRemoveEventActivity.this, MapsActivity.class);
                                     intent.putExtra("LONGITUDE", userLong);
                                     intent.putExtra("LATITUDE", userLat);
-                                    startActivity(intent);
+                                    startActivityForResult(intent, REQUEST_CODE_SELECTLOC);
                                 }
                             }
                         });
 
 
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // In an educational UI, explain to the user why your app requires this
-            // permission for a specific feature to behave as expected. In this UI,
-            // include a "cancel" or "no thanks" button that allows the user to
-            // continue using your app without granting the permission.
-//            showInContextUI(...);
+            // explain to the user why your app requires this permission for a specific feature to behave as expected.
+
             new AlertDialog.Builder(this)
                     .setTitle("Required Location Permission")
                     .setMessage("You need location permission to access the map")
@@ -299,7 +338,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     .create()
                     .show();
         } else {
-            // You can directly ask for the permission.
+            // Directly ask for the permission.
             ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
                     new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
                     PERMISSIONS_REQUEST_CODE_FINE_LOCATION);
@@ -313,10 +352,20 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         if (requestCode == PERMISSIONS_REQUEST_CODE_FINE_LOCATION) {
             if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission granted
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Location Permission Granted", Toast.LENGTH_SHORT).show();
             } else {
                 // permission not granted
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Location Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (requestCode == REQUEST_CODE_CAMERA) {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission granted
+                Toast.makeText(this, "Camera Permission Granted", Toast.LENGTH_SHORT).show();
+            } else {
+                // permission not granted
+                Toast.makeText(this, "Camera Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -329,6 +378,12 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             imageView.setImageBitmap(bitmap);
 
             habitEventPhoto = bitmap;
+        }
+
+        if (requestCode == REQUEST_CODE_SELECTLOC && resultCode == RESULT_OK) {
+            // user chose a location on map
+            userLat = (Double) data.getExtras().get("LATITUDE");
+            userLong = (Double) data.getExtras().get("LONGITUDE");
         }
     }
 

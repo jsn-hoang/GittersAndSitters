@@ -1,5 +1,6 @@
 package com.example.gittersandsittersdatabase;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
@@ -14,7 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.gittersandsittersdatabase.databinding.ActivityMapsBinding;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener{
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
@@ -50,10 +51,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Log.d(String.format("lat long: %f", userLat), "lat long");
+        mMap.setOnMapClickListener(this);
+//        Log.d(String.format("lat long: %f", userLat), "lat long");
         // Add a marker in Sydney and move the camera
         LatLng defaultLoc = new LatLng(userLat, userLong);
         mMap.addMarker(new MarkerOptions().position(defaultLoc).title("Your Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLoc));
+    }
+
+    @Override
+    public void onMapClick(@NonNull LatLng latLng) {
+        userLat = latLng.latitude;
+        userLong = latLng.longitude;
     }
 }
