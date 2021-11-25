@@ -126,8 +126,14 @@ public class DataUploader implements Serializable{
      */
     public void deleteHabit(Habit habit) {
 
+        //TODO Delete all of the HabitEvent documents for this Habit
 
-        // Set collectionRef
+        // set CollectionReference to this Habit's "HabitEvents" collection
+        setCollectionReference(false, habit);
+        deleteCollection(collectionRef, Executor executor);
+
+
+        // Set collectionRef to delete Habit
         setCollectionReference(true, habit);
         // delete the Habit
         collectionRef.document(habit.getHabitID())
@@ -251,7 +257,7 @@ public class DataUploader implements Serializable{
         else // else get collectionRef for HabitEvents
             collectionRef = db.collection("Users/" + userID + "/Habits/" + habit.getHabitID() + "/HabitEvents/");
     }
-    
+
 
     // https://stackoverflow.com/questions/49125183/how-delete-a-collection-or-subcollection-from-firestore
     public void deleteCollection(final CollectionReference collection, Executor executor) {
