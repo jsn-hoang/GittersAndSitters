@@ -92,6 +92,7 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
                     habitList.add(habit);
                 }
             }
+            // Callback enables us to get all of the downloaded Habits
             firestoreHabitListCallback.onHabitListCallback(habitList);
         });
     }
