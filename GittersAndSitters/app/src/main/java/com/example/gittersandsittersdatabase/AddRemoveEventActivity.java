@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +38,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -44,6 +48,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.w3c.dom.Text;
@@ -294,7 +299,14 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             // You can use the API that requires the permission.
-                    fusedLocationClient.getLastLocation()
+            LocationRequest mLocationRequest = LocationRequest.create();
+            mLocationRequest.setInterval(60000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+            LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback(), null);
+
+            fusedLocationClient.getLastLocation()
                         .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                             @Override
                             public void onSuccess(Location location) {
@@ -311,6 +323,13 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                                     intent.putExtra("LATITUDE", userLat);
                                     startActivityForResult(intent, REQUEST_CODE_SELECTLOC);
                                 }
+                            }
+                        })
+                        // often fails if emulator doesn't have a location set
+                        .addOnFailureListener(this, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(AddRemoveEventActivity.this, "Location could not be found on this device!", Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -384,6 +403,11 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             // user chose a location on map
             userLat = (Double) data.getExtras().get("LATITUDE");
             userLong = (Double) data.getExtras().get("LONGITUDE");
+
+            Location location = new Location(LocationManager.GPS_PROVIDER);
+            location.setLatitude(userLat);
+            location.setLongitude(userLong);
+            habitEventLocation = location;
         }
     }
 

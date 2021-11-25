@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +27,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         // get the lat and long
         Intent intent = getIntent();
         userLat = intent.getDoubleExtra("LATITUDE", 0);
@@ -33,10 +36,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        final Button doneButton = findViewById(R.id.DoneButton);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Done Button returns the location to calling activity
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("LATITUDE", userLat);
+                intent.putExtra("LONGITUDE", userLong);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     /**
@@ -52,8 +69,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapClickListener(this);
-//        Log.d(String.format("lat long: %f", userLat), "lat long");
-        // Add a marker in Sydney and move the camera
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(10.0f));
+
+        // Add a marker at user location and move the camera
         LatLng defaultLoc = new LatLng(userLat, userLong);
         mMap.addMarker(new MarkerOptions().position(defaultLoc).title("Your Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLoc));
@@ -63,5 +81,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapClick(@NonNull LatLng latLng) {
         userLat = latLng.latitude;
         userLong = latLng.longitude;
+        LatLng userLoc = new LatLng(userLat, userLong);
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(userLoc).title("Selected Location"));
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(userLoc));
     }
+
 }

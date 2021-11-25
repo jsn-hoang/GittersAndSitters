@@ -49,6 +49,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.0.2'
     implementation 'com.google.android.gms:play-services-maps:18.0.0'       // added this for gps?
     implementation "com.google.android.gms:play-services-location:15.0.1" // for location
+//    implementation 'com.google.android.libraries.places:places:2.1.0' // for draggable marker
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
     androidTestImplementation 'com.android.support.test:rules:1.4.0'        // Added this for Espresso testing
