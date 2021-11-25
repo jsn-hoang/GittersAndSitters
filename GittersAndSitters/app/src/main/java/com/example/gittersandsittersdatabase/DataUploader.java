@@ -147,6 +147,7 @@ public class DataUploader implements Serializable, FirestoreCallback{
      */
     public void setHabit(Habit habit) {
 
+        // Set to the correct collectionRef
         setCollectionReference(true, habit);
         // Convert date to type long
         long longDate = habit.getStartDate().getTimeInMillis();
@@ -164,8 +165,10 @@ public class DataUploader implements Serializable, FirestoreCallback{
 
     /** This method updates a HabitEvent in the Firestore
      */
-    public void setHabitEvent(HabitEvent habitEvent) {
+    public void setHabitEvent(Habit habit, HabitEvent habitEvent) {
 
+        // Set to the correct CollectionRef
+        setCollectionReference(false, habit);
         long longDate = habitEvent.getEventDate().getTimeInMillis();
         DocumentReference docRef = collectionRef.document(habitEvent.getEventID());
         docRef.update(
