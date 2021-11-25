@@ -18,6 +18,7 @@ public class User implements Serializable{
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<Habit> habitList;
+    private DataUploader dataUploader;
 //    private ArrayList<HabitEvent> habitEventList;
 
 

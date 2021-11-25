@@ -29,7 +29,7 @@ import java.util.List;
  * This class is responsible for creating, editing, or deleting a Habit.
  */
 
-public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, FirestoreHabitCallback{
 
     private FirebaseFirestore db;
     private CollectionReference collectionRef;
@@ -47,6 +47,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
     ArrayList<CheckBox> weekdayCheckBoxes;
     EditText habitReasonEditText;
     String habitID;
+    private DataUploader dataUploader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,8 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         }
         else isNewHabit = true;     // if no position passed, then this is a new Habit
 
+
+        dataUploader = new DataUploader(user.getUserID());
 
         // Get views that will be used for user input
         habitNameEditText = findViewById(R.id.habit_name_editText);
@@ -134,29 +137,30 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             if (isNewHabit) {
                 // Create a new Habit (habitID will be properly set when Habit is added to db
                 habit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
+
                 // Add the habit to db
-                addHabitToDB();
-                // set habitID
-                habit.setHabitID(habitID);
-                // Add habit to userHabitList
-                user.addUserHabit(habit);
+                dataUploader.addHabitAndGetID(new FirestoreHabitCallback() {
+                    @Override
+                    public void onHabitCallback(Habit returnedHabit) {
+                        // Returned Habit has the HabitID
+                        habit = returnedHabit;
+                        user.addUserHabit(habit);
+                    }
+                }, habit);
 
 
             }
             else { // else edit the existing habit
-
+                String previousName = habit.getHabitName();
                 habit.setHabitName(habitName);
                 habit.setWeekdays(weekdays);
                 habit.setStartDate(habitStartDate);
                 habit.setHabitReason(habitReason);
-                // set the edited Habit in the db
-                setHabitInDB();
                 // Overwrite the previous habit with the edited one
                 user.setUserHabit(habitIndexPosition, habit);
-
-
+                // Edit the document in Firestore
+                dataUploader.setHabitInDB(habit);
             }
-
             // Navigate back to MainActivity
             Intent intent = new Intent();
             intent.putExtra("user", user);
@@ -175,7 +179,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // Delete habit from user habitList
             user.deleteUserHabit(habit);
             // Delete habit from user db
-            deleteHabitFromDB();
+            dataUploader.deleteHabit(habit);
 
             // Navigate back to MainActivity
             Intent intent = new Intent();
@@ -319,31 +323,31 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         return days;
     }
 
-    /**
-     * This method adds a newly created habit to the logged in user's Habit collection in the database
-     */
-    public void addHabitToDB() {
-
-        HashMap<String, Object> data = new HashMap<>();
-        // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
-        data.put("habitName", habit.getHabitName());
-        data.put("weekdays", habit.getWeekdays());
-        // Convert startDate to type long for database storage
-        long longDate = habit.getStartDate().getTimeInMillis();
-        data.put("longDate", longDate);
-        data.put("reason", habit.getHabitReason());
-        data.put("isPublic", habit.isHabitPublic());
-
-        // Add habit to the User's Habit Collection
-        collectionRef.add(data)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-
-                    // assign the ID of this habit
-                    habitID = documentReference.getId();
-                })
-                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
-    }
+//    /**
+//     * This method adds a newly created habit to the logged in user's Habit collection in the database
+//     */
+//    public void addHabitToDB() {
+//
+//        HashMap<String, Object> data = new HashMap<>();
+//        // Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic)
+//        data.put("habitName", habit.getHabitName());
+//        data.put("weekdays", habit.getWeekdays());
+//        // Convert startDate to type long for database storage
+//        long longDate = habit.getStartDate().getTimeInMillis();
+//        data.put("longDate", longDate);
+//        data.put("reason", habit.getHabitReason());
+//        data.put("isPublic", habit.isHabitPublic());
+//
+//        // Add habit to the User's Habit Collection
+//        collectionRef.add(data)
+//                .addOnSuccessListener(documentReference -> {
+//                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+//
+//                    // assign the ID of this habit
+//                    habitID = documentReference.getId();
+//                })
+//                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
+//    }
 
     /**
      * This method deletes a specified Habit from the user's Habit Collection
@@ -400,6 +404,8 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
      */
     public void setHabitInDB() {
 
+        // We will also need to edit the parent name of all of the Habit Events
+
         long longDate = habit.getStartDate().getTimeInMillis();
 
         DocumentReference habitDoc = collectionRef.document(habit.getHabitID());
@@ -411,5 +417,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                 "isPublic", habit.isHabitPublic())
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
+    }
+
+    @Override
+    public void onHabitCallback(Habit habit) {
+
     }
 }

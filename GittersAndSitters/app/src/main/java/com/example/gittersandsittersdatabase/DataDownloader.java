@@ -127,12 +127,12 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
             }
 
             // Callback enables us to get all of the downloaded HabitEvents
-            firestoreHabitCallback.onHabitCallback(habitEventList);
+            firestoreHabitCallback.onEventListCallback(habitEventList);
         });
     }
 
     @Override
-    public void onHabitCallback(ArrayList<HabitEvent> eventList) {
+    public void onEventListCallback(ArrayList<HabitEvent> eventList) {
     }
     @Override
     public void onHabitListCallback(ArrayList<Habit> habitList) {
