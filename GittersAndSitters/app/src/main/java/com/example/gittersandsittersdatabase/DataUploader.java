@@ -31,9 +31,7 @@ import java.util.concurrent.Executor;
 public class DataUploader implements Serializable, FirestoreHabitCallback, FirestoreEventCallback {
 
     private final String userID;
-    private String docID;
     private CollectionReference collectionRef;
-    private DocumentReference docRef;
 
     // Constructor for DataUploader
     DataUploader(String userID) {
@@ -42,10 +40,9 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
 
     /**
      * This method adds a Habit to its correct location in the Firestore
-     * @param firestoreHabitCallback - callback that facilitates asynchronous behaviour of Firestore
      * @param habit - The habit we are uploading into the database
      */
-    public void addHabitAndGetID(FirestoreHabitCallback firestoreHabitCallback, Habit habit) {
+    public String addHabitAndGetID(Habit habit) {
 
         // Set the Collection Reference correctly
         setCollectionReference(true, habit);
@@ -59,12 +56,14 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
         data.put("reason", habit.getHabitReason());
         data.put("isPublic", habit.isHabitPublic());
 
-        docRef = collectionRef.document();
-        docID = docRef.getId();
-        habit.setHabitID(docID);
+        DocumentReference docRef = collectionRef.document();
+        String docID = docRef.getId();
+        // habit.setHabitID(docID);
 
         // Add habit to the User's Habit Collection
         docRef.set(data);
+        return docID;
+    }
 //                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
 //                    @Override
 //                    public void onSuccess(DocumentReference documentReference) {
@@ -72,16 +71,13 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
 //                    }
 //                })
 //                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
-        firestoreHabitCallback.onHabitCallback(habit);
-    }
 
     /**
      * This method adds a HabitEvent to its proper location in the Firestore
      * @param habitEvent    - the HabitEvent we are adding to the Firestore
      * @param habit         - The parent Habit of habitEvent
-     * @param firestoreEventCallback - Callback to facilitate the asynchronous behaviour of Firestore
      */
-    public void addHabitEventAndGetID(HabitEvent habitEvent, Habit habit, FirestoreEventCallback firestoreEventCallback) {
+    public String addHabitEventAndGetID(HabitEvent habitEvent, Habit habit) {
 
         // Set collectionRef
         setCollectionReference(false, habit);
@@ -100,13 +96,12 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
         //data.put("eventLocation", habitEvent.getEventLocation());
 
 
-        docRef = collectionRef.document();
-        docID = docRef.getId();
-        habitEvent.setEventID(docID);
-
+        DocumentReference docRef = collectionRef.document();
+        String docID = docRef.getId();
         // Add habitEvent to the Habit's "HabitEvents" Collection
         docRef.set(data);
-
+        return docID;
+    }
 
 //        collectionRef.add(data)
 //                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -123,9 +118,6 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
 //                        Log.w(TAG, "Error adding document", e);
 //                    }
 //                });
-        // Perform Callback to get habit with habitID
-        firestoreEventCallback.onHabitEventCallback(habitEvent);
-    }
 
     /**
      * This method deletes a Habit from the Firestore. However, we must first delete all of the
@@ -244,7 +236,7 @@ public class DataUploader implements Serializable, FirestoreHabitCallback, Fires
                     }
                 });
     }
-    
+
 
     /**
      * This method obtains the proper Firestore CollectionReference

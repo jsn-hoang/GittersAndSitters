@@ -136,22 +136,14 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
 
             if (isNewHabit) {
-                // Create a new Habit (habitID will be properly set when Habit is added to db
+                // Create a new Habit
                 habit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
-
-                // Add the habit to db
-                dataUploader.addHabitAndGetID(new FirestoreHabitCallback() {
-                    @Override
-                    // Get the modified Habit with HabitId
-                    public void onHabitCallback(Habit habitWithID) {
-
-                        user.addUserHabit(habitWithID);
-                    }
-                }, habit);
-
-
-
+                // Add the habit to db and get its ID
+                String habitID = dataUploader.addHabitAndGetID(habit);
+                habit.setHabitID(habitID);
+                user.addUserHabit(habit);
             }
+
             else { // else edit the existing habit
                 String previousName = habit.getHabitName();
                 habit.setHabitName(habitName);

@@ -60,7 +60,6 @@ public class AddRemoveEventActivity extends AppCompatActivity implements Firesto
     User user;
     Habit habit;                   // The parent Habit of the HabitEvent
     HabitEvent habitEvent;
-    private String habitEventID;
     Calendar habitEventDate;
     Location habitEventLocation = null;
     File habitEventPhoto = null;
@@ -142,20 +141,14 @@ public class AddRemoveEventActivity extends AppCompatActivity implements Firesto
                 // if this is a new HabitEvent
                 if (isNewHabitEvent) {
 
+                    // Create the HabitEvent
                     habitEvent = new HabitEvent(habit.getHabitID(), habitEventName,
                             habitEventDate, habitEventComment);
 
-                    // Add the habitEvent to Firestore
-                    dataUploader.addHabitEventAndGetID(habitEvent, habit, new FirestoreEventCallback() {
-                        @Override
-                        // Callback has habitEvent with ID
-                        public void onHabitEventCallback(HabitEvent habitEvent) {
-                            // add the HabitEvent with ID to the parent Habit
-                            habit.addHabitEvent(habitEvent);
-
-                        }
-                    });
-
+                    // Add the habitEvent to Firestore and getID
+                    String habitEventID = dataUploader.addHabitEventAndGetID(habitEvent, habit);
+                    habitEvent.setEventID(habitEventID);
+                    habit.addHabitEvent(habitEvent);
 
                 }
                 else { // else edit the existing HabitEvent
@@ -298,7 +291,7 @@ public class AddRemoveEventActivity extends AppCompatActivity implements Firesto
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                        habitEventID = documentReference.getId();
+                        //habitEventID = documentReference.getId();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
