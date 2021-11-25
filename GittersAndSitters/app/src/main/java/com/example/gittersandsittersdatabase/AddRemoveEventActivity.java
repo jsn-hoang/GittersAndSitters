@@ -73,14 +73,14 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
     public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
-    public static final int PERMISSIONS_REQUEST_CODE_CAMERA = 0;
+    public static final int REQUEST_CODE_CAMERA = 3;
     public static final int RESULT_DELETE = 2;
     User user;
     Habit habit;                   // The parent Habit of the HabitEvent
     HabitEvent habitEvent;
     Calendar habitEventDate;
     Location habitEventLocation = null;
-    File habitEventPhoto = null;
+    Bitmap habitEventPhoto = null;
     boolean isNewHabitEvent;
     int habitListIndex;            // index position of the Habit in the User's habitList
     int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
@@ -124,8 +124,8 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         final TextView header = findViewById(R.id.add_edit_event_title_text);
         final TextView eventDateText = findViewById(R.id.event_date_text);
         final Button eventLocationButton = findViewById(R.id.event_location_button);
-        final ImageButton eventPhotoButton = findViewById(R.id.event_photo_button);
-        final ImageView imageView = findViewById(R.id.imageView);
+        eventPhotoButton = findViewById(R.id.event_photo_button);
+        imageView = findViewById(R.id.imageView);
 
 
         // setup location services
@@ -144,9 +144,9 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             habitEventNameEditText.setText(habitEvent.getEventName());
             habitEventCommentEditText.setText(habitEvent.getEventComment());
 
-            //TODO set the location and photo fields
+            //set the location and photo fields
             Location habitEventLocation = habitEvent.getEventLocation();
-            File  habitEventPhoto = habitEvent.getEventPhoto();
+            Bitmap habitEventPhoto = habitEvent.getEventPhoto();
 
         }
 
@@ -155,14 +155,14 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         eventPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // get permissions if not granted already
-                if (ContextCompat.checkSelfPermission(AddRemoveEventActivity.this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(AddRemoveEventActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_CODE_CAMERA);
-                }
-
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, PERMISSIONS_REQUEST_CODE_CAMERA);
+                startActivityForResult(intent, REQUEST_CODE_CAMERA);
+
+                // get permissions if not granted already
+//                if (ContextCompat.checkSelfPermission(AddRemoveEventActivity.this, Manifest.permission.CAMERA)
+//                != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(AddRemoveEventActivity.this, new String[] {Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_CODE_CAMERA);
+//                }
             }
         });
 
@@ -182,15 +182,18 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 String habitEventName = habitEventNameEditText.getText().toString();
                 String habitEventComment = habitEventCommentEditText.getText().toString();
 
-                //TODO: get the user inputted location and photo fields
-
-                // Note: habitEventDate is already done
-
-
                 if (isNewHabitEvent) {
                     // Create a new HabitEvent
                     HabitEvent newHabitEvent = new HabitEvent(habitEventName, habit.getHabitName(),
                             habitEventDate, habitEventComment);
+
+                    if (habitEventPhoto != null) {
+                        newHabitEvent.setEventPhoto(habitEventPhoto);
+                    }
+
+                    if (habitEventLocation != null) {
+                        newHabitEvent.setEventLocation(habitEventLocation);
+                    }
 
                     // Add the new HabitEvent to the Habit's habitEventList
                     habit.addHabitEvent(newHabitEvent);
@@ -321,9 +324,11 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PERMISSIONS_REQUEST_CODE_CAMERA) {
+        if (requestCode == REQUEST_CODE_CAMERA) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(bitmap);
+
+            habitEventPhoto = bitmap;
         }
     }
 

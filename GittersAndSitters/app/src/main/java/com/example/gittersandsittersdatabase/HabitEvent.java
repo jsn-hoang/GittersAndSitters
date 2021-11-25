@@ -1,5 +1,6 @@
 package com.example.gittersandsittersdatabase;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 
 import java.io.File;
@@ -17,11 +18,11 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     private Calendar eventDate;     // always today's date
     private Location eventLocation;
     private String eventComment;
-    private File eventPhoto;
+    private Bitmap eventPhoto;
 
     // Constructor with the required attributes: name and date
     public HabitEvent(String eventName, String parentHabitName, Calendar eventDate,
-            /*Location eventLocation,*/ String eventComment /*File eventPhoto*/) {
+            /*Location eventLocation,*/ String eventComment /*Bitmap eventPhoto*/) {
         this.eventName = eventName;
         this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
@@ -73,11 +74,11 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
         this.eventComment = eventComment;
     }
 
-    public File getEventPhoto() {
+    public Bitmap getEventPhoto() {
         return eventPhoto;
     }
 
-    public void setEventPhoto(File eventPhoto) {
+    public void setEventPhoto(Bitmap eventPhoto) {
         this.eventPhoto = eventPhoto;
     }
 
