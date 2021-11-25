@@ -175,13 +175,14 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
             collectionRef = collectionRef.document(habit.getHabitID()).collection("HabitEvents");
 
-            dataUploader.deleteCollection(collectionRef, new Executor() {
-                @Override
-                public void execute(Runnable command) {
-                    // Delete habit from user db
-                    dataUploader.deleteHabit(habit);
-                }
-            });
+            dataUploader.deleteHabit(habit);
+//            dataUploader.deleteCollection(collectionRef, new Executor() {
+//                @Override
+//                public void execute(Runnable command) {
+//                    // Delete habit from user db
+//                    dataUploader.deleteHabit(habit);
+//                }
+//            });
 
             // Delete habit from user db
             //dataUploader.deleteHabit(habit);

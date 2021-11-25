@@ -7,8 +7,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -16,19 +18,21 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
 /** This class enables the addition, deletion, and updating of Habits and HabitEvents in the Firestore
  */
 
-public class DataUploader implements Serializable{
+public class DataUploader implements Serializable, FirestoreCallback{
 
     private final String userID;
     private CollectionReference collectionRef;
@@ -128,18 +132,22 @@ public class DataUploader implements Serializable{
 
         //TODO Delete all of the HabitEvent documents for this Habit
 
-        // set CollectionReference to this Habit's "HabitEvents" collection
-        setCollectionReference(false, habit);
-        deleteCollection(collectionRef, Executor executor);
+        // Delete this Habit's "HabitEvents" subcollection
+        deleteHabitCollection(habit, new FirestoreCallback() {
+            @Override
+            // Callback performed to ensure all documents in "HabitEvents" collection are deleted
+            public void onCallback() {
 
+                // Set collectionRef to delete Habit
+                setCollectionReference(true, habit);
+                // delete the Habit
+                collectionRef.document(habit.getHabitID())
+                        .delete()
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
+                        .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
 
-        // Set collectionRef to delete Habit
-        setCollectionReference(true, habit);
-        // delete the Habit
-        collectionRef.document(habit.getHabitID())
-                .delete()
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Data has been deleted successfully!"))
-                .addOnFailureListener(e -> Log.d(TAG, "Data could not be deleted!" + e.toString()));
+            }
+        });
     }
 
 
@@ -159,6 +167,22 @@ public class DataUploader implements Serializable{
 //            }
 //        }, habit);
 //
+
+    public void deleteHabitCollection(Habit habit, FirestoreCallback firestoreCallback) {
+
+        // set CollectionReference to this Habit's "HabitEvents" collection
+        setCollectionReference(false, habit);
+
+        collectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (QueryDocumentSnapshot snapshot: Objects.requireNonNull(task.getResult())){
+                    collectionRef.document(snapshot.getId()).delete();
+                }
+                firestoreCallback.onCallback();
+            }
+        });
+    }
 
     /**
      * This method deletes a HabitEvent from Firestore
@@ -258,39 +282,44 @@ public class DataUploader implements Serializable{
             collectionRef = db.collection("Users/" + userID + "/Habits/" + habit.getHabitID() + "/HabitEvents/");
     }
 
+    @Override
+    public void onCallback() {
 
-    // https://stackoverflow.com/questions/49125183/how-delete-a-collection-or-subcollection-from-firestore
-    public void deleteCollection(final CollectionReference collection, Executor executor) {
-        Tasks.call(executor, new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                int batchSize = 10;
-                Query query = collection.orderBy(FieldPath.documentId()).limit(batchSize);
-                List<DocumentSnapshot> deleted = DataUploader.this.deleteQueryBatch(query); // call deleteQueryBatch
-
-                while (deleted.size() >= batchSize) {
-                    DocumentSnapshot last = deleted.get(deleted.size() - 1);
-                    query = collection.orderBy(FieldPath.documentId()).startAfter(last.getId()).limit(batchSize);
-
-                    deleted = DataUploader.this.deleteQueryBatch(query);
-                }
-
-                return null;
-            }
-        });
     }
 
-    // Called by deleteCollection
-    @WorkerThread
-    public List<DocumentSnapshot> deleteQueryBatch(final Query query) throws Exception {
-        QuerySnapshot querySnapshot = Tasks.await(query.get());
 
-        WriteBatch batch = query.getFirestore().batch();
-        for (DocumentSnapshot snapshot : querySnapshot) {
-            batch.delete(snapshot.getReference());
-        }
-        Tasks.await(batch.commit());
-
-        return querySnapshot.getDocuments();
-    }
+//    // https://stackoverflow.com/questions/49125183/how-delete-a-collection-or-subcollection-from-firestore
+//    public void deleteCollection(final CollectionReference collection, Executor executor) {
+//        Tasks.call(executor, new Callable<Object>() {
+//            @Override
+//            public Object call() throws Exception {
+//                int batchSize = 10;
+//                Query query = collection.orderBy(FieldPath.documentId()).limit(batchSize);
+//                List<DocumentSnapshot> deleted = DataUploader.this.deleteQueryBatch(query); // call deleteQueryBatch
+//
+//                while (deleted.size() >= batchSize) {
+//                    DocumentSnapshot last = deleted.get(deleted.size() - 1);
+//                    query = collection.orderBy(FieldPath.documentId()).startAfter(last.getId()).limit(batchSize);
+//
+//                    deleted = DataUploader.this.deleteQueryBatch(query);
+//                }
+//
+//                return null;
+//            }
+//        });
+//    }
+//
+//    // Called by deleteCollection
+//    @WorkerThread
+//    public List<DocumentSnapshot> deleteQueryBatch(final Query query) throws Exception {
+//        QuerySnapshot querySnapshot = Tasks.await(query.get());
+//
+//        WriteBatch batch = query.getFirestore().batch();
+//        for (DocumentSnapshot snapshot : querySnapshot) {
+//            batch.delete(snapshot.getReference());
+//        }
+//        Tasks.await(batch.commit());
+//
+//        return querySnapshot.getDocuments();
+//    }
 }

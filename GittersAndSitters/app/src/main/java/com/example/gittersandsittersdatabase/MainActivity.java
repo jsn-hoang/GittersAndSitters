@@ -134,21 +134,24 @@ public class MainActivity extends AppCompatActivity {
                                 DataDownloader dataDownloader = new DataDownloader(userID);
 
                                 // get logged in user's Habits from Firestore
-                                dataDownloader.getUserHabits(returnedHabitList -> {
+                                dataDownloader.getUserHabits(new FirestoreHabitListCallback() {
+                                    @Override
+                                    public void onHabitListCallback(ArrayList<Habit> returnedHabitList) {
 
-                                    habitList = returnedHabitList;
-                                    // get logged in user's HabitEvents from Firestore
-                                    dataDownloader.getHabitEvents(returnedEventList -> {
-                                        eventList = returnedEventList;
+                                        habitList = returnedHabitList;
+                                        // get logged in user's HabitEvents from Firestore
+                                        dataDownloader.getHabitEvents(returnedEventList -> {
+                                            eventList = returnedEventList;
 
-                                        // Match all HabitEvents with their corresponding Habits
-                                        matchEventsToHabits();
-                                        // set the habitList to user and go to HabitActivity
-                                        user.setAllUserHabits(habitList);
-                                        Intent intent = new Intent(MainActivity.this, HabitActivity.class);
-                                        intent.putExtra("user", user);
-                                        MainActivity.this.startActivity(intent);
-                                    });
+                                            // Match all HabitEvents with their corresponding Habits
+                                            MainActivity.this.matchEventsToHabits();
+                                            // set the habitList to user and go to HabitActivity
+                                            user.setAllUserHabits(habitList);
+                                            Intent intent = new Intent(MainActivity.this, HabitActivity.class);
+                                            intent.putExtra("user", user);
+                                            MainActivity.this.startActivity(intent);
+                                        });
+                                    }
                                 });
                             } else {
                                 Log.d("TAG", "No such document");
