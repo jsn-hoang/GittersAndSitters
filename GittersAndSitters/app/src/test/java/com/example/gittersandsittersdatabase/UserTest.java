@@ -12,8 +12,16 @@ import java.util.Calendar;
 
 public class UserTest {
     private User mockUser() {
-        User user = new User("testUser", "testEmail");
+        User user = new User("testUserId", "testUser", "testEmail");
         return user;
+    }
+
+    @Test
+    void testUserId() {
+        User user = mockUser();
+        assertEquals("testUserId", user.getUserID());
+        user.setUserID("1337gamer");
+        assertEquals("1337gamer", user.getUserID());
     }
 
     @Test
