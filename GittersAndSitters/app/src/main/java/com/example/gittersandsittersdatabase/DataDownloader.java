@@ -2,10 +2,13 @@ package com.example.gittersandsittersdatabase;
 
 import static android.content.ContentValues.TAG;
 
+import android.location.Location;
 import android.util.Log;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -52,11 +55,18 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
                 for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                     Log.d(TAG, document.getId() + " => " + document.getData());
 
+                    // Reference for document fields:
+                    // "habitID" <- the ID of the document
+                    // "habitName"
+                    // "weekdays"
+                    // "longDate"
+                    // "reason"
+                    // "isPublic"
+                    // "progress"
+
                     // get convert document fields to Habit attributes
                     String habitID = document.getId();
                     String habitName = (String) document.getData().get("habitName");
-                    String reason = (String) document.getData().get("reason");
-                    boolean isPublic = (boolean) document.getData().get("isPublic");
 
                     ArrayList<Integer> weekdays = new ArrayList<>();
                     // weekdays are stored as type long
@@ -71,6 +81,11 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
                     long longDate = (long) document.getData().get("longDate");
                     Calendar startDate = Calendar.getInstance();
                     startDate.setTimeInMillis(longDate);
+
+                    String reason = (String) document.getData().get("reason");
+                    boolean isPublic = (boolean) document.getData().get("isPublic");
+
+                    // TODO: progress attribute/document field
 
                     // Create habit from converted document fields and add to habitList
                     habit = new Habit(habitID, habitName, weekdays, startDate, reason, isPublic);
@@ -103,15 +118,24 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
                 for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                     Log.d(TAG, document.getId() + " => " + document.getData());
 
+                    // Reference for document fields:
+                    // "eventID" <- the ID of the document
+                    // "habitID"
+                    // "eventName"
+                    // "longDate"
+                    // "eventComment"
+                    // "eventLocation"
+                    // "eventPhoto"
+
                     // Convert document fields to HabitEvent attributes
                     String eventID = document.getId();
-                    String eventName = (String) document.getData().get("eventName");
                     String parentHabitID = (String) document.getData().get("habitID");
+                    String eventName = (String) document.getData().get("eventName");
 
                     // Convert long object to type Calendar
-                    //long longDate = (long) document.getData().get("longDate");
+                    long longDate = (long) document.getData().get("longDate");
                     Calendar eventDate = Calendar.getInstance();
-                    //eventDate.setTimeInMillis(longDate);
+                    eventDate.setTimeInMillis(longDate);
 
                     String eventComment = (String) document.getData().get("eventComment");
 

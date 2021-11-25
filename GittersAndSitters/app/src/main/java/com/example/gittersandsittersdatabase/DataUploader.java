@@ -35,6 +35,14 @@ public class DataUploader implements Serializable, FirestoreCallback{
         // Set the Collection Reference correctly
         setCollectionReference(true, habit);
 
+        // Reference for document fields:
+        // "habitName"
+        // "weekdays"
+        // "longDate"
+        // "reason"
+        // "isPublic"
+        // "progress"
+
         HashMap<String, Object> data = new HashMap<>();
         data.put("habitName", habit.getHabitName());
         data.put("weekdays", habit.getWeekdays());
@@ -43,6 +51,9 @@ public class DataUploader implements Serializable, FirestoreCallback{
         data.put("longDate", longDate);
         data.put("reason", habit.getHabitReason());
         data.put("isPublic", habit.isHabitPublic());
+
+        //TODO .put() progress
+        //data.put("progress", habitEvent.getProgress());
 
         DocumentReference docRef = collectionRef.document();
         String docID = docRef.getId();
@@ -63,6 +74,14 @@ public class DataUploader implements Serializable, FirestoreCallback{
         // Set collectionRef
         setCollectionReference(false, habit);
 
+        // Reference for document fields:
+        // "habitID"
+        // "eventName"
+        // "longDate"
+        // "eventComment"
+        // "eventLocation"
+        // "eventPhoto"
+
         // .put() the habitEvent attributes
         HashMap<String, Object> data = new HashMap<>();
         data.put("habitID", habitEvent.getParentHabitID());
@@ -72,6 +91,7 @@ public class DataUploader implements Serializable, FirestoreCallback{
         long longDate = habitEvent.getEventDate().getTimeInMillis();
         data.put("longDate", longDate);
         data.put("eventComment", habitEvent.getEventComment());
+
         //TODO upload event and Location (optional attributes)
         //data.put("eventPhoto", habitEvent.getEventPhoto());
         //data.put("eventLocation", habitEvent.getEventLocation());
@@ -93,7 +113,7 @@ public class DataUploader implements Serializable, FirestoreCallback{
         // Delete this Habit's "HabitEvents" subcollection
         deleteHabitCollection(habit, () -> {
             // Callback ensures all documents in "HabitEvents" collection are deleted
-            //TODO Ensure that this callback doesn't slow down the app too much.
+            //TODO Ensure that this callback doesn't slow down the app.
             // (User must wait for entire "HabitEvents" collection to be deleted from Firestore)
 
             // Set collectionRef to delete Habit
@@ -152,6 +172,14 @@ public class DataUploader implements Serializable, FirestoreCallback{
         // Convert date to type long
         long longDate = habit.getStartDate().getTimeInMillis();
 
+        // Reference for document fields:
+        // "habitName"
+        // "weekdays"
+        // "longDate"
+        // "reason"
+        // "isPublic"
+        // "progress"
+
         DocumentReference docRef = collectionRef.document(habit.getHabitID());
         docRef.update(
                 "habitName", habit.getHabitName(),
@@ -159,6 +187,7 @@ public class DataUploader implements Serializable, FirestoreCallback{
                 "longDate", longDate,
                 "reason", habit.getHabitReason(),
                 "isPublic", habit.isHabitPublic())
+                // "progress", habit.getProgress())
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
@@ -166,6 +195,13 @@ public class DataUploader implements Serializable, FirestoreCallback{
     /** This method updates a HabitEvent in the Firestore
      */
     public void setHabitEvent(Habit habit, HabitEvent habitEvent) {
+
+        // Reference for document fields:
+        // "eventName"
+        // "longDate"
+        // "eventComment"
+        // "eventLocation"
+        // "eventPhoto"
 
         // Set to the correct CollectionRef
         setCollectionReference(false, habit);
@@ -175,6 +211,8 @@ public class DataUploader implements Serializable, FirestoreCallback{
                 "eventName", habitEvent.getEventName(),
                 "longDate", longDate,
                 "eventComment", habitEvent.getEventComment())
+                // "eventLocation", habitEvent.getLocation(),
+                // "eventPhoto", habitEvent.getPhoto())
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
