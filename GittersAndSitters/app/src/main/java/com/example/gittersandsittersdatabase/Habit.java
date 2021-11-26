@@ -275,7 +275,8 @@ public class Habit implements Serializable {
             }
             int numerator = habitEventList.size();
             if(count != 0) {
-                this.progress = (numerator / count) * 100;
+                double prog = (double) numerator / count;
+                this.progress = (int) Math.round(prog * 100);
                 
             }
 
