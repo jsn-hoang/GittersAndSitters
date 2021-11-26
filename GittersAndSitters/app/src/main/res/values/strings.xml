@@ -2,4 +2,8 @@
     <string name="search_username">Enter a Username</string>
     <string name="button_send">Send</string>
     <string name="app_name"> <h3> <b> Habit Tracker </b></h3></string>
+    
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>
