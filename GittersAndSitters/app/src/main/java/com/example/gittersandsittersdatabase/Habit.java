@@ -3,6 +3,7 @@ package com.example.gittersandsittersdatabase;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents a Habit in the HabitTracker app.
@@ -251,6 +252,48 @@ public class Habit implements Serializable {
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    public void calculateProgress() {
+        Calendar c = Calendar.getInstance();
+        Calendar s = this.startDate;
+        int count =0;
+        long today = c.getTimeInMillis();
+        long start = s.getTimeInMillis();
+        if (start < today) {
+            int n = (int) TimeUnit.MILLISECONDS.toDays(Math.abs(today - start)) + 1;
+            //Calendar tempDate = (Calendar) s.clone();
+            for (int day : this.weekdays){
+                Calendar tempDate = (Calendar) s.clone();
+                for (int i = 0; i < n; i++){
+                    int weekday = tempDate.get(Calendar.DAY_OF_WEEK);
+                    if (weekday == day){
+                     count++;
+                    }
+                    tempDate.add(Calendar.DATE, 1);
+                }
+            }
+            int numerator = habitEventList.size();
+            if(count != 0) {
+                this.progress = (numerator / count) * 100;
+                
+            }
+
+        }
+
+
+
+        //set n = today-startdate+1
+
+        //for WEEKDAY in weekdays:
+        //tempdate = startdate
+        //for (i .. n)
+        //weekday = tempdate.getweekday
+        //if weekday==WEEKDAY: count++
+        //tempdate+= 1 day
+
+
+
     }
 
 
