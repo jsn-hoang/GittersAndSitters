@@ -97,8 +97,9 @@ public class DataUploader implements Serializable, FirestoreCallback, Comparable
 
         // upload event and Location (optional attributes)
         if (habitEvent.getEventPhoto() != null) {
-            Blob blobPhoto = habitEvent.getEventPhoto();
-            data.put("eventPhoto", blobPhoto);
+            byte[] bytesPhoto = habitEvent.getEventPhoto();
+            Blob blobPhoto = Blob.fromBytes(bytesPhoto);
+            data.put("eventPhoto",blobPhoto);
         }
         if (habitEvent.getEventLocation() != null) {
             data.put("eventLocation", habitEvent.getEventLocation());

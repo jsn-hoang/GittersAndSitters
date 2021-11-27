@@ -253,9 +253,13 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
                     String previousEventName = habitEvent.getEventName();
                     habitEvent.setEventName(habitEventName);
-                    habitEvent.setEventLocation(habitEventLocation);
                     habitEvent.setEventComment(habitEventComment);
-                    habitEvent.setEventPhoto(habitEventPhoto);
+                    if (habitEventPhoto != null) {
+                        habitEvent.setEventPhoto(habitEventPhoto);
+                    }
+                    if (habitEventLocation != null) {
+                        habitEvent.setEventLocation(habitEventLocation);
+                    }
                     // Overwrite the edited HabitEvent
                     habit.setHabitEvent(habitEventListIndex, habitEvent);
                     // Update the edited HabitEvent in FireStore
