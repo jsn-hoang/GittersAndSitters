@@ -37,6 +37,69 @@
         app:menu="@menu/drawer_menu">
 <!--        android:layout_gravity-->
 
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/activity_habit_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            tools:openDraw="start">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                app:tabMode="fixed">
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/todays_habits_tab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today's Habits" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/all_habits_tab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All Habits" />
+            </com.google.android.material.tabs.TabLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ListView
+            android:id="@+id/habit_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_habit_FAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:src="@android:drawable/ic_input_add" />
+
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:text="LOGOUT" />
+
+        <Button
+            android:id="@+id/event_history_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="EVENT HISTORY" />
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </com.google.android.material.navigation.NavigationView>
 
