@@ -4,6 +4,8 @@ import static android.content.ContentValues.TAG;
 
 import android.location.Location;
 import android.util.Log;
+
+import com.google.firebase.firestore.Blob;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -142,9 +144,26 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
 
                     // TODO get Location and Photo
 
+
                     // Create HabitEvent object and add to habitEventList
                     HabitEvent habitEvent = new HabitEvent
                             (eventID, parentHabitID, eventName, eventDate, eventComment);
+
+                    if (document.getData().get("eventPhoto") != null) {
+                        Blob photo = (Blob) document.getData().get("eventPhoto");
+                        byte[] byteArray = photo.toBytes();
+                        habitEvent.setEventPhoto(byteArray);
+                    }
+
+                    if (document.getData().get("eventLocation") != null) {
+                        List<Double> coord = (List<Double>) document.getData().get("eventLocation");
+                        habitEvent.setEventLocation((ArrayList<Double>) coord);
+//                        for (Double day : longDays) {
+//                            Integer i = (int) (long) day;
+//                            weekdays.add(i);
+//                        }
+                    }
+
                     habitEventList.add(habitEvent);
                 }
             } else {

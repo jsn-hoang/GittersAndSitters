@@ -1,8 +1,7 @@
 package com.example.gittersandsittersdatabase;
 
-import android.location.Location;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -15,7 +14,7 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     private String eventName;
     private Calendar eventDate;     // always today's date
     private String eventComment;
-    private Location eventLocation;
+    private ArrayList<Double> eventLocation;
     private byte[] eventPhoto;
 
     // Constructor with the required attributes: name and date
@@ -73,11 +72,14 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
         this.eventDate = eventDate;
     }
 
-    public Location getEventLocation() {
+    public ArrayList<Double> getEventLocation() {
         return eventLocation;
     }
 
-    public void setEventLocation(Location eventLocation) {
+    public void setEventLocation(ArrayList<Double> eventLocation) {
+        if (eventLocation.size() != 2) {
+            throw new IllegalArgumentException("Arraylist must be of size 2 (lat and long)");
+        }
         this.eventLocation = eventLocation;
     }
 

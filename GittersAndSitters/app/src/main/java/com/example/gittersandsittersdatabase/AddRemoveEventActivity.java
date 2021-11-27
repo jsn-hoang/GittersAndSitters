@@ -100,7 +100,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     Habit habit;                   // The parent Habit of the HabitEvent
     HabitEvent habitEvent;
     Calendar habitEventDate;
-    Location habitEventLocation = null;
+    ArrayList<Double> habitEventLocation = null;
     Bitmap photoBmp;
     byte[] habitEventPhoto = null;
     boolean isNewHabitEvent;
@@ -168,17 +168,19 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
         // Set up remaining fields for existing HabitEvent
         if (!isNewHabitEvent) {
-
+            habitEventLocation = habitEvent.getEventLocation();
             // Set name and comment fields
             habitEventNameEditText.setText(habitEvent.getEventName());
             habitEventCommentEditText.setText(habitEvent.getEventComment());
 
             //set photo field
-            byte[] habitEventPhoto = habitEvent.getEventPhoto();
+            habitEventPhoto = habitEvent.getEventPhoto();
 
-            // convert back to Bitmap for imageView
-            Bitmap bmp = BitmapFactory.decodeByteArray(habitEventPhoto, 0, habitEventPhoto.length);
-            imageView.setImageBitmap(bmp);
+            // if image already exists, convert it to Bitmap and put in ImageView
+            if (habitEventPhoto != null) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(habitEventPhoto, 0, habitEventPhoto.length);
+                imageView.setImageBitmap(bmp);
+            }
 
         }
 
@@ -200,7 +202,17 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fetchLocation();
+                if (habitEventLocation == null)
+                    fetchLocation();
+                else {
+                    // give coordinates to mapsActivity
+                    userLat = habitEventLocation.get(0);
+                    userLong = habitEventLocation.get(1);
+                    Intent intent = new Intent(AddRemoveEventActivity.this, MapsActivity.class);
+                    intent.putExtra("LONGITUDE", userLong);
+                    intent.putExtra("LATITUDE", userLat);
+                    startActivityForResult(intent, REQUEST_CODE_SELECTLOC);
+                }
             }
         });
 
@@ -456,9 +468,13 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             userLat = (Double) data.getExtras().get("LATITUDE");
             userLong = (Double) data.getExtras().get("LONGITUDE");
 
-            Location location = new Location(LocationManager.GPS_PROVIDER);
-            location.setLatitude(userLat);
-            location.setLongitude(userLong);
+            ArrayList<Double> location = new ArrayList<>();
+            location.add(userLat);
+            location.add(userLong);
+
+//            Location location = new Location(LocationManager.GPS_PROVIDER);
+//            location.setLatitude(userLat);
+//            location.setLongitude(userLong);
             habitEventLocation = location;
         }
     }
