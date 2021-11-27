@@ -242,8 +242,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     // Add the habitEvent to Firestore and getID
                     String habitEventID = dataUploader.addHabitEventAndGetID(habitEvent, habit);
                     habitEvent.setEventID(habitEventID);
-                    habit.addHabitEvent(habitEvent);
-
 
                     // Add the new HabitEvent to the Habit's habitEventList
                     habit.addHabitEvent(habitEvent);
