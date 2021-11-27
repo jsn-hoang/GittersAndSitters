@@ -51,7 +51,7 @@ public class HabitActivity extends AppCompatActivity {
         habitAdapter = new HabitCustomList(this, user.getTodayUserHabits(), true);
         habitListView.setAdapter(habitAdapter);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
 
 //        viewPager = (ViewPager) findViewById(R.id.)

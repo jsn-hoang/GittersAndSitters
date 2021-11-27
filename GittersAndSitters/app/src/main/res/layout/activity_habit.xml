@@ -14,47 +14,22 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_700"
-            android:id="@+id/toolbar"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:elevation="4dp"/>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/fragment_container"/>
-
-    </LinearLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/nav_view"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu">
-<!--        android:layout_gravity-->
-
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/activity_habit_id"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            tools:openDraw="start">
+            android:layout_height="wrap_content" />
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                app:tabMode="fixed">
+                android:layout_height="match_parent"
+                android:elevation="5dp"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark"
+                app:layout_scrollFlags="scroll|enterAlways"
+                tools:ignore="UnusedAttribute">
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/todays_habits_tab"
@@ -67,8 +42,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="All Habits" />
+
             </com.google.android.material.tabs.TabLayout>
+            <!--                app:tabMode="fixed"-->
+
         </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/viewPager">
+
+        </androidx.viewpager.widget.ViewPager>
+
+
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_view"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu">
+<!--        android:layout_gravity-->
 
         <ListView
             android:id="@+id/habit_listview"
@@ -97,9 +94,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:text="EVENT HISTORY" />
-
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </com.google.android.material.navigation.NavigationView>
 
