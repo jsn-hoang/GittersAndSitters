@@ -2,6 +2,8 @@ package com.example.gittersandsittersdatabase;
 
 import android.location.Location;
 
+import com.google.firebase.firestore.Blob;
+
 import java.io.Serializable;
 import java.util.Calendar;
 
@@ -16,7 +18,7 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     private Calendar eventDate;     // always today's date
     private String eventComment;
     private Location eventLocation;
-    private byte[] eventPhoto;
+    private Blob eventPhoto;
 
     // Constructor with the required attributes: name and date
     public HabitEvent(String eventID, String parentHabitID, String eventName, Calendar eventDate,
@@ -89,11 +91,11 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
         this.eventComment = eventComment;
     }
 
-    public byte[] getEventPhoto() {
+    public Blob getEventPhoto() {
         return eventPhoto;
     }
 
-    public void setEventPhoto(byte[] eventPhoto) {
+    public void setEventPhoto(Blob eventPhoto) {
         this.eventPhoto = eventPhoto;
     }
 

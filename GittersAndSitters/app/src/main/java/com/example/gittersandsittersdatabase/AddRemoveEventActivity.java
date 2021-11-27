@@ -58,6 +58,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.Blob;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -101,8 +102,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     HabitEvent habitEvent;
     Calendar habitEventDate;
     Location habitEventLocation = null;
-    Bitmap photoBmp;
-    byte[] habitEventPhoto = null;
+    Blob habitEventPhoto = null;
     boolean isNewHabitEvent;
     int habitListIndex;            // index position of the Habit in the User's habitList
     int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
@@ -174,10 +174,11 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             habitEventCommentEditText.setText(habitEvent.getEventComment());
 
             //set photo field
-            byte[] habitEventPhoto = habitEvent.getEventPhoto();
+            habitEventPhoto = habitEvent.getEventPhoto();
 
-            // convert back to Bitmap for imageView
-            Bitmap bmp = BitmapFactory.decodeByteArray(habitEventPhoto, 0, habitEventPhoto.length);
+            // Convert Blob to byte[] to bitmap
+            byte[] bytePhoto = habitEventPhoto.toBytes();
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytePhoto, 0, bytePhoto.length);
             imageView.setImageBitmap(bmp);
 
         }
@@ -448,7 +449,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
-            habitEventPhoto = byteArray;
+            habitEventPhoto = Blob.fromBytes(byteArray);
         }
 
         if (requestCode == REQUEST_CODE_SELECTLOC && resultCode == RESULT_OK) {
