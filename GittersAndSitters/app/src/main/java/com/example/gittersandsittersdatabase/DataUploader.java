@@ -216,12 +216,23 @@ public class DataUploader implements Serializable, FirestoreCallback, Comparable
         setCollectionReference(false, habit);
         long longDate = habitEvent.getEventDate().getTimeInMillis();
         DocumentReference docRef = collectionRef.document(habitEvent.getEventID());
+
+        // update event and Location (optional attributes)
+        if (habitEvent.getEventPhoto() != null) {
+            byte[] bytesPhoto = habitEvent.getEventPhoto();
+            Blob blobPhoto = Blob.fromBytes(bytesPhoto);
+            docRef.update("eventPhoto", blobPhoto).addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
+                    .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
+        }
+        if (habitEvent.getEventLocation() != null) {
+            docRef.update("eventLocation", habitEvent.getEventLocation()).addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
+                    .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
+        }
+
         docRef.update(
                 "eventName", habitEvent.getEventName(),
                 "longDate", longDate,
                 "eventComment", habitEvent.getEventComment())
-                // "eventLocation", habitEvent.getLocation(),
-                // "eventPhoto", habitEvent.getPhoto())
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
