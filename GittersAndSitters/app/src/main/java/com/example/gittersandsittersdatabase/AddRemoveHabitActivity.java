@@ -148,33 +148,13 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // get isPublic
             boolean isPublic = publicRadioButton.isChecked();
 
-            // Check input constraints
-            boolean validInput = true;
-
-            if (habitName.equals("")) {
-                Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a name.", Toast.LENGTH_LONG).show();
-                validInput = false;
-            }
-            // if non-unique habitName inputted
-            else if (!user.isUniqueHabitName(habitName)) {
-                // if new Habit OR the non-unique name does not belong to the habit being edited
-                if ((isNewHabit || !habit.getHabitName().equals(habitName))) {
-                    Toast.makeText(AddRemoveHabitActivity.this, "This habit already exists. Please choose a unique name.", Toast.LENGTH_LONG).show();
-                    validInput = false;
-                }
-            }
-
-            // if no weekdays are selected
-            else if (!isAnyChecked()) {
-                Toast.makeText(AddRemoveHabitActivity.this, "Please select at least one day to perform this habit on.", Toast.LENGTH_LONG).show();
-                validInput = false;
-            }
+            // Determine if user has inputted valid data
+            boolean isValidInput = isValidInputChecker(habitName);
 
             // if valid input
-            if (validInput) {
-
+            if (isValidInput) {
+                // if new Habit
                 if (isNewHabit) {
-
                     habit = new Habit(habitName, weekdays, habitStartDate, habitReason, isPublic);
                     // Add the habit to db and get its ID
                     String habitID = dataUploader.addHabitAndGetID(habit);
@@ -355,6 +335,38 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             }
         }
         return days;
+    }
+
+    /** This method determines if the user has inputted valid data for adding or editing a Habit.
+     *  A boolean is returned corresponding to whether or not the inputted data is valid.
+     * @param habitName - A String object of the proposed habit name
+     * @return - a boolean
+     */
+    public boolean isValidInputChecker (String habitName){
+
+        // initalize boolean to true
+        boolean isValidInput = true;
+
+        // Ensure user entered a habitName
+        if (habitName.equals("")) {
+            Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a name.", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+
+        // if non-unique habitName inputted
+        if (!user.isUniqueHabitName(habitName)) {
+            // if new Habit OR the non-unique name does not belong to the habit being edited
+            if ((isNewHabit || !habit.getHabitName().equals(habitName))) {
+                Toast.makeText(AddRemoveHabitActivity.this, "This habit already exists. Please choose a unique name.", Toast.LENGTH_LONG).show();
+                isValidInput = false;
+            }
+        }
+        // if no weekdays are selected
+        if (!isAnyChecked()) {
+            Toast.makeText(AddRemoveHabitActivity.this, "Please select at least one day to perform this habit on.", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        return isValidInput;
     }
 
     /**
