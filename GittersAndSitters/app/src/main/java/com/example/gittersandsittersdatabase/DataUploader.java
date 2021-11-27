@@ -92,9 +92,13 @@ public class DataUploader implements Serializable, FirestoreCallback{
         data.put("longDate", longDate);
         data.put("eventComment", habitEvent.getEventComment());
 
-        //TODO upload event and Location (optional attributes)
-        //data.put("eventPhoto", habitEvent.getEventPhoto());
-        //data.put("eventLocation", habitEvent.getEventLocation());
+        // upload event and Location (optional attributes)
+        if (habitEvent.getEventPhoto() != null) {
+            data.put("eventPhoto", habitEvent.getEventPhoto());
+        }
+        if (habitEvent.getEventLocation() != null) {
+            data.put("eventLocation", habitEvent.getEventLocation());
+        }
 
         DocumentReference docRef = collectionRef.document();
         String docID = docRef.getId();

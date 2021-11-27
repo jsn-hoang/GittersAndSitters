@@ -210,22 +210,23 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     // Create the HabitEvent
                     habitEvent = new HabitEvent(habit.getHabitID(), habitEventName,
                             habitEventDate, habitEventComment);
+                    
+                    if (habitEventPhoto != null) {
+                        habitEvent.setEventPhoto(habitEventPhoto);
+                    }
+
+                    if (habitEventLocation != null) {
+                        habitEvent.setEventLocation(habitEventLocation);
+                    }
 
                     // Add the habitEvent to Firestore and getID
                     String habitEventID = dataUploader.addHabitEventAndGetID(habitEvent, habit);
                     habitEvent.setEventID(habitEventID);
                     habit.addHabitEvent(habitEvent);
-                    
-                    if (habitEventPhoto != null) {
-                        newHabitEvent.setEventPhoto(habitEventPhoto);
-                    }
 
-                    if (habitEventLocation != null) {
-                        newHabitEvent.setEventLocation(habitEventLocation);
-                    }
 
                     // Add the new HabitEvent to the Habit's habitEventList
-                    habit.addHabitEvent(newHabitEvent);
+                    habit.addHabitEvent(habitEvent);
 
                 }
                 else { // else edit the existing HabitEvent
