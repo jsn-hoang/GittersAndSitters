@@ -1,3 +1,5 @@
+// Gunaseelan: https://www.py4u.net/discuss/605745, credit for LocationServices/LocationRequest
+
 package com.example.gittersandsittersdatabase;
 
 import static android.content.ContentValues.TAG;
@@ -210,7 +212,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     // Create the HabitEvent
                     habitEvent = new HabitEvent(habit.getHabitID(), habitEventName,
                             habitEventDate, habitEventComment);
-                    
+
                     if (habitEventPhoto != null) {
                         habitEvent.setEventPhoto(habitEventPhoto);
                     }
@@ -331,13 +333,25 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(
                 AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
+            Log.d("DEBUG", "in if statement permission granted to fine location");
             // You can use the API that requires the permission.
+            LocationRequest mLocationRequest = LocationRequest.create();
+            mLocationRequest.setInterval(60000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationCallback mLocationCallback = new LocationCallback();
+
+            LocationServices.getFusedLocationProviderClient(AddRemoveEventActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
             fusedLocationClient.getLastLocation()
                         .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                             @Override
                             public void onSuccess(Location location) {
+                                Log.d("DEBUG", "in onSuccess listener of getLastLocation()");
+
                                 // Got last known location. In some rare situations this can be null.
                                 if (location != null) {
+                                    Log.d("DEBUG", "location is not null");
+
 //                                if (location != null) {
                                     // Logic to handle location object
                                     Double userLat = location.getLatitude();
