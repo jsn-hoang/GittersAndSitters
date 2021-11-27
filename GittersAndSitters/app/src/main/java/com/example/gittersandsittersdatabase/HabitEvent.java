@@ -1,5 +1,6 @@
 package com.example.gittersandsittersdatabase;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 
 import java.io.File;
@@ -15,36 +16,29 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     private String eventID;
     private String parentHabitID;
     private String eventName;
-    //private String parentHabitName;     // Each event is associated with a particular Habit
     private Calendar eventDate;     // always today's date
     private String eventComment;
     private Location eventLocation;
-    private File eventPhoto;
+    private Bitmap eventPhoto;
 
     // Constructor with the required attributes: name and date
-    public HabitEvent(String eventID, String parentHabitID, String eventName, /*String parentHabitName,*/ Calendar eventDate,
-             String eventComment /*Location eventLocation, *//*File eventPhoto*/) {
+    public HabitEvent(String eventID, String parentHabitID, String eventName, Calendar eventDate,
+             String eventComment) {
         this.eventID = eventID;
         this.parentHabitID = parentHabitID;
         this.eventName = eventName;
-        //this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
         this.eventComment = eventComment;
-        //this.eventLocation = eventLocation;
-        //this.eventPhoto = eventPhoto;
     }
 
     // Constructor with the required attributes: name and date
-    public HabitEvent(String parentHabitID, String eventName, /*String parentHabitName,*/ Calendar eventDate,
-             String eventComment /*Location eventLocation,*//*File eventPhoto*/) {
+    public HabitEvent(String parentHabitID, String eventName, Calendar eventDate,
+             String eventComment) {
         this.eventID = "temp";
         this.parentHabitID = parentHabitID;
         this.eventName = eventName;
-        //this.parentHabitName = parentHabitName;
         this.eventDate = eventDate;
         this.eventComment = eventComment;
-        // his.eventLocation = eventLocation;
-        //this.eventPhoto = eventPhoto;
     }
 
     // Getters and Setters
@@ -98,11 +92,11 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
         this.eventComment = eventComment;
     }
 
-    public File getEventPhoto() {
+    public Bitmap getEventPhoto() {
         return eventPhoto;
     }
 
-    public void setEventPhoto(File eventPhoto) {
+    public void setEventPhoto(Bitmap eventPhoto) {
         this.eventPhoto = eventPhoto;
     }
 

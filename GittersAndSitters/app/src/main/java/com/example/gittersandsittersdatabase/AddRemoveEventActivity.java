@@ -2,11 +2,21 @@ package com.example.gittersandsittersdatabase;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,11 +25,33 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,17 +88,27 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     // Declare variables for referencing
     private FirebaseFirestore db;
     private CollectionReference collectionRef;
+    public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
+    public static final int REQUEST_CODE_CAMERA = 3;
+    public static final int REQUEST_CODE_SELECTLOC = 4;
     public static final int RESULT_DELETE = 2;
     User user;
     Habit habit;                   // The parent Habit of the HabitEvent
     HabitEvent habitEvent;
     Calendar habitEventDate;
     Location habitEventLocation = null;
-    File habitEventPhoto = null;
+    Bitmap habitEventPhoto = null;
     boolean isNewHabitEvent;
     int habitListIndex;            // index position of the Habit in the User's habitList
     int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
     private DataUploader dataUploader;
+    ImageView imageView;
+    Double userLat;
+    Double userLong;
+
+    // location
+    private FusedLocationProviderClient fusedLocationClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +144,16 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         final Button deleteButton = findViewById(R.id.delete_event_button);
         final Button addButton = findViewById(R.id.add_event_button);
         final Button cancelButton = findViewById(R.id.cancel_event_button);
+        final Button locationButton = findViewById(R.id.event_location_button);
         final TextView header = findViewById(R.id.add_edit_event_title_text);
         final TextView eventDateText = findViewById(R.id.event_date_text);
         final Button eventLocationButton = findViewById(R.id.event_location_button);
         final ImageButton eventPhotoButton = findViewById(R.id.event_photo_button);
+        imageView = findViewById(R.id.imageView);
+
+
+        // setup location services
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Set up activity layout
         activityLayoutSetup(isNewHabitEvent, header, addButton, deleteButton);
@@ -120,11 +168,33 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             habitEventNameEditText.setText(habitEvent.getEventName());
             habitEventCommentEditText.setText(habitEvent.getEventComment());
 
-            //TODO set the location and photo fields
+            //set the location and photo fields
             Location habitEventLocation = habitEvent.getEventLocation();
-            File  habitEventPhoto = habitEvent.getEventPhoto();
+            Bitmap habitEventPhoto = habitEvent.getEventPhoto();
 
         }
+
+        // Listener for image button
+        // requests image permissions
+        eventPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // get permissions if not granted already
+                if (ContextCompat.checkSelfPermission(AddRemoveEventActivity.this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(AddRemoveEventActivity.this, new String[] {Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+                }
+                launchCamera(); // launches if permission granted
+            }
+        });
+
+        // Listener for location button
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fetchLocation();
+            }
+        });
 
         // This Listener is responsible for the logic when clicking the "OK" button
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -133,10 +203,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 // Retrieve user inputted data
                 String habitEventName = habitEventNameEditText.getText().toString();
                 String habitEventComment = habitEventCommentEditText.getText().toString();
-
-                //TODO: get the user inputted location and photo fields
-
-                // Note: habitEventDate is already done
 
                 // if this is a new HabitEvent
                 if (isNewHabitEvent) {
@@ -149,6 +215,17 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     String habitEventID = dataUploader.addHabitEventAndGetID(habitEvent, habit);
                     habitEvent.setEventID(habitEventID);
                     habit.addHabitEvent(habitEvent);
+                    
+                    if (habitEventPhoto != null) {
+                        newHabitEvent.setEventPhoto(habitEventPhoto);
+                    }
+
+                    if (habitEventLocation != null) {
+                        newHabitEvent.setEventLocation(habitEventLocation);
+                    }
+
+                    // Add the new HabitEvent to the Habit's habitEventList
+                    habit.addHabitEvent(newHabitEvent);
 
                 }
                 else { // else edit the existing HabitEvent
@@ -205,6 +282,158 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void launchCamera() {
+        if (ContextCompat.checkSelfPermission(
+                AddRemoveEventActivity.this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED) {
+            // You can use the API that requires the permission.
+
+            // start camera
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_CODE_CAMERA);
+
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(AddRemoveEventActivity.this, Manifest.permission.CAMERA)) {
+            // explain to the user why your app requires this permission for a specific feature to behave as expected.
+            new AlertDialog.Builder(this)
+                    .setTitle("Required Camera Permission")
+                    .setMessage("You need camera permission to access the in-app camera")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
+                                    new String[] { Manifest.permission.CAMERA },
+                                    REQUEST_CODE_CAMERA);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            // Directly ask for the permission.
+            ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
+                    new String[] { Manifest.permission.CAMERA },
+                    REQUEST_CODE_CAMERA);
+        }
+
+    }
+
+
+
+    private void fetchLocation() {
+        if (ContextCompat.checkSelfPermission(
+                AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            // You can use the API that requires the permission.
+            fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+//                                if (location != null) {
+                                    // Logic to handle location object
+                                    Double userLat = location.getLatitude();
+                                    Double userLong = location.getLongitude();
+
+                                    // give coordinates to mapsActivity
+                                    Intent intent = new Intent(AddRemoveEventActivity.this, MapsActivity.class);
+                                    intent.putExtra("LONGITUDE", userLong);
+                                    intent.putExtra("LATITUDE", userLat);
+                                    startActivityForResult(intent, REQUEST_CODE_SELECTLOC);
+                                }
+                            }
+                        })
+                        // often fails if emulator doesn't have a location set
+                        .addOnFailureListener(this, new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(AddRemoveEventActivity.this, "Location could not be found on this device!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // explain to the user why your app requires this permission for a specific feature to behave as expected.
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Required Location Permission")
+                    .setMessage("You need location permission to access the map")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
+                                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                                    PERMISSIONS_REQUEST_CODE_FINE_LOCATION);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            // Directly ask for the permission.
+            ActivityCompat.requestPermissions(AddRemoveEventActivity.this,
+                    new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
+                    PERMISSIONS_REQUEST_CODE_FINE_LOCATION);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_CODE_FINE_LOCATION) {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission granted
+                Toast.makeText(this, "Location Permission Granted", Toast.LENGTH_SHORT).show();
+            } else {
+                // permission not granted
+                Toast.makeText(this, "Location Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (requestCode == REQUEST_CODE_CAMERA) {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission granted
+                Toast.makeText(this, "Camera Permission Granted", Toast.LENGTH_SHORT).show();
+            } else {
+                // permission not granted
+                Toast.makeText(this, "Camera Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CAMERA) {
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(bitmap);
+
+            habitEventPhoto = bitmap;
+        }
+
+        if (requestCode == REQUEST_CODE_SELECTLOC && resultCode == RESULT_OK) {
+            // user chose a location on map
+            userLat = (Double) data.getExtras().get("LATITUDE");
+            userLong = (Double) data.getExtras().get("LONGITUDE");
+
+            Location location = new Location(LocationManager.GPS_PROVIDER);
+            location.setLatitude(userLat);
+            location.setLongitude(userLong);
+            habitEventLocation = location;
+        }
     }
 
     /**

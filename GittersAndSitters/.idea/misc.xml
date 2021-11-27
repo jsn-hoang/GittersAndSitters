@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Justin/Documents/GitHub/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_add_remove_habit_event.xml" value="0.22" />
         <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_follow_feed.xml" value="0.5" />
         <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_following.xml" value="0.5" />
         <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_login.xml" value="0.5" />
@@ -24,8 +25,6 @@
         <entry key="..\:/Users/ashwi/OneDrive/Desktop/CMPUT 301/Project3/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/following_content.xml" value="0.17300724637681159" />
         <entry key="..\:/Users/itsma/cmput301DataBase/GittersAndSitters/GittersAndSittersDatabase/app/src/main/res/layout/activity_login.xml" value="0.36" />
         <entry key="..\:/Users/itsma/cmput301DataBase/GittersAndSitters/GittersAndSittersDatabase/app/src/main/res/layout/activity_register.xml" value="0.3" />
-        <entry key="..\:/Users/itsma/doingTestStuff/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_main.xml" value="0.4" />
-        <entry key="..\:/Users/itsma/doingTestStuff/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_register.xml" value="0.3670064874884152" />
         <entry key="..\:/Users/itsma/fixErrorsDataBase/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_main.xml" value="0.36" />
         <entry key="..\:/Users/itsma/fixErrorsDataBase/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_profile.xml" value="0.4" />
         <entry key="..\:/Users/itsma/fixErrorsDataBase/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_register.xml" value="0.268" />
@@ -49,11 +48,8 @@
         <entry key="app/src/main/res/layout/activity_habit_event_history.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.3380208333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.375" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.335" />
         <entry key="app/src/main/res/layout/content.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/habit_content.xml" value="0.3891625615763547" />
-        <entry key="app/src/main/res/layout/habit_event_content.xml" value="0.16770833333333332" />
       </map>
     </option>
   </component>

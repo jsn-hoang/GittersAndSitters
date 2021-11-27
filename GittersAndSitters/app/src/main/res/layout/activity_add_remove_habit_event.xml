@@ -64,6 +64,12 @@
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="fitCenter" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -89,6 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Create" />
+
     </LinearLayout>
 
 </LinearLayout>

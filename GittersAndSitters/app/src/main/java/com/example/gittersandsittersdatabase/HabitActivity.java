@@ -121,29 +121,6 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
-        // logout button goes to logout screen (ProfileActivity) to confirm or cancel
-        final Button logoutButton = findViewById(R.id.logout_button);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HabitActivity.this, ProfileActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
-            }
-
-        });
-        // Event History button goes to HabitEventActivity
-        final Button eventHistoryButton = findViewById(R.id.event_history_button);
-        eventHistoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(HabitActivity.this, HabitEventActivity.class);
-                intent.putExtra("user", user);
-                //startActivity(intent);
-                habitActivityResultLauncher.launch(intent);
-            }
-        });
 
         /**
          * Launches AddRemoveEventActivity when user clicks on a ListView entry
@@ -168,7 +145,33 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
-        }
+        // logout button goes to logout screen (ProfileActivity) to confirm or cancel
+        final Button logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HabitActivity.this, ProfileActivity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+
+        });
+        // Event History button goes to HabitEventActivity
+        final Button eventHistoryButton = findViewById(R.id.event_history_button);
+        eventHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(HabitActivity.this, HabitEventActivity.class);
+                intent.putExtra("user", user);
+                //startActivity(intent);
+                habitActivityResultLauncher.launch(intent);
+            }
+        });
+
+
+
+    }
 
     /**
      * Refreshes the tab that is currently selected. A user method is called to get the updated habit list.
