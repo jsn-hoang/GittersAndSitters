@@ -194,7 +194,7 @@ public class Habit implements Serializable {
 
     // Getters and Setters
 
-    public boolean isHabitPublic() {
+    public boolean isPublic() {
         return habitPublic;
     }
 

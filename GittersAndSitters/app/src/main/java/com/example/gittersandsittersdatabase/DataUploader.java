@@ -50,7 +50,7 @@ public class DataUploader implements Serializable, FirestoreCallback{
         long longDate = habit.getStartDate().getTimeInMillis();
         data.put("longDate", longDate);
         data.put("reason", habit.getHabitReason());
-        data.put("isPublic", habit.isHabitPublic());
+        data.put("isPublic", habit.isPublic());
 
         //TODO .put() progress
         //data.put("progress", habitEvent.getProgress());
@@ -186,7 +186,7 @@ public class DataUploader implements Serializable, FirestoreCallback{
                 "weekdays", habit.getWeekdays(),
                 "longDate", longDate,
                 "reason", habit.getHabitReason(),
-                "isPublic", habit.isHabitPublic())
+                "isPublic", habit.isPublic())
                 // "progress", habit.getProgress())
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));

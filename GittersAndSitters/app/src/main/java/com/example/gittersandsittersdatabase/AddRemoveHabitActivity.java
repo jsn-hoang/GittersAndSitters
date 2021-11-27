@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,9 +76,12 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         dataUploader = new DataUploader(user.getUserID());
 
         // Get views that will be used for user input
+
         habitNameEditText = findViewById(R.id.habit_name_editText);
         habitStartDateText = findViewById(R.id.habit_start_date_text);
         weekdayCheckBoxes = new ArrayList<>();
+        RadioButton publicRadioButton = findViewById(R.id.public_radio_button);
+        RadioButton privateRadioButton = findViewById(R.id.private_radio_button);
         CheckBox monday = findViewById(R.id.monday_checkbox);
         CheckBox tuesday = findViewById(R.id.tuesday_checkbox);
         CheckBox wednesday = findViewById(R.id.wednesday_checkbox);
@@ -105,6 +109,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         // Set up Date field
         setDateField(isNewHabit, habitStartDateText);
 
+        // initialize publicRadioButton to checked for new Habit
+        if (isNewHabit)
+            publicRadioButton.setChecked(true);
+
         // Set up remaining fields for existing habit
         if (!isNewHabit) {
 
@@ -118,7 +126,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // Set checkboxes
             setDaysToCheckBoxes(habit, weekdayCheckBoxes);
 
-            //TODO: Set the habitPublic boolean
+            // Set public/private radio button
+            if (habit.isPublic())
+                publicRadioButton.setChecked(true);
+            else privateRadioButton.setChecked(true);
         }
 
 
@@ -134,8 +145,8 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
             // habitStartDate is already retrieved
 
-            //TODO: Get the habitPublic boolean
-            // if no habitName inputted
+            // get isPublic
+            boolean isPublic = publicRadioButton.isChecked();
 
             // Check input constraints
             boolean validInput = true;
@@ -155,11 +166,12 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                 validInput = false;
             }
 
+            // if valid input
             if (validInput) {
-                ;
+
                 if (isNewHabit) {
 
-                    habit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
+                    habit = new Habit(habitName, weekdays, habitStartDate, habitReason, isPublic);
                     // Add the habit to db and get its ID
                     String habitID = dataUploader.addHabitAndGetID(habit);
                     habit.setHabitID(habitID);
@@ -169,6 +181,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                     habit.setWeekdays(weekdays);
                     habit.setStartDate(habitStartDate);
                     habit.setHabitReason(habitReason);
+                    habit.setHabitPublic(isPublic);
                     // Overwrite the previous habit with the edited one
                     user.setUserHabit(habitIndexPosition, habit);
                     // Edit the document in Firestore

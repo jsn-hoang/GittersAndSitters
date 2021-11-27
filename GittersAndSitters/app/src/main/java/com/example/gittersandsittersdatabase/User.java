@@ -205,7 +205,7 @@ public class User implements Serializable{
         ArrayList<Habit> tempList = new ArrayList<>();
 
         for (int i=0; i<habitList.size(); i++){
-            if (habitList.get(i).isHabitPublic()) {
+            if (habitList.get(i).isPublic()) {
                 tempList.add(habitList.get(i));
             }
         }
