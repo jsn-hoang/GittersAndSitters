@@ -61,10 +61,6 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
         return parentHabitID;
     }
 
-    public void setParentHabitID(String parentHabitID) {
-        this.parentHabitID = parentHabitID;
-    }
-
     public String getEventName() {
         return eventName;
     }

@@ -213,6 +213,25 @@ public class User implements Serializable{
     }
 
     /**
+     * This method returns a boolean indicating whether a proposed Habit name is unique
+     * @param habitName - The proposed habitName (String)
+     * @return - A boolean corresponding to whether the name is unique to the habitNames in habitList
+     */
+    public boolean isUniqueHabitName(String habitName) {
+
+        // loop through all Habits
+        for (int i = 0; i < habitList.size(); i++) {
+            Habit habit = habitList.get(i);
+            // Compare each habit with proposed habit
+            if (habit.getHabitName().equals(habitName))
+                // return false if name exists
+                return false;
+        }
+        // if this line is reached, the proposed name must be unique
+        return true;
+    }
+
+    /**
      * This method generates and returns an ArrayList of all of the user's HabitEvents.
      * The list is sorted in reverse chronological order.
      * @return ArrayList<HabitEvent>

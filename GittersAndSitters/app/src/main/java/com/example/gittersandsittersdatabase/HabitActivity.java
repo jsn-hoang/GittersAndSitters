@@ -147,7 +147,8 @@ public class HabitActivity extends AppCompatActivity {
 
         /**
          * Launches AddRemoveEventActivity when user clicks on a ListView entry
-         * "Today's Habits" tab must be selected for Activity to launch
+         * "Today's Habits" tab must be selected and isCompleted
+         * must be false for the activity to launch.
          */
         habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -155,11 +156,12 @@ public class HabitActivity extends AppCompatActivity {
 
                 // Get integer corresponding to currently selected tab
                 int tabPosition = tabLayout.getSelectedTabPosition();
+                // Get habit corresponding to clicked ListView entry
+                habit = (Habit) habitListView.getItemAtPosition(i);
 
-                if (tabPosition == 0) { // true iff "Today's Habits" tab is currently selected
+                // make sure we're in "Today's Habits" and no Event has been added yet today.
+                if (tabPosition == 0 && !habit.isCompletedToday()) {
 
-
-                    habit = (Habit) habitListView.getItemAtPosition(i); // Get the clicked habit
                     Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
                     intent.putExtra("user", user);
                     intent.putExtra("habit", habit);

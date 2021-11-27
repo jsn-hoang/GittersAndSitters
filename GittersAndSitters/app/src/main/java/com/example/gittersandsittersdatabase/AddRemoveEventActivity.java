@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -138,40 +139,45 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
                 // Note: habitEventDate is already done
 
-                // if this is a new HabitEvent
-                if (isNewHabitEvent) {
 
-                    // Create the HabitEvent
-                    habitEvent = new HabitEvent(habit.getHabitID(), habitEventName,
-                            habitEventDate, habitEventComment);
+                if (habitEventName.equals(""))
+                    Toast.makeText(AddRemoveEventActivity.this, "Please give this event a name.", Toast.LENGTH_LONG).show();
 
-                    // Add the habitEvent to Firestore and getID
-                    String habitEventID = dataUploader.addHabitEventAndGetID(habitEvent, habit);
-                    habitEvent.setEventID(habitEventID);
-                    habit.addHabitEvent(habitEvent);
+                // habitEvent must have a name for else condition to be entered
+                else {
+                    // if this is a new HabitEvent
+                    if (isNewHabitEvent) {
 
+                        // Create the HabitEvent
+                        habitEvent = new HabitEvent(habit.getHabitID(), habitEventName,
+                                habitEventDate, habitEventComment);
+
+                        // Add the habitEvent to Firestore and getID
+                        String habitEventID = dataUploader.addHabitEventAndGetID(habitEvent, habit);
+                        habitEvent.setEventID(habitEventID);
+                        habit.addHabitEvent(habitEvent);
+
+                    } else { // else edit the existing HabitEvent
+
+                        habitEvent.setEventName(habitEventName);
+                        habitEvent.setEventLocation(habitEventLocation);
+                        habitEvent.setEventComment(habitEventComment);
+                        habitEvent.setEventPhoto(habitEventPhoto);
+                        // Overwrite the edited HabitEvent
+                        habit.setHabitEvent(habitEventListIndex, habitEvent);
+                        // Update the edited HabitEvent in FireStore
+                        dataUploader.setHabitEvent(habit, habitEvent);
+                    }
+
+                    // Overwrite the edited user Habit
+                    user.setUserHabit(habitListIndex, habit);   // executed whether we're adding or editing
+
+                    // Navigate back to launcher Activity (HabitActivity or HabitEventActivity)
+                    Intent intent = new Intent();
+                    intent.putExtra("user", user);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
-                else { // else edit the existing HabitEvent
-
-                    String previousEventName = habitEvent.getEventName();
-                    habitEvent.setEventName(habitEventName);
-                    habitEvent.setEventLocation(habitEventLocation);
-                    habitEvent.setEventComment(habitEventComment);
-                    habitEvent.setEventPhoto(habitEventPhoto);
-                    // Overwrite the edited HabitEvent
-                    habit.setHabitEvent(habitEventListIndex, habitEvent);
-                    // Update the edited HabitEvent in FireStore
-                    dataUploader.setHabitEvent(habit, habitEvent);
-                }
-
-                // Overwrite the edited user Habit
-                user.setUserHabit(habitListIndex, habit);   // executed whether we're adding or editing
-
-                // Navigate back to launcher Activity (HabitActivity or HabitEventActivity)
-                Intent intent = new Intent();
-                intent.putExtra("user", user);
-                setResult(RESULT_OK, intent);
-                finish();
             }
         });
 

@@ -12,6 +12,8 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import com.google.firebase.firestore.CollectionReference;
@@ -133,32 +135,51 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // habitStartDate is already retrieved
 
             //TODO: Get the habitPublic boolean
+            // if no habitName inputted
 
+            // Check input constraints
+            boolean validInput = true;
 
-            if (isNewHabit) {
-                // Create a new Habit
-                habit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
-                // Add the habit to db and get its ID
-                String habitID = dataUploader.addHabitAndGetID(habit);
-                habit.setHabitID(habitID);
-                user.addUserHabit(habit);
+            if (habitName.equals("")) {
+                Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a name.", Toast.LENGTH_LONG).show();
+                validInput = false;
+            }
+            // if non-unique habitName inputted
+            else if (!user.isUniqueHabitName(habitName)) {
+                Toast.makeText(AddRemoveHabitActivity.this, "This habit already exists. Please choose a unique name.", Toast.LENGTH_LONG).show();
+                validInput = false;
+            }
+            // if no weekdays are selected
+            else if (!isAnyChecked()) {
+                Toast.makeText(AddRemoveHabitActivity.this, "Please select at least one day to perform this habit on.", Toast.LENGTH_LONG).show();
+                validInput = false;
             }
 
-            else { // else edit the existing habit
-                habit.setHabitName(habitName);
-                habit.setWeekdays(weekdays);
-                habit.setStartDate(habitStartDate);
-                habit.setHabitReason(habitReason);
-                // Overwrite the previous habit with the edited one
-                user.setUserHabit(habitIndexPosition, habit);
-                // Edit the document in Firestore
-                dataUploader.setHabit(habit);
+            if (validInput) {
+                ;
+                if (isNewHabit) {
+
+                    habit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
+                    // Add the habit to db and get its ID
+                    String habitID = dataUploader.addHabitAndGetID(habit);
+                    habit.setHabitID(habitID);
+                    user.addUserHabit(habit);
+                } else { // else edit the existing habit
+                    habit.setHabitName(habitName);
+                    habit.setWeekdays(weekdays);
+                    habit.setStartDate(habitStartDate);
+                    habit.setHabitReason(habitReason);
+                    // Overwrite the previous habit with the edited one
+                    user.setUserHabit(habitIndexPosition, habit);
+                    // Edit the document in Firestore
+                    dataUploader.setHabit(habit);
+                }
+                // Navigate back to MainActivity
+                Intent intent = new Intent();
+                intent.putExtra("user", user);
+                setResult(RESULT_OK, intent);
+                finish();
             }
-            // Navigate back to MainActivity
-            Intent intent = new Intent();
-            intent.putExtra("user", user);
-            setResult(RESULT_OK, intent);
-            finish();
         });
 
 
@@ -318,4 +339,22 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         }
         return days;
     }
+
+    /**
+     * This method returns a boolean corresponding to whether any of the Checkboxes are checked
+     * @return - a boolean
+     */
+    public boolean isAnyChecked() {
+
+        // loop through all the checkboxes
+        for (int i = 0; i < weekdayCheckBoxes.size(); i++) {
+            // if a box is checked
+            if (weekdayCheckBoxes.get(i).isChecked())
+                // return true
+                return true;
+        }
+        // if this line is reached, then no boxes are checked
+        return false;
+    }
+
 }
