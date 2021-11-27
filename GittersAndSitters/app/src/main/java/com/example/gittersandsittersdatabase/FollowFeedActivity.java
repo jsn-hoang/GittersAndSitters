@@ -67,12 +67,6 @@ public class FollowFeedActivity extends AppCompatActivity {
         targetUserId = targetUserName.getUserID();
 
 
-        //followHabitArrayList = new ArrayList<>();
-        //followHabit_list = findViewById(R.id.feed_list);
-
-        //followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList);
-        //followHabit_list.setAdapter(followHabitAdapter);
-
 
         final CollectionReference collectionRef = fStore.collection("Users");
         DocumentReference targetUserReference = collectionRef.document(targetUserId);
@@ -80,7 +74,7 @@ public class FollowFeedActivity extends AppCompatActivity {
         followHabit_list = findViewById(R.id.feed_list);
 
         followHabitArrayList = new ArrayList<>();
-        followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList);
+        followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList,targetUserId);
         followHabit_list.setAdapter(followHabitAdapter);
         habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -114,73 +108,62 @@ public class FollowFeedActivity extends AppCompatActivity {
                     //Calendar startDate = Calendar.getInstance();
 
                     Habit habit = new Habit(doc.getId(), habitName, weekdays, startDate, reason, isPublic);
-                    fStore.collectionGroup("HabitEvents").get().addOnCompleteListener(task -> {
+                    CollectionReference habitEventCollRef = fStore.collection("Users").document(targetUserId).collection("Habits").document(habit.getHabitID()).collection("HabitEvents");
 
-                        if (task.isSuccessful()) {
-                            // For document in collectionGroup
-                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
+                    habitEventCollRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()){
+                                for (QueryDocumentSnapshot document : task.getResult()){
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
 
-                                // Reference for document fields:
-                                // "eventID" <- the ID of the document
-                                // "habitID"
-                                // "eventName"
-                                // "longDate"
-                                // "eventComment"
-                                // "eventLocation"
-                                // "eventPhoto"
+                                    // Reference for document fields:
+                                    // "eventID" <- the ID of the document
+                                    // "habitID"
+                                    // "eventName"
+                                    // "longDate"
+                                    // "eventComment"
+                                    // "eventLocation"
+                                    // "eventPhoto"
 
-                                // Convert document fields to HabitEvent attributes
-                                String eventID = document.getId();
-                                String parentHabitID = (String) document.getData().get("habitID");
-                                String eventName = (String) document.getData().get("eventName");
 
-                                // Convert long object to type Calendar
-                                long longDate2 = (long) document.getData().get("longDate");
-                                Calendar eventDate = Calendar.getInstance();
-                                eventDate.setTimeInMillis(longDate2);
+                                    // Convert document fields to HabitEvent attributes
+                                    String eventID = document.getId();
+                                    String parentHabitID = (String) document.getData().get("habitID");
+                                    String eventName = (String) document.getData().get("eventName");
 
-                                String eventComment = (String) document.getData().get("eventComment");
+                                    // Convert long object to type Calendar
+                                    long longDate = (long) document.getData().get("longDate");
+                                    Calendar eventDate = Calendar.getInstance();
+                                    eventDate.setTimeInMillis(longDate);
 
-                                // TODO get Location and Photo
+                                    String eventComment = (String) document.getData().get("eventComment");
+                                    HabitEvent habitEvent = new HabitEvent
+                                            (eventID, parentHabitID, eventName, eventDate, eventComment);
+                                    habit.addHabitEvent(habitEvent);
 
-                                // Create HabitEvent object and add to habitEventList
-                                HabitEvent habitEvent = new HabitEvent
-                                        (eventID, parentHabitID, eventName, eventDate, eventComment);
-                                habit.addHabitEvent(habitEvent);
+
+                                }
+
+                                habit.calculateProgress();
+
+                                habit.setProgress(habit.getProgress());
+                                if (isPublic) {
+                                    targetUserName.addUserHabit(habit);
+                                    followHabitArrayList.add(habit);
+                                }
+                                followHabitAdapter.notifyDataSetChanged();
+
                             }
-                            //System.out.println("Habit name "+habit.getHabitEvents().get(0).getEventName());
-                            //habit.calculateProgress();
-                            //System.out.println("Habit progress "+habit.getProgress());
-                            //habitProgress.setMax(100);
-
-                            //habitProgress.setProgress(habit.getProgress());
-
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
                         }
-
-                        // Callback enables us to get all of the downloaded HabitEvents
-
                     });
 
 
-                    //followHabitArrayList.add(habit);
-                    //Add Habit to logged in user
-                    if (isPublic) {
-                        targetUserName.addUserHabit(habit);
-                        followHabitArrayList.add(habit);
-                    }
-                    //followHabitArrayList = targetUserName.getAllUserHabits();
+
+
                 }
 
 
-                //followHabitArrayList = new ArrayList<>();
-                //followHabit_list = findViewById(R.id.feed_list);
-
-                //followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,targetUserName.getAllUserHabits());
-                //followHabit_list.setAdapter(followHabitAdapter);
-                followHabitAdapter.notifyDataSetChanged();
 
 
             }

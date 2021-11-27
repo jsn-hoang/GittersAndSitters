@@ -278,7 +278,7 @@ public class Habit implements Serializable {
             if(count != 0) {
                 double prog = (double) numerator / count;
                 System.out.println("Habit numerator "+numerator);
-                System.out.println("Habit Count 2 "+count);
+                //System.out.println("Habit Count 2 "+count);
                 this.progress = (int) Math.round(prog * 100);
                 
             }
