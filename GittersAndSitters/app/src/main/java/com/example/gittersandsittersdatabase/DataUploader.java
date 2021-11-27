@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.Blob;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -13,10 +14,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 /** This class enables the addition, deletion, and updating of Habits and HabitEvents in the Firestore
  */
 
-public class DataUploader implements Serializable, FirestoreCallback{
+public class DataUploader implements Serializable, FirestoreCallback, Comparable<Blob>{
 
     private final String userID;
     private CollectionReference collectionRef;
@@ -94,7 +97,9 @@ public class DataUploader implements Serializable, FirestoreCallback{
 
         // upload event and Location (optional attributes)
         if (habitEvent.getEventPhoto() != null) {
-            data.put("eventPhoto", habitEvent.getEventPhoto());
+            byte[] bytesPhoto = habitEvent.getEventPhoto();
+            Blob blobPhoto = Blob.fromBytes(bytesPhoto);
+            data.put("eventPhoto",blobPhoto);
         }
         if (habitEvent.getEventLocation() != null) {
             data.put("eventLocation", habitEvent.getEventLocation());
@@ -238,4 +243,10 @@ public class DataUploader implements Serializable, FirestoreCallback{
     @Override
     public void onCallback() {
     }
+
+    @Override
+    public int compareTo(Blob o) {
+        return 0;
+    }
+
 }
