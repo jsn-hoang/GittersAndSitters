@@ -1,12 +1,9 @@
 package com.example.gittersandsittersdatabase;
 
-import android.graphics.Bitmap;
 import android.location.Location;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Comparator;
 
 /**
  * This class represents a HabitEvent in the HabitTracker app.
@@ -19,7 +16,7 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     private Calendar eventDate;     // always today's date
     private String eventComment;
     private Location eventLocation;
-    private Bitmap eventPhoto;
+    private byte[] eventPhoto;
 
     // Constructor with the required attributes: name and date
     public HabitEvent(String eventID, String parentHabitID, String eventName, Calendar eventDate,
@@ -92,11 +89,11 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
         this.eventComment = eventComment;
     }
 
-    public Bitmap getEventPhoto() {
+    public byte[] getEventPhoto() {
         return eventPhoto;
     }
 
-    public void setEventPhoto(Bitmap eventPhoto) {
+    public void setEventPhoto(byte[] eventPhoto) {
         this.eventPhoto = eventPhoto;
     }
 

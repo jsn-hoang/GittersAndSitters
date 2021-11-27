@@ -1,4 +1,5 @@
 // Gunaseelan: https://www.py4u.net/discuss/605745, credit for LocationServices/LocationRequest
+// André Schild: https://stackoverflow.com/questions/4989182/converting-java-bitmap-to-byte-array byteArray conversion
 
 package com.example.gittersandsittersdatabase;
 
@@ -64,6 +65,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.w3c.dom.Text;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
@@ -99,7 +101,8 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     HabitEvent habitEvent;
     Calendar habitEventDate;
     Location habitEventLocation = null;
-    Bitmap habitEventPhoto = null;
+    Bitmap photoBmp;
+    byte[] habitEventPhoto = null;
     boolean isNewHabitEvent;
     int habitListIndex;            // index position of the Habit in the User's habitList
     int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
@@ -170,9 +173,12 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             habitEventNameEditText.setText(habitEvent.getEventName());
             habitEventCommentEditText.setText(habitEvent.getEventComment());
 
-            //set the location and photo fields
-            Location habitEventLocation = habitEvent.getEventLocation();
-            Bitmap habitEventPhoto = habitEvent.getEventPhoto();
+            //set photo field
+            byte[] habitEventPhoto = habitEvent.getEventPhoto();
+
+            // convert back to Bitmap for imageView
+            Bitmap bmp = BitmapFactory.decodeByteArray(habitEventPhoto, 0, habitEventPhoto.length);
+            imageView.setImageBitmap(bmp);
 
         }
 
@@ -434,9 +440,15 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CAMERA) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+
+            // update ImageView
             imageView.setImageBitmap(bitmap);
 
-            habitEventPhoto = bitmap;
+            // convert bitmap photo to byteArray to make it serializable and storable in Firestore
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            habitEventPhoto = byteArray;
         }
 
         if (requestCode == REQUEST_CODE_SELECTLOC && resultCode == RESULT_OK) {
