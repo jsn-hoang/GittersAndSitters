@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents the activity which displays the habits of a user that the user follows
@@ -66,12 +67,6 @@ public class FollowFeedActivity extends AppCompatActivity {
         targetUserId = targetUserName.getUserID();
 
 
-        //followHabitArrayList = new ArrayList<>();
-        //followHabit_list = findViewById(R.id.feed_list);
-
-        //followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList);
-        //followHabit_list.setAdapter(followHabitAdapter);
-
 
         final CollectionReference collectionRef = fStore.collection("Users");
         DocumentReference targetUserReference = collectionRef.document(targetUserId);
@@ -79,7 +74,7 @@ public class FollowFeedActivity extends AppCompatActivity {
         followHabit_list = findViewById(R.id.feed_list);
 
         followHabitArrayList = new ArrayList<>();
-        followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList);
+        followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList,targetUserId);
         followHabit_list.setAdapter(followHabitAdapter);
         habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -113,95 +108,68 @@ public class FollowFeedActivity extends AppCompatActivity {
                     //Calendar startDate = Calendar.getInstance();
 
                     Habit habit = new Habit(doc.getId(), habitName, weekdays, startDate, reason, isPublic);
+                    CollectionReference habitEventCollRef = fStore.collection("Users").document(targetUserId).collection("Habits").document(habit.getHabitID()).collection("HabitEvents");
 
-                    //followHabitArrayList.add(habit);
-                    //Add Habit to logged in user
-                    if (isPublic) {
-                        targetUserName.addUserHabit(habit);
-                        followHabitArrayList.add(habit);
-                    }
-                    //followHabitArrayList = targetUserName.getAllUserHabits();
+                    habitEventCollRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()){
+                                for (QueryDocumentSnapshot document : task.getResult()){
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                    // Reference for document fields:
+                                    // "eventID" <- the ID of the document
+                                    // "habitID"
+                                    // "eventName"
+                                    // "longDate"
+                                    // "eventComment"
+                                    // "eventLocation"
+                                    // "eventPhoto"
+
+
+                                    // Convert document fields to HabitEvent attributes
+                                    String eventID = document.getId();
+                                    String parentHabitID = (String) document.getData().get("habitID");
+                                    String eventName = (String) document.getData().get("eventName");
+
+                                    // Convert long object to type Calendar
+                                    long longDate = (long) document.getData().get("longDate");
+                                    Calendar eventDate = Calendar.getInstance();
+                                    eventDate.setTimeInMillis(longDate);
+
+                                    String eventComment = (String) document.getData().get("eventComment");
+                                    HabitEvent habitEvent = new HabitEvent
+                                            (eventID, parentHabitID, eventName, eventDate, eventComment);
+                                    habit.addHabitEvent(habitEvent);
+
+
+                                }
+
+                                habit.calculateProgress();
+
+                                habit.setProgress(habit.getProgress());
+                                if (isPublic) {
+                                    targetUserName.addUserHabit(habit);
+                                    followHabitArrayList.add(habit);
+                                }
+                                followHabitAdapter.notifyDataSetChanged();
+
+                            }
+                        }
+                    });
+
+
+
+
                 }
 
 
-                //followHabitArrayList = new ArrayList<>();
-                //followHabit_list = findViewById(R.id.feed_list);
-
-                //followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,targetUserName.getAllUserHabits());
-                //followHabit_list.setAdapter(followHabitAdapter);
-                followHabitAdapter.notifyDataSetChanged();
 
 
             }
         });
 
-        /**
 
-        collectionRef
-                .whereEqualTo("userName", targetUserName) // <-- This line
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            String targetUserId;
-                            for (DocumentSnapshot document : task.getResult()) {
-                                if (document.exists()) {
-                                    targetUserId = document.getId();
-                                    DocumentReference targetUserReference = collectionRef.document(targetUserId);
-                                    CollectionReference habitCollectionReference = fStore.collection("Users").document(targetUserId).collection("Habits");
-
-                                    habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                                            for (QueryDocumentSnapshot doc : value) {
-                                                Log.d(TAG, doc.getId() + " => " + doc.getData());
-                                                // Set habitName as document ID
-                                                String habitName = doc.getId();
-
-                                                // Get remaining Habit attributes from document
-                                                String reason = (String) doc.getData().get("reason");
-                                                boolean isPublic = (boolean) doc.getData().get("isPublic");
-
-
-                                                // weekdays are stored as type long
-                                                List<Long> longDays = (List<Long>) document.getData().get("weekdays");
-                                                // Initialize weekdays arraylist
-                                                ArrayList<Integer> weekdays = new ArrayList<>();
-                                                // convert long objects to Integers and add them to weekdays
-                                                for (Long day : longDays) {
-                                                    Integer i = (int) (long) day;
-                                                    weekdays.add(i);
-                                               }
-
-                                                // Convert long object to type Calendar
-                                                long longDate = (long) document.getData().get("longDate");
-                                                Calendar startDate = Calendar.getInstance();
-                                                startDate.setTimeInMillis(longDate);
-                                                //Calendar startDate = Calendar.getInstance();
-
-                                                Habit habit = new Habit(habitName, weekdays, startDate, reason, isPublic);
-
-                                                followHabitArrayList.add(habit);
-                                                 //Add Habit to logged in user
-                                                //targetUserName.addUserHabit(habit);
-                                            }
-                                            followHabitAdapter.notifyDataSetChanged();
-
-
-                                        }
-                                    });
-
-
-                                }
-                            }
-                        } else {
-                            Log.d("TAG", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-         **/
     }
 
     }

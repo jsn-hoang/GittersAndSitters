@@ -64,7 +64,7 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
 //      habitReason.setText(habit.getHabitReason());
         habit.calculateProgress();
         habitProgress.setMax(100);
-        System.out.println("What is value"+habit.getProgress());
+
         habitProgress.setProgress(habit.getProgress());
 
         return view;
