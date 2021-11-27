@@ -157,9 +157,13 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             }
             // if non-unique habitName inputted
             else if (!user.isUniqueHabitName(habitName)) {
-                Toast.makeText(AddRemoveHabitActivity.this, "This habit already exists. Please choose a unique name.", Toast.LENGTH_LONG).show();
-                validInput = false;
+                // if new Habit OR the non-unique name does not belong to the habit being edited
+                if ((isNewHabit || !habit.getHabitName().equals(habitName))) {
+                    Toast.makeText(AddRemoveHabitActivity.this, "This habit already exists. Please choose a unique name.", Toast.LENGTH_LONG).show();
+                    validInput = false;
+                }
             }
+
             // if no weekdays are selected
             else if (!isAnyChecked()) {
                 Toast.makeText(AddRemoveHabitActivity.this, "Please select at least one day to perform this habit on.", Toast.LENGTH_LONG).show();
