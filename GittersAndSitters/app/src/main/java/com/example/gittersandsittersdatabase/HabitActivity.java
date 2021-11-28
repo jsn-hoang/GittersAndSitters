@@ -100,6 +100,7 @@ public class HabitActivity extends AppCompatActivity {
         });
 
         // LONG CLICK a habit to edit it
+
         habitListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -119,6 +120,7 @@ public class HabitActivity extends AppCompatActivity {
                 return false;
             }
         });
+
 
         /**
          * Launches AddRemoveEventActivity when user clicks on a ListView entry
