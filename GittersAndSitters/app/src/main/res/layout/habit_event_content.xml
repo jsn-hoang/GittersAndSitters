@@ -19,6 +19,19 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/parent_habit_name_text"
+        android:layout_width="165dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_weight="1"
+        android:text="Habit"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+
+    <TextView
         android:id="@+id/event_date_text"
         android:layout_width="108dp"
         android:layout_height="match_parent"

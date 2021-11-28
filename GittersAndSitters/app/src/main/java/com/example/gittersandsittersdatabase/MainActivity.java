@@ -190,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
                 Habit habit = habitList.get(j);
                 if (habit.getHabitID().equals(parentHabitID)) {
                     found = true;
+                    // Set the name of the Habit as the parentHabitName of the HabitEvent
+                    habitEvent.setParentHabitName(habit.getHabitName());
                     habit.addHabitEvent(habitEvent);
                     // replace Habit with it's "HabitEvent-loaded" version
                     habitList.set(j, habit);

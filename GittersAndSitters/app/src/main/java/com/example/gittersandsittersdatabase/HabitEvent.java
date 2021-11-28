@@ -11,30 +11,33 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
 
     private String eventID;
     private String parentHabitID;
+    private String parentHabitName;
     private String eventName;
     private Calendar eventDate;     // always today's date
     private String eventComment;
     private ArrayList<Double> eventLocation;
     private byte[] eventPhoto;
 
-    // Constructor with the required attributes: name and date
+   // This constructor will be used when re-creating HabitEvents from Firestore downloads
     public HabitEvent(String eventID, String parentHabitID, String eventName, Calendar eventDate,
              String eventComment) {
         this.eventID = eventID;
         this.parentHabitID = parentHabitID;
+        this.parentHabitName = null;
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.eventComment = eventComment;
     }
 
-    // Constructor with the required attributes: name and date
-    public HabitEvent(String parentHabitID, String eventName, Calendar eventDate,
-             String eventComment) {
-        this.eventID = "temp";
+    // This constructor will be used when creating new HabitEvents for the first time
+    public HabitEvent(String parentHabitID, String parentHabitName, String eventName,
+             String eventComment, Calendar eventDate) {
+        this.eventID = null;
         this.parentHabitID = parentHabitID;
+        this.parentHabitName = parentHabitName;
         this.eventName = eventName;
-        this.eventDate = eventDate;
         this.eventComment = eventComment;
+        this.eventDate = eventDate;
     }
 
     // Getters and Setters
@@ -51,8 +54,12 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
         return parentHabitID;
     }
 
-    public void setParentHabitID(String parentHabitID) {
-        this.parentHabitID = parentHabitID;
+    public String getParentHabitName() {
+        return parentHabitName;
+    }
+
+    public void setParentHabitName(String parentHabitName) {
+        this.parentHabitName = parentHabitName;
     }
 
     public String getEventName() {

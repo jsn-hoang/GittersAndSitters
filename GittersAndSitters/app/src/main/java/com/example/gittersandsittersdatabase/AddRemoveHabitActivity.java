@@ -11,7 +11,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import com.google.firebase.firestore.CollectionReference;
@@ -33,7 +36,6 @@ import java.util.concurrent.Executor;
 public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private FirebaseFirestore db;
-    private CollectionReference collectionRef;
 
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
@@ -57,9 +59,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         // get user
         user = (User) getIntent().getSerializableExtra("user");
 
-        db = FirebaseFirestore.getInstance();
-        collectionRef = db.collection("Users/" + user.getUserID() + "/Habits/");
-
+        db = FirebaseFirestore.getInstance();;
 
         // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position")) {
@@ -73,9 +73,12 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         dataUploader = new DataUploader(user.getUserID());
 
         // Get views that will be used for user input
+
         habitNameEditText = findViewById(R.id.habit_name_editText);
         habitStartDateText = findViewById(R.id.habit_start_date_text);
         weekdayCheckBoxes = new ArrayList<>();
+        RadioButton publicRadioButton = findViewById(R.id.public_radio_button);
+        RadioButton privateRadioButton = findViewById(R.id.private_radio_button);
         CheckBox monday = findViewById(R.id.monday_checkbox);
         CheckBox tuesday = findViewById(R.id.tuesday_checkbox);
         CheckBox wednesday = findViewById(R.id.wednesday_checkbox);
@@ -103,6 +106,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         // Set up Date field
         setDateField(isNewHabit, habitStartDateText);
 
+        // initialize publicRadioButton to checked for new Habit
+        if (isNewHabit)
+            publicRadioButton.setChecked(true);
+
         // Set up remaining fields for existing habit
         if (!isNewHabit) {
 
@@ -116,7 +123,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // Set checkboxes
             setDaysToCheckBoxes(habit, weekdayCheckBoxes);
 
-            //TODO: Set the habitPublic boolean
+            // Set public/private radio button
+            if (habit.isPublic())
+                publicRadioButton.setChecked(true);
+            else privateRadioButton.setChecked(true);
         }
 
 
@@ -132,33 +142,41 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
             // habitStartDate is already retrieved
 
-            //TODO: Get the habitPublic boolean
+            // get isPublic
+            boolean isPublic = publicRadioButton.isChecked();
 
+            // Determine if user has inputted valid data
+            boolean isValidInput = isValidInputChecker(habitName, habitReason);
 
-            if (isNewHabit) {
-                // Create a new Habit
-                habit = new Habit(habitName, weekdays, habitStartDate, habitReason, true);
-                // Add the habit to db and get its ID
-                String habitID = dataUploader.addHabitAndGetID(habit);
-                habit.setHabitID(habitID);
-                user.addUserHabit(habit);
+            // if valid input
+            if (isValidInput) {
+                // if new Habit
+                if (isNewHabit) {
+                    habit = new Habit(habitName, weekdays, habitStartDate, habitReason, isPublic);
+                    // Add the habit to db and get its ID
+                    String habitID = dataUploader.addHabitAndGetID(habit);
+                    habit.setHabitID(habitID);
+                    user.addUserHabit(habit);
+                } else { // else edit the existing habit
+                    habit.setHabitName(habitName);
+                    habit.setWeekdays(weekdays);
+                    habit.setStartDate(habitStartDate);
+                    habit.setHabitReason(habitReason);
+                    habit.setHabitPublic(isPublic);
+                    // Reset the parentHabitName of all HabitEvent's in the Habit's habitEventList
+                    habit.setParentNameOfEvents();
+
+                    // Overwrite the previous habit with the edited one
+                    user.setUserHabit(habitIndexPosition, habit);
+                    // Edit the document in Firestore
+                    dataUploader.setHabit(habit);
+                }
+                // Navigate back to MainActivity
+                Intent intent = new Intent();
+                intent.putExtra("user", user);
+                setResult(RESULT_OK, intent);
+                finish();
             }
-
-            else { // else edit the existing habit
-                habit.setHabitName(habitName);
-                habit.setWeekdays(weekdays);
-                habit.setStartDate(habitStartDate);
-                habit.setHabitReason(habitReason);
-                // Overwrite the previous habit with the edited one
-                user.setUserHabit(habitIndexPosition, habit);
-                // Edit the document in Firestore
-                dataUploader.setHabit(habit);
-            }
-            // Navigate back to MainActivity
-            Intent intent = new Intent();
-            intent.putExtra("user", user);
-            setResult(RESULT_OK, intent);
-            finish();
         });
 
 
@@ -172,8 +190,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // Delete habit from user habitList
             user.deleteUserHabit(habit);
 
-            collectionRef = collectionRef.document(habit.getHabitID()).collection("HabitEvents");
-
             // Delete habit from Firebase
             dataUploader.deleteHabit(habit);
 
@@ -184,19 +200,35 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             finish();
         });
 
-        /** This listener is responsible for the logic
-         * when clicking the date picker button
+        /** This listener is responsible for the logic when clicking the date picker button
          */
         datePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Create bundle to pass data
-                Bundle b = new Bundle();
-                b.putLong("date", habitStartDate.getTimeInMillis());
-                // Pass bundle to fragment
-                DialogFragment datePickerFragment = new DatePickerFragment();
-                datePickerFragment.setArguments(b);
-                datePickerFragment.show(getSupportFragmentManager(), "ADD_START_DATE");
+
+
+                boolean isAlreadyStarted = false;
+                // if existing Habit
+                if (!isNewHabit) {
+                    // Check if the Habit has already started
+                    isAlreadyStarted = isHabitAlreadyStarted();
+                }
+
+                if (isAlreadyStarted)
+                    Toast.makeText(AddRemoveHabitActivity.this, "Cannot change start date. This Habit has already started", Toast.LENGTH_LONG).show();
+
+                // else Habit is new or hasn't started
+                else {
+
+
+                    // Create bundle to pass data
+                    Bundle b = new Bundle();
+                    b.putLong("date", habitStartDate.getTimeInMillis());
+                    // Pass bundle to fragment
+                    DialogFragment datePickerFragment = new DatePickerFragment();
+                    datePickerFragment.setArguments(b);
+                    datePickerFragment.show(getSupportFragmentManager(), "ADD_START_DATE");
+                }
             }
         });
     }
@@ -318,4 +350,98 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         }
         return days;
     }
+
+    /** This method determines if the user has inputted valid data for adding or editing a Habit.
+     *  A boolean is returned corresponding to whether or not the inputted data is valid.
+     * @param habitName - A String object of the proposed habit name
+     * @param habitReason - A String object of the proposed habit reason
+     * @return - a boolean
+     */
+    public boolean isValidInputChecker(String habitName, String habitReason){
+
+        // initalize boolean to true
+        boolean isValidInput = true;
+
+        // Ensure user entered a habitName
+        if (habitName.equals("")) {
+            Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a name.", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        // Ensure habitName <= 20 chars
+        if (habitName.length() > 20) {
+            Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a shorter name (maximum of 20 characters)", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+
+        // Ensure habitName <= 20 chars
+        if (habitReason.length() > 30) {
+            Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a shorter reason (maximum of 30 characters)", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+
+        // if non-unique habitName inputted
+        if (!user.isUniqueHabitName(habitName)) {
+            // if new Habit OR the non-unique name does not belong to the habit being edited
+            if ((isNewHabit || !habit.getHabitName().equals(habitName))) {
+                Toast.makeText(AddRemoveHabitActivity.this, "This habit already exists. Please choose a unique name.", Toast.LENGTH_LONG).show();
+                isValidInput = false;
+            }
+        }
+        // if no weekdays are selected
+        if (!isAnyChecked()) {
+            Toast.makeText(AddRemoveHabitActivity.this, "Please select at least one day to perform this habit on.", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        return isValidInput;
+    }
+
+    /**
+     * This method returns a boolean corresponding to whether any of the Checkboxes are checked
+     * @return - a boolean
+     */
+    public boolean isAnyChecked() {
+
+        // loop through all the checkboxes
+        for (int i = 0; i < weekdayCheckBoxes.size(); i++) {
+            // if a box is checked
+            if (weekdayCheckBoxes.get(i).isChecked())
+                // return true
+                return true;
+        }
+        // if this line is reached, then no boxes are checked
+        return false;
+    }
+
+
+    /**This method checks whether an existing Habit has already been started
+     * The Habit's start date is compared to the current date
+     * @return boolean corresponding to whether or not the Habit has already started
+     */
+    public boolean isHabitAlreadyStarted() {
+
+        // get Habit start date
+        Calendar startDate = habit.getStartDate();
+        int startYear = startDate.get(Calendar.YEAR);
+        int startMonth = startDate.get(Calendar.MONTH);
+        int startDay = startDate.get(Calendar.DAY_OF_MONTH);
+        // getCurrentDate
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        // if current year doesn't match start year
+        if (startYear != year)
+            // return whether the Habit has already started
+            return (startYear < year);
+        // else current year == start year
+        // if current year doesn't match start year
+        if (startMonth != month)
+            // return whether the Habit has already started
+            return startMonth < month;
+        // else year and month are equal
+            // return whether the Habit has already started
+        else return startDay <= day;
+    }
+
 }

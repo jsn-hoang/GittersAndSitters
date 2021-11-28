@@ -224,12 +224,18 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 String habitEventName = habitEventNameEditText.getText().toString();
                 String habitEventComment = habitEventCommentEditText.getText().toString();
 
-                // if this is a new HabitEvent
-                if (isNewHabitEvent) {
+                // Note: habitEventDate is already done
+                boolean isValidInput = isValidInputChecker(habitEventName, habitEventComment);
 
-                    // Create the HabitEvent
-                    habitEvent = new HabitEvent(habit.getHabitID(), habitEventName,
-                            habitEventDate, habitEventComment);
+
+                // habitEvent must have a name for else condition to be entered
+                if (isValidInput) {
+                    // if this is a new HabitEvent
+                    if (isNewHabitEvent) {
+
+                        // Create the HabitEvent
+                        habitEvent = new HabitEvent(habit.getHabitID(), habit.getHabitName(), habitEventName,
+                                habitEventComment, habitEventDate);
 
                     if (habitEventPhoto != null) {
                         habitEvent.setEventPhoto(habitEventPhoto);
@@ -246,32 +252,27 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                     // Add the new HabitEvent to the Habit's habitEventList
                     habit.addHabitEvent(habitEvent);
 
-                }
-                else { // else edit the existing HabitEvent
+                    } else { // else edit the existing HabitEvent
 
-                    String previousEventName = habitEvent.getEventName();
-                    habitEvent.setEventName(habitEventName);
-                    habitEvent.setEventComment(habitEventComment);
-                    if (habitEventPhoto != null) {
-                        habitEvent.setEventPhoto(habitEventPhoto);
-                    }
-                    if (habitEventLocation != null) {
+                        habitEvent.setEventName(habitEventName);
                         habitEvent.setEventLocation(habitEventLocation);
+                        habitEvent.setEventComment(habitEventComment);
+                        habitEvent.setEventPhoto(habitEventPhoto);
+                        // Overwrite the edited HabitEvent
+                        habit.setHabitEvent(habitEventListIndex, habitEvent);
+                        // Update the edited HabitEvent in FireStore
+                        dataUploader.setHabitEvent(habit, habitEvent);
                     }
-                    // Overwrite the edited HabitEvent
-                    habit.setHabitEvent(habitEventListIndex, habitEvent);
-                    // Update the edited HabitEvent in FireStore
-                    dataUploader.setHabitEvent(habit, habitEvent);
+
+                    // Overwrite the edited user Habit
+                    user.setUserHabit(habitListIndex, habit);   // executed whether we're adding or editing
+
+                    // Navigate back to launcher Activity (HabitActivity or HabitEventActivity)
+                    Intent intent = new Intent();
+                    intent.putExtra("user", user);
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
-
-                // Overwrite the edited user Habit
-                user.setUserHabit(habitListIndex, habit);   // executed whether we're adding or editing
-
-                // Navigate back to launcher Activity (HabitActivity or HabitEventActivity)
-                Intent intent = new Intent();
-                intent.putExtra("user", user);
-                setResult(RESULT_OK, intent);
-                finish();
             }
         });
 
@@ -541,6 +542,35 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         String dateString = DateFormat.getDateInstance().format(c.getTime());
         // Set String representation of date to eventDateText
         eventDateText.setText(dateString);
+    }
+
+    /** This method determines if the user has inputted valid data for adding or editing a HabitEvent.
+     *  A boolean is returned corresponding to whether or not the inputted data is valid.
+     * @param habitEventName - A String object of the proposed HabitEvent name
+     * @param habitEventComment - A String object of the proposed HabitEvent comment
+     * @return - a boolean
+     */
+    public boolean isValidInputChecker(String habitEventName, String habitEventComment) {
+
+        // initialize valid to true
+        boolean isValidInput = true;
+
+        // Ensure a name has been inputted
+        if (habitEventName.equals("")) {
+            Toast.makeText(AddRemoveEventActivity.this, "Please give this event a name.", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        // Ensure habitEventName <= 20 chars
+        if (habitEventName.length() > 20) {
+            Toast.makeText(AddRemoveEventActivity.this, "Please give this event a shorter name (maximum of 20 characters)", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        // Ensure habitEventComment <= 20 chars
+        if (habitEventComment.length() > 20) {
+            Toast.makeText(AddRemoveEventActivity.this, "Please give this event a shorter comment (maximum of 20 characters)", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        return isValidInput;
     }
 }
 

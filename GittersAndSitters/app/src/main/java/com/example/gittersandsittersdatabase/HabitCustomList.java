@@ -41,7 +41,6 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
         }
         Habit habit = habitList.get(position);
         TextView habitName = view.findViewById(R.id.habit_name_text);
-//      TextView habitReason = view.findViewById(R.id.habit_reason_text);
         ProgressBar habitProgress = view.findViewById(R.id.progressBar);
         ImageView habitIcon = view.findViewById(R.id.habit_icon);
 
@@ -49,8 +48,6 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
         // if in "All Habit's" mode
         if (!isTodayHabitsTabSelected)
             habitIcon.setVisibility(View.GONE); // hide icons
-
-
         // else display icon corresponding to whether Habit isCompleted
         else {
             if (habit.isCompletedToday())
@@ -58,14 +55,13 @@ public class HabitCustomList extends ArrayAdapter<Habit> {
             else
                 habitIcon.setImageResource(R.drawable.habit_due_icon);
         }
-
-
+        // set habitName
         habitName.setText(habit.getHabitName());
-//      habitReason.setText(habit.getHabitReason());
+        // set progressbar
         habit.calculateProgress();
         habitProgress.setMax(100);
-
         habitProgress.setProgress(habit.getProgress());
+        habitProgress.setScaleY(7f);
 
         return view;
     }

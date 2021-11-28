@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This Class gets all Habit and HabitEvent data corresponding to the logged in user.
+ * This Class gets all Habit and HabitEvent data corresponding to the logged in user
  */
 public class DataDownloader implements FirestoreHabitListCallback, FirestoreEventListCallback {
 
