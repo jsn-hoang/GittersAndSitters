@@ -34,7 +34,7 @@ public class MenuPage extends AppCompatActivity {
         final Button requestButton = findViewById(R.id.nav_requests);
         final Button logOutButton = findViewById(R.id.nav_logout);
 
-
+        //home button
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,6 +53,7 @@ public class MenuPage extends AppCompatActivity {
             }
         });
 
+        //friends button
         friendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,6 +63,7 @@ public class MenuPage extends AppCompatActivity {
             }
         });
 
+        //friend requests button
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,6 +73,7 @@ public class MenuPage extends AppCompatActivity {
             }
         });
 
+        //log out button
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,6 +84,7 @@ public class MenuPage extends AppCompatActivity {
         });
     }
     
+    //to avoid going back to log in page when pressing back 
     @Override
     public void onBackPressed() {
         //
