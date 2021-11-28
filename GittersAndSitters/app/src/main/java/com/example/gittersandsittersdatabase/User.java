@@ -205,11 +205,30 @@ public class User implements Serializable{
         ArrayList<Habit> tempList = new ArrayList<>();
 
         for (int i=0; i<habitList.size(); i++){
-            if (habitList.get(i).isHabitPublic()) {
+            if (habitList.get(i).isPublic()) {
                 tempList.add(habitList.get(i));
             }
         }
         return tempList;
+    }
+
+    /**
+     * This method returns a boolean indicating whether a proposed Habit name is unique
+     * @param habitName - The proposed habitName (String)
+     * @return - A boolean corresponding to whether the name is unique to the habitNames in habitList
+     */
+    public boolean isUniqueHabitName(String habitName) {
+
+        // loop through all Habits
+        for (int i = 0; i < habitList.size(); i++) {
+            Habit habit = habitList.get(i);
+            // Compare each habit with proposed habit
+            if (habit.getHabitName().equals(habitName))
+                // return false if name exists
+                return false;
+        }
+        // if this line is reached, the proposed name must be unique
+        return true;
     }
 
     /**

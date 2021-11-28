@@ -36,9 +36,12 @@ public class HabitEventCustomList extends ArrayAdapter<HabitEvent> {
         }
         HabitEvent habitEvent = habitEventList.get(position);
         TextView habitEventNameText = view.findViewById(R.id.event_name_text);
+        TextView habitEventParentText = view.findViewById(R.id.parent_habit_name_text);
         TextView habitEventDateText = view.findViewById(R.id.event_date_text);
 
+        // Set HabitEvent name and parentHabitName TextViews
         habitEventNameText.setText(habitEvent.getEventName());
+        habitEventParentText.setText(habitEvent.getParentHabitName());
 
         // Convert Calendar object to String
         Calendar habitEventDate = habitEvent.getEventDate();
