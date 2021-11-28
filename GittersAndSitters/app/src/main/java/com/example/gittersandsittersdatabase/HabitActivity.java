@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,6 +25,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
+
 /**
  * This Activity represents the main activity after the user logs in.
  */
@@ -34,11 +37,15 @@ public class HabitActivity extends AppCompatActivity {
     ArrayAdapter<Habit> habitAdapter;
     User user;
     Habit habit;
+    ArrayList<Integer> allIndexList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit);
+
+        allIndexList = new ArrayList<>();
 
         // Get the user intent
         user = (User) getIntent().getSerializableExtra("user");
@@ -56,6 +63,7 @@ public class HabitActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 // refresh current tab
                 refreshCurrentTab(tabLayout, habitListView, user);
+                allIndexList.clear();
             }
 
             @Override
@@ -114,32 +122,6 @@ public class HabitActivity extends AppCompatActivity {
         });
 
 
-
-
-        /**
-         * Launches AddRemoveEventActivity when user clicks on a ListView entry
-         * "Today's Habits" tab must be selected for Activity to launch
-         */
-        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                // Get integer corresponding to currently selected tab
-                int tabPosition = tabLayout.getSelectedTabPosition();
-
-                if (tabPosition == 0) { // true iff "Today's Habits" tab is currently selected
-
-
-                    habit = (Habit) habitListView.getItemAtPosition(i); // Get the clicked habit
-                    Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
-                    intent.putExtra("user", user);
-                    intent.putExtra("habit", habit);
-                    habitActivityResultLauncher.launch(intent);
-                }
-            }
-        });
-
-
         /**
          * Launches AddRemoveEventActivity when user clicks on a ListView entry
          * "Today's Habits" tab must be selected and isCompleted
@@ -161,10 +143,22 @@ public class HabitActivity extends AppCompatActivity {
                     intent.putExtra("user", user);
                     intent.putExtra("habit", habit);
                     habitActivityResultLauncher.launch(intent);
+                } else if (tabPosition == 1 && user.getAllUserHabits().size() > 1) {
+                    habitListView.setSelection(i);
+                    if (!allIndexList.contains(i)) {
+                        allIndexList.add(i);
+                    }
+                    if (allIndexList.size() == 1) {
+                        Toast.makeText(HabitActivity.this,"Select another habit to swap", Toast.LENGTH_LONG).show();
+                    }
+                    if (allIndexList.size() == 2) {
+                        swap(allIndexList);
+                        habitListView.clearChoices();
+                    }
                 }
             }
         });
-        }
+    }
 
     /**
      * Refreshes the tab that is currently selected. A user method is called to get the updated habit list.
@@ -208,6 +202,17 @@ public class HabitActivity extends AppCompatActivity {
         return i;
     }
 
+    private void swap(ArrayList<Integer> a_list) {
+        int index = a_list.get(0);
+        Habit tempHabit = user.getAllUserHabits().get(index);
+        user.getAllUserHabits().set(index, user.getAllUserHabits().get(a_list.get(1)));
+        user.getAllUserHabits().set(a_list.get(1), tempHabit);
+        a_list.clear();
+        HabitCustomList habitAdapter = new HabitCustomList(HabitActivity.this, user.getAllUserHabits(), false);
+        habitListView.setAdapter(habitAdapter);
+        //habitAdapter.notifyDataSetChanged();
+    }
+
     // deliver back the updated user object on back button pressed
     @Override
     public void onBackPressed() {
@@ -215,5 +220,6 @@ public class HabitActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         setResult(RESULT_OK, intent);
         super.onBackPressed();
+
     }
 }
