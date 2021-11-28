@@ -13,26 +13,25 @@
             android:name=".MenuPage"
             android:exported="true" />
         <activity
+            android:name=".FollowFeedActivity"
+            android:exported="true"/>
+        <activity
             android:name=".FollowingActivity"
-            android:parentActivityName=".MenuPage"
             android:exported="true" />
         <activity
             android:name=".AddRemoveEventActivity"
             android:exported="true" />
         <activity
             android:name=".HabitEventActivity"
-            android:parentActivityName=".MenuPage"
             android:exported="true" />
         <activity
             android:name=".FollowRequestActivity"
-            android:parentActivityName=".MenuPage"
             android:exported="true" />
         <activity
             android:name=".AddRemoveHabitActivity"
             android:exported="true" />
         <activity
             android:name=".HabitActivity"
-            android:parentActivityName=".MenuPage"
             android:exported="true"/>
         <activity
             android:name=".Register"
