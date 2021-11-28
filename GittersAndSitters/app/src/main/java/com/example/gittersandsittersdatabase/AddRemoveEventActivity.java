@@ -225,19 +225,17 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                 String habitEventComment = habitEventCommentEditText.getText().toString();
 
                 // Note: habitEventDate is already done
+                boolean isValidInput = isValidInputChecker(habitEventName, habitEventComment);
 
-
-                if (habitEventName.equals(""))
-                    Toast.makeText(AddRemoveEventActivity.this, "Please give this event a name.", Toast.LENGTH_LONG).show();
 
                 // habitEvent must have a name for else condition to be entered
-                else {
+                if (isValidInput) {
                     // if this is a new HabitEvent
                     if (isNewHabitEvent) {
 
                         // Create the HabitEvent
-                        habitEvent = new HabitEvent(habit.getHabitID(), habitEventName,
-                                habitEventDate, habitEventComment);
+                        habitEvent = new HabitEvent(habit.getHabitID(), habit.getHabitName(), habitEventName,
+                                habitEventComment, habitEventDate);
 
                     if (habitEventPhoto != null) {
                         habitEvent.setEventPhoto(habitEventPhoto);
@@ -362,7 +360,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             mLocationRequest.setInterval(60000);
             mLocationRequest.setFastestInterval(5000);
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            LocationCallback mLocationCallback = new LocationCallback(){};
+            LocationCallback mLocationCallback = new LocationCallback();
 
             LocationServices.getFusedLocationProviderClient(AddRemoveEventActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
             fusedLocationClient.getLastLocation()
@@ -544,6 +542,35 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         String dateString = DateFormat.getDateInstance().format(c.getTime());
         // Set String representation of date to eventDateText
         eventDateText.setText(dateString);
+    }
+
+    /** This method determines if the user has inputted valid data for adding or editing a HabitEvent.
+     *  A boolean is returned corresponding to whether or not the inputted data is valid.
+     * @param habitEventName - A String object of the proposed HabitEvent name
+     * @param habitEventComment - A String object of the proposed HabitEvent comment
+     * @return - a boolean
+     */
+    public boolean isValidInputChecker(String habitEventName, String habitEventComment) {
+
+        // initialize valid to true
+        boolean isValidInput = true;
+
+        // Ensure a name has been inputted
+        if (habitEventName.equals("")) {
+            Toast.makeText(AddRemoveEventActivity.this, "Please give this event a name.", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        // Ensure habitEventName <= 20 chars
+        if (habitEventName.length() > 20) {
+            Toast.makeText(AddRemoveEventActivity.this, "Please give this event a shorter name (maximum of 20 characters)", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        // Ensure habitEventComment <= 20 chars
+        if (habitEventComment.length() > 20) {
+            Toast.makeText(AddRemoveEventActivity.this, "Please give this event a shorter comment (maximum of 20 characters)", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        return isValidInput;
     }
 }
 

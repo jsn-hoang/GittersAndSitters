@@ -29,7 +29,6 @@ public class HabitActivity extends AppCompatActivity {
     User user;
     Habit habit;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +112,15 @@ public class HabitActivity extends AppCompatActivity {
         habitListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                // i corresponds to the ith ListView entry
+                // However, we need to know if it is the ith entry in "Today's Habits" or "All Habits"
+                int tabPosition = tabLayout.getSelectedTabPosition();
+                // if i corresponds to "Today's Habits"
+                if (tabPosition == 0)
+                    // Get the clicked Habit position
+                    i = getClickedHabitPosition(i);
+
                 Intent intent = new Intent(HabitActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
                 intent.putExtra("position", i);
@@ -215,4 +223,25 @@ public class HabitActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    /**
+     * This method is used when the user opts to Edit a Habit from "Today's Habits"
+     * The int position of the Habit in the "Today's Habits" ListView may not correspond
+     * with the int position of the Habit in the user's entire habitList.
+     * This method computes the int position of the clicked Habit within "All Habits"
+     * @param i - the int position of the clicked Habit in "Today's Habits"
+     * @return - the int position of the clicked Habit in the user's habitList
+     */
+        public int getClickedHabitPosition(int i) {
+            Habit clickedHabit = user.getTodayUserHabits().get(i);
+            boolean found = false;
+            for (int j = 0; j < user.getAllUserHabits().size() && !found; j++) {
+                Habit habit = user.getAllUserHabits().get(j);
+                if (habit.getHabitID().equals(clickedHabit.getHabitID())) {
+                    found = true;
+                    i = j;
+                }
+            }
+            return i;
+        }
 }

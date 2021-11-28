@@ -151,6 +151,16 @@ public class Habit implements Serializable {
     }
 
     /**
+     * This method sets the parentHabitName of all HabitEvents in the Habit's habitEventList
+     */
+    public void setParentNameOfEvents() {
+        for (int i = 0; i < habitEventList.size(); i++) {
+            HabitEvent habitEvent = habitEventList.get(i);
+            habitEvent.setParentHabitName(habitName);
+        }
+    }
+
+    /**
      * Adds a HabitEvent object and updates the habit progress
      * @param habitEvent habitEvent to add
      */

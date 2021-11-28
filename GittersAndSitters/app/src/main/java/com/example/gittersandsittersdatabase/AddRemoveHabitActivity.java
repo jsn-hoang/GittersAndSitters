@@ -146,7 +146,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             boolean isPublic = publicRadioButton.isChecked();
 
             // Determine if user has inputted valid data
-            boolean isValidInput = isValidInputChecker(habitName);
+            boolean isValidInput = isValidInputChecker(habitName, habitReason);
 
             // if valid input
             if (isValidInput) {
@@ -163,6 +163,9 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                     habit.setStartDate(habitStartDate);
                     habit.setHabitReason(habitReason);
                     habit.setHabitPublic(isPublic);
+                    // Reset the parentHabitName of all HabitEvent's in the Habit's habitEventList
+                    habit.setParentNameOfEvents();
+
                     // Overwrite the previous habit with the edited one
                     user.setUserHabit(habitIndexPosition, habit);
                     // Edit the document in Firestore
@@ -351,9 +354,10 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
     /** This method determines if the user has inputted valid data for adding or editing a Habit.
      *  A boolean is returned corresponding to whether or not the inputted data is valid.
      * @param habitName - A String object of the proposed habit name
+     * @param habitReason - A String object of the proposed habit reason
      * @return - a boolean
      */
-    public boolean isValidInputChecker (String habitName){
+    public boolean isValidInputChecker(String habitName, String habitReason){
 
         // initalize boolean to true
         boolean isValidInput = true;
@@ -361,6 +365,17 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         // Ensure user entered a habitName
         if (habitName.equals("")) {
             Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a name.", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+        // Ensure habitName <= 20 chars
+        if (habitName.length() > 20) {
+            Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a shorter name (maximum of 20 characters)", Toast.LENGTH_LONG).show();
+            isValidInput = false;
+        }
+
+        // Ensure habitName <= 20 chars
+        if (habitReason.length() > 30) {
+            Toast.makeText(AddRemoveHabitActivity.this, "Please give this habit a shorter reason (maximum of 30 characters)", Toast.LENGTH_LONG).show();
             isValidInput = false;
         }
 
