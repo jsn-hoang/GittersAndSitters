@@ -362,7 +362,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
             mLocationRequest.setInterval(60000);
             mLocationRequest.setFastestInterval(5000);
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            LocationCallback mLocationCallback = new LocationCallback();
+            LocationCallback mLocationCallback = new LocationCallback(){};
 
             LocationServices.getFusedLocationProviderClient(AddRemoveEventActivity.this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
             fusedLocationClient.getLastLocation()
