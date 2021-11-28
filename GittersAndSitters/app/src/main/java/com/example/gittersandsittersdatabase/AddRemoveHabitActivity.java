@@ -36,7 +36,6 @@ import java.util.concurrent.Executor;
 public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private FirebaseFirestore db;
-    private CollectionReference collectionRef;
 
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
@@ -60,9 +59,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         // get user
         user = (User) getIntent().getSerializableExtra("user");
 
-        db = FirebaseFirestore.getInstance();
-        collectionRef = db.collection("Users/" + user.getUserID() + "/Habits/");
-
+        db = FirebaseFirestore.getInstance();;
 
         // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position")) {
@@ -190,8 +187,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             // Delete habit from user habitList
             user.deleteUserHabit(habit);
 
-            collectionRef = collectionRef.document(habit.getHabitID()).collection("HabitEvents");
-
             // Delete habit from Firebase
             dataUploader.deleteHabit(habit);
 
@@ -202,19 +197,35 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             finish();
         });
 
-        /** This listener is responsible for the logic
-         * when clicking the date picker button
+        /** This listener is responsible for the logic when clicking the date picker button
          */
         datePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Create bundle to pass data
-                Bundle b = new Bundle();
-                b.putLong("date", habitStartDate.getTimeInMillis());
-                // Pass bundle to fragment
-                DialogFragment datePickerFragment = new DatePickerFragment();
-                datePickerFragment.setArguments(b);
-                datePickerFragment.show(getSupportFragmentManager(), "ADD_START_DATE");
+
+
+                boolean isAlreadyStarted = false;
+                // if existing Habit
+                if (!isNewHabit) {
+                    // Check if the Habit has already started
+                    isAlreadyStarted = isHabitAlreadyStarted();
+                }
+
+                if (isAlreadyStarted)
+                    Toast.makeText(AddRemoveHabitActivity.this, "Cannot change start date. This Habit has already started", Toast.LENGTH_LONG).show();
+
+                // else Habit is new or hasn't started
+                else {
+
+
+                    // Create bundle to pass data
+                    Bundle b = new Bundle();
+                    b.putLong("date", habitStartDate.getTimeInMillis());
+                    // Pass bundle to fragment
+                    DialogFragment datePickerFragment = new DatePickerFragment();
+                    datePickerFragment.setArguments(b);
+                    datePickerFragment.show(getSupportFragmentManager(), "ADD_START_DATE");
+                }
             }
         });
     }
@@ -384,6 +395,38 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
         }
         // if this line is reached, then no boxes are checked
         return false;
+    }
+
+
+    /**This method checks whether an existing Habit has already been started
+     * The Habit's start date is compared to the current date
+     * @return boolean corresponding to whether or not the Habit has already started
+     */
+    public boolean isHabitAlreadyStarted() {
+
+        // get Habit start date
+        Calendar startDate = habit.getStartDate();
+        int startYear = startDate.get(Calendar.YEAR);
+        int startMonth = startDate.get(Calendar.MONTH);
+        int startDay = startDate.get(Calendar.DAY_OF_MONTH);
+        // getCurrentDate
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        // if current year doesn't match start year
+        if (startYear != year)
+            // return whether the Habit has already started
+            return (startYear < year);
+        // else current year == start year
+        // if current year doesn't match start year
+        if (startMonth != month)
+            // return whether the Habit has already started
+            return startMonth < month;
+        // else year and month are equal
+            // return whether the Habit has already started
+        else return startDay <= day;
     }
 
 }
