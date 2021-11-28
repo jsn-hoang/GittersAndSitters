@@ -10,7 +10,6 @@
         android:id="@+id/nav_home"
         android:layout_width="120dp"
         android:layout_height="67dp"
-        android:layout_marginTop="16dp"
         android:text="Home Page"
         app:backgroundTint="#091823"
         app:layout_constraintBottom_toTopOf="@+id/nav_friends"
@@ -67,6 +66,7 @@
         android:layout_height="67dp"
         android:text="Log Out"
         app:backgroundTint="#091823"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,9 +74,8 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="281dp"
-        android:layout_height="258dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="210dp"
+        android:layout_height="190dp"
         app:layout_constraintBottom_toTopOf="@+id/nav_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
