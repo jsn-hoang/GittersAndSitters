@@ -1,5 +1,7 @@
 package com.example.gittersandsittersdatabase;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,13 +36,24 @@ public class MenuPage extends AppCompatActivity {
         final Button requestButton = findViewById(R.id.nav_requests);
         final Button logOutButton = findViewById(R.id.nav_logout);
 
+        // manages the result (updated user object)
+        ActivityResultLauncher<Intent> menuActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+
+                    if (result.getResultCode() != RESULT_CANCELED) { // if user object was updated
+                        Intent data = result.getData();
+                        user = (User) data.getExtras().get("user");
+                    }
+                });
+
+
         //home button
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MenuPage.this, HabitActivity.class);
                 intent.putExtra("user", user);
-                startActivity(intent);
+                menuActivityResultLauncher.launch(intent);
             }
         });
 
@@ -49,7 +62,7 @@ public class MenuPage extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MenuPage.this, HabitEventActivity.class);
                 intent.putExtra("user", user);
-                startActivity(intent);
+                menuActivityResultLauncher.launch(intent);
             }
         });
 
@@ -59,7 +72,7 @@ public class MenuPage extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MenuPage.this, FollowingActivity.class);
                 intent.putExtra("user", user);
-                startActivity(intent);
+                menuActivityResultLauncher.launch(intent);
             }
         });
 
@@ -69,7 +82,7 @@ public class MenuPage extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MenuPage.this, FollowRequestActivity.class);
                 intent.putExtra("user", user);
-                startActivity(intent);
+                menuActivityResultLauncher.launch(intent);
             }
         });
 
