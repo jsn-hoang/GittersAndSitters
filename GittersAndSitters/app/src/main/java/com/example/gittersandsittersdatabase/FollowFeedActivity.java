@@ -66,7 +66,7 @@ public class FollowFeedActivity extends AppCompatActivity {
 
         feedBanner.setText(targetUserName.getUsername()+"'s Habits");
 
-        
+
 
 
         targetUserId = targetUserName.getUserID();

@@ -59,10 +59,13 @@ public class FollowFeedCustomList extends ArrayAdapter<Habit> {
 
 
 
-
-
+        habit.calculateProgress();
         habitProgress.setMax(100);
         habitProgress.setProgress(habit.getProgress());
+        habitProgress.setScaleY(7f);
+
+        //habitProgress.setMax(100);
+        //habitProgress.setProgress(habit.getProgress());
 
 
 
