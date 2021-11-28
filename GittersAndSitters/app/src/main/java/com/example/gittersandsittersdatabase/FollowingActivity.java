@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -45,6 +47,11 @@ public class FollowingActivity extends AppCompatActivity {
     private ArrayAdapter<String> followAdapter;
     private List<String> followList;
     private ArrayList<String> followArrayList;
+    private String targetUserId;
+    private String current_username;
+    private String targetEmail;
+    private String targetUserName;
+    private User userClickedOn;
 
 
     private FirebaseAuth mAuth;
@@ -57,17 +64,12 @@ public class FollowingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_following);
 
 
-
         mAuth = FirebaseAuth.getInstance();
         current_user = mAuth.getCurrentUser().getUid();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("Users");
         DocumentReference docRef = collectionReference.document(current_user);
-
-
-
-
 
 
         followArrayList = new ArrayList<>();
@@ -89,13 +91,12 @@ public class FollowingActivity extends AppCompatActivity {
                 if (snapshot != null && snapshot.exists()) {
                     followArrayList.clear();
                     followList = (List<String>) snapshot.getData().get("following");
-                    for (String follow : followList){
+                    for (String follow : followList) {
                         followArrayList.add(follow);
                     }
 
-                    
-                    followAdapter.notifyDataSetChanged();
 
+                    followAdapter.notifyDataSetChanged();
 
 
                     Log.d("TAG", "Current data: " + snapshot.getData());
@@ -106,25 +107,52 @@ public class FollowingActivity extends AppCompatActivity {
         });
 
 
-
         followingBanner = findViewById(R.id.following_banner);
         followingBanner.setText("Following");
-
-
-
-
-
-
 
 
         follow_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(FollowingActivity.this, FollowFeedActivity.class);
-                //intent.putExtra(, i);
-                startActivity(intent);
+
+                targetUserName = followArrayList.get(i);
+                final CollectionReference collectionReference = db.collection("Users");
+                collectionReference
+                        .whereEqualTo("userName", targetUserName) // <-- This line
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (DocumentSnapshot document : task.getResult()) {
+                                        if (document.exists()) {
+                                            targetUserId = document.getId();
+                                            targetEmail = (String) document.getData().get("email");
+                                            userClickedOn = new User(targetUserId,targetUserName, targetEmail);
+                                            //System.out.println("User clicked on " + userClickedOn.getUsername());
+                                            Intent intent = new Intent(FollowingActivity.this, FollowFeedActivity.class);
+                                            intent.putExtra("user", userClickedOn);
+                                            startActivity(intent);
+
+                                            //DocumentReference targetUserReference = collectionReference.document(targetUserId);
+                                            //targetUserReference.update("requests", FieldValue.arrayUnion(current_username));
+
+
+                                            Log.d("TAG", document.getId() + " => " + document.getData());
+                                        }
+                                    }
+                                } else {
+                                    Log.d("TAG", "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
+                //System.out.println("User clicked on " + userClickedOn.getUsername());
+                //Intent intent = new Intent(FollowingActivity.this, FollowFeedActivity.class);
+                //intent.putExtra("user", userClickedOn);
+                //startActivity(intent);
             }
         });
-
     }
 }
+
+

@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.2" //commented out
     defaultConfig {
         applicationId "com.example.gittersandsittersdatabase"
         minSdkVersion 19        // upgraded from 16 to implement Google Maps
@@ -13,6 +15,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -26,6 +29,12 @@ android {
         unitTests.all {
             useJUnitPlatform()
         }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -42,6 +51,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.firebase:firebase-database:20.0.2'
     implementation 'com.google.android.gms:play-services-maps:18.0.0'       // added this for gps?
+    implementation "com.google.android.gms:play-services-location:15.0.1" // for location
+//    implementation 'com.google.android.libraries.places:places:2.1.0' // for draggable marker
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
     androidTestImplementation 'com.android.support.test:rules:1.4.0'        // Added this for Espresso testing

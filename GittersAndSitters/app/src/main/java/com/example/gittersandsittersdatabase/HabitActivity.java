@@ -119,11 +119,44 @@ public class HabitActivity extends AppCompatActivity {
         habitListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                // i corresponds to the ith ListView entry
+                // However, we need to know if it is the ith entry in "Today's Habits" or "All Habits"
+                int tabPosition = tabLayout.getSelectedTabPosition();
+                // if i corresponds to "Today's Habits"
+                if (tabPosition == 0)
+                    // Get the clicked Habit position
+                    i = getClickedHabitPosition(i);
+
                 Intent intent = new Intent(HabitActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
                 intent.putExtra("position", i);
                 habitActivityResultLauncher.launch(intent);
                 return false;
+            }
+        });
+
+
+        /**
+         * Launches AddRemoveEventActivity when user clicks on a ListView entry
+         * "Today's Habits" tab must be selected for Activity to launch
+         */
+        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                // Get integer corresponding to currently selected tab
+                int tabPosition = tabLayout.getSelectedTabPosition();
+
+                if (tabPosition == 0) { // true iff "Today's Habits" tab is currently selected
+
+
+                    habit = (Habit) habitListView.getItemAtPosition(i); // Get the clicked habit
+                    Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
+                    intent.putExtra("user", user);
+                    intent.putExtra("habit", habit);
+                    habitActivityResultLauncher.launch(intent);
+                }
             }
         });
 
@@ -153,7 +186,8 @@ public class HabitActivity extends AppCompatActivity {
 
         /**
          * Launches AddRemoveEventActivity when user clicks on a ListView entry
-         * "Today's Habits" tab must be selected for Activity to launch
+         * "Today's Habits" tab must be selected and isCompleted
+         * must be false for the activity to launch.
          */
         habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -161,11 +195,12 @@ public class HabitActivity extends AppCompatActivity {
 
                 // Get integer corresponding to currently selected tab
                 int tabPosition = tabLayout.getSelectedTabPosition();
+                // Get habit corresponding to clicked ListView entry
+                habit = (Habit) habitListView.getItemAtPosition(i);
 
-                if (tabPosition == 0) { // true iff "Today's Habits" tab is currently selected
+                // make sure we're in "Today's Habits" and no Event has been added yet today.
+                if (tabPosition == 0 && !habit.isCompletedToday()) {
 
-
-                    habit = (Habit) habitListView.getItemAtPosition(i); // Get the clicked habit
                     Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
                     intent.putExtra("user", user);
                     intent.putExtra("habit", habit);
@@ -173,7 +208,6 @@ public class HabitActivity extends AppCompatActivity {
                 }
             }
         });
-
         }
 
     /**
@@ -196,4 +230,25 @@ public class HabitActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    /**
+     * This method is used when the user opts to Edit a Habit from "Today's Habits"
+     * The int position of the Habit in the "Today's Habits" ListView may not correspond
+     * with the int position of the Habit in the user's entire habitList.
+     * This method computes the int position of the clicked Habit within "All Habits"
+     * @param i - the int position of the clicked Habit in "Today's Habits"
+     * @return - the int position of the clicked Habit in the user's habitList
+     */
+        public int getClickedHabitPosition(int i) {
+            Habit clickedHabit = user.getTodayUserHabits().get(i);
+            boolean found = false;
+            for (int j = 0; j < user.getAllUserHabits().size() && !found; j++) {
+                Habit habit = user.getAllUserHabits().get(j);
+                if (habit.getHabitID().equals(clickedHabit.getHabitID())) {
+                    found = true;
+                    i = j;
+                }
+            }
+            return i;
+        }
 }

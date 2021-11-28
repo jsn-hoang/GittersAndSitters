@@ -18,6 +18,7 @@ public class User implements Serializable{
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<Habit> habitList;
+    private DataUploader dataUploader;
 //    private ArrayList<HabitEvent> habitEventList;
 
 
@@ -171,6 +172,10 @@ public class User implements Serializable{
         return habitList;
     }
 
+    public void setAllUserHabits(ArrayList<Habit> habitList) {
+        this.habitList = habitList;
+    }
+
 
     /**
      * This method searches through the full habit list and selects
@@ -200,11 +205,30 @@ public class User implements Serializable{
         ArrayList<Habit> tempList = new ArrayList<>();
 
         for (int i=0; i<habitList.size(); i++){
-            if (habitList.get(i).isHabitPublic()) {
+            if (habitList.get(i).isPublic()) {
                 tempList.add(habitList.get(i));
             }
         }
         return tempList;
+    }
+
+    /**
+     * This method returns a boolean indicating whether a proposed Habit name is unique
+     * @param habitName - The proposed habitName (String)
+     * @return - A boolean corresponding to whether the name is unique to the habitNames in habitList
+     */
+    public boolean isUniqueHabitName(String habitName) {
+
+        // loop through all Habits
+        for (int i = 0; i < habitList.size(); i++) {
+            Habit habit = habitList.get(i);
+            // Compare each habit with proposed habit
+            if (habit.getHabitName().equals(habitName))
+                // return false if name exists
+                return false;
+        }
+        // if this line is reached, the proposed name must be unique
+        return true;
     }
 
     /**
@@ -236,14 +260,14 @@ public class User implements Serializable{
      */
     public Habit getParentHabitOfHabitEvent(HabitEvent habitEvent) {
 
-        // Get the name of the Habit we are looking for
-        String habitName = habitEvent.getParentHabitName();
+        // Get the ID of the Habit we are looking for
+        String habitID = habitEvent.getParentHabitID();
         boolean parentHabitFound = false;
         Habit habit = null;
         // iterate through habitList until we find the Habit we are looking for
         for (int i = 0; i < habitList.size() && !parentHabitFound; i++) {
             habit = habitList.get(i);
-            if (habitName.equals(habit.getHabitName()))
+            if (habitID.equals(habit.getHabitID()))
                 parentHabitFound = true;
         }
         return habit;
