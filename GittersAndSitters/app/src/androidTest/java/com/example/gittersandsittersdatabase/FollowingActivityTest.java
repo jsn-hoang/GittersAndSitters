@@ -31,7 +31,9 @@ public class FollowingActivityTest {
                 @Override
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+                    User user = new User("testID","testUsername","testEmail");
                     Intent result = new Intent(targetContext, FollowingActivity.class);
+                    result.putExtra("user", user);
 
                     return result;
                 }
