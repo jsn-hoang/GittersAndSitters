@@ -64,6 +64,8 @@ public class FollowRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow_request);
 
+        user = (User) getIntent().getSerializableExtra("user");
+
         follow_request_banner = findViewById(R.id.follow_request_banner);
         send_request_button = findViewById(R.id.send_request_button);
         follow_request_banner.setText("Follow Requests");
@@ -145,7 +147,6 @@ public class FollowRequestActivity extends AppCompatActivity {
     public void sendRequest(View view) {
         search_username = (EditText) findViewById(R.id.search_username);
         String user_name = search_username.getText().toString();
-        user = (User) getIntent().getSerializableExtra("user");
         current_username = user.getUsername();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
