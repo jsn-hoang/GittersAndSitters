@@ -21,7 +21,6 @@ public class User implements Serializable{
 
     // User constructors
     public User(){
-
     }
 
     public User(String userID, String username, String email){
