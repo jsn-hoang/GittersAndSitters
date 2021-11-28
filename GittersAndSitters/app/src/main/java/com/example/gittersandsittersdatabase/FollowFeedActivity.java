@@ -149,13 +149,12 @@ public class FollowFeedActivity extends AppCompatActivity {
 
                                 habit.calculateProgress();
 
-                                habit.setProgress(habit.getProgress());
+                                //habit.setProgress(habit.getProgress());
                                 if (isPublic) {
                                     targetUserName.addUserHabit(habit);
                                     followHabitArrayList.add(habit);
                                 }
                                 followHabitAdapter.notifyDataSetChanged();
-
                             }
                         }
                     });
@@ -167,12 +166,13 @@ public class FollowFeedActivity extends AppCompatActivity {
 
 
 
-
             }
         });
 
 
     }
+
+
 
     // deliver back the updated user object on back button pressed
     @Override
