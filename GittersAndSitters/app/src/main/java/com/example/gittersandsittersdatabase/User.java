@@ -180,20 +180,41 @@ public class User implements Serializable{
     /**
      * This method searches through the full habit list and selects
      * all of the habits that are to be performed today.
+     * "Today's Habits" are scheduled on this weekday and their startDate <= currentDate
      * @return - An arrayList of Habits that are to be performed today
      */
     public ArrayList<Habit> getTodayUserHabits(){
 
-        ArrayList<Habit> tempList = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        // Initialize array for Today's Habits
+        ArrayList<Habit> todayList = new ArrayList<>();
+        // Create calendar instance
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int dayOfMonth = c.get(Calendar.DAY_OF_MONTH);
+        int weekday = c.get(Calendar.DAY_OF_WEEK);
 
+        // populate todayList
         for (int i=0; i<habitList.size(); i++){
-            if (habitList.get(i).getWeekdays().contains(day)) {
-                tempList.add(habitList.get(i));
+            Habit habit = habitList.get(i);
+            // if Habit is scheduled on this weekday
+            if (habit.getWeekdays().contains(weekday)) {
+                // Get habitStartDate
+                Calendar habitStartDate = habit.getStartDate();
+                int startYear = habitStartDate.get(Calendar.YEAR);
+                int startMonth = habitStartDate.get(Calendar.MONTH);
+                int startDayOfMonth = habitStartDate.get(Calendar.DAY_OF_MONTH);
+
+                // Add Habit to todayList if the Habit has already started
+                if (year > startYear)
+                    todayList.add(habitList.get(i));
+                else if (year == startYear  && month > startMonth)
+                    todayList.add(habitList.get(i));
+                else if (year == startYear && month == startMonth && dayOfMonth >= startDayOfMonth)
+                    todayList.add(habitList.get(i));
             }
         }
-        return tempList;
+        return todayList;
     }
 
     /**
