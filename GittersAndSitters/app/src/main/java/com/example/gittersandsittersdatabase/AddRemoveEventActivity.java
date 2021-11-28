@@ -85,13 +85,10 @@ import java.util.Locale;
  * editEvent mode starts when the the user navigates to this Activity from EventHistoryActivity
  */
 
-//TODO Fragments for habitEventPhoto and habitEventLocation
-
 public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
     private FirebaseFirestore db;
-    private CollectionReference collectionRef;
     public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
     public static final int REQUEST_CODE_CAMERA = 3;
     public static final int REQUEST_CODE_SELECTLOC = 4;
@@ -129,8 +126,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         habitListIndex = user.getUserHabitPosition(habit);
         // get instance of FirebaseFirestore
         db = FirebaseFirestore.getInstance();
-        // get collection reference
-        collectionRef = db.collection("Users/" + user.getUserID() + "/Habits/" + habit.getHabitID() + "/HabitEvents/");
 
         // position intent is only available for an existing HabitEvent
         if (getIntent().hasExtra("position")) {
@@ -152,7 +147,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         final Button locationButton = findViewById(R.id.event_location_button);
         final TextView header = findViewById(R.id.add_edit_event_title_text);
         final TextView eventDateText = findViewById(R.id.event_date_text);
-        final Button eventLocationButton = findViewById(R.id.event_location_button);
         final ImageButton eventPhotoButton = findViewById(R.id.event_photo_button);
         imageView = findViewById(R.id.imageView);
 
