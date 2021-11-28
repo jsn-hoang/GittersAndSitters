@@ -202,8 +202,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
                                                     user.put("userName", uname);
                                                     user.put("email", email);
-                                                    user.put("following", Arrays.asList("Mark", "Jason"));
-                                                    user.put("requests",Arrays.asList("Alex", "Justin"));
+                                                    user.put("following", Arrays.asList());
+                                                    user.put("requests",Arrays.asList());
                                                     user.put("habitList",Arrays.asList());
 
                                                     // adding user information to firestore database.

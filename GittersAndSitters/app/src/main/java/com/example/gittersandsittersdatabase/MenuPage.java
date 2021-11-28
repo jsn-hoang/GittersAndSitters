@@ -57,7 +57,7 @@ public class MenuPage extends AppCompatActivity {
         friendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MenuPage.this, FollowFeedActivity.class);
+                Intent intent = new Intent(MenuPage.this, FollowingActivity.class);
                 intent.putExtra("user", user);
                 startActivity(intent);
             }
