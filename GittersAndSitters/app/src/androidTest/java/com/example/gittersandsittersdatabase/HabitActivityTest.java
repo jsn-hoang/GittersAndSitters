@@ -36,7 +36,7 @@ public class HabitActivityTest {
         protected Intent getActivityIntent() {
         Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         // Create and put a User object before launching HabitActivity
-        User user = new User("testUsername","testEmail");
+        User user = new User("testID","testUsername","testEmail");
         Intent result = new Intent(targetContext, HabitActivity.class);
         result.putExtra("user", user);
         return result;

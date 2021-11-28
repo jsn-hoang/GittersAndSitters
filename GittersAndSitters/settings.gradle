@@ -1,10 +1,20 @@
 dependencyResolutionManagement {
+<<<<<<< HEAD
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
         //jcenter() // Warning: this repository is going to shut down soon
     }
+=======
+    //repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    //repositories {
+    //    google()
+    //    mavenCentral()
+    //    jcenter() // Warning: this repository is going to shut down soon
+
+    //}
+>>>>>>> 2dcb1b36462ff7313036bf40686bf3f396518ee6
 }
 rootProject.name = "GittersAndSittersDatabase"
 include ':app'
