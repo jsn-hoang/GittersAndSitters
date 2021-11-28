@@ -81,5 +81,10 @@ public class MenuPage extends AppCompatActivity {
         });
     }
     
+    @Override
+    public void onBackPressed() {
+        //
+    }
+    
 }
       
