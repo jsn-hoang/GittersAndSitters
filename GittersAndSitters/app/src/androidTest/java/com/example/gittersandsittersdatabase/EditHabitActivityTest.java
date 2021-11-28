@@ -60,7 +60,7 @@ public class EditHabitActivityTest {
 
 
                     // Create and put a User object before launching AddRemoveHabitActivity
-                    User user = new User("testUsername", "testEmail");
+                    User user = new User("testID","testUsername", "testEmail");
 
                     // Create and give the user a habit
                     // Create an arraylist of weekdays

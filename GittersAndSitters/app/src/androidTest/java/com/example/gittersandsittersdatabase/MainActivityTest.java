@@ -40,7 +40,7 @@ public class MainActivityTest{
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
                     // Create and put a User object before launching ProfileActivity
-                    User user = new User("testUsername","testEmail");
+                    User user = new User("testID","testUsername","testEmail");
                     Intent result = new Intent(targetContext, MainActivity.class);
                     result.putExtra("user", user);
                     return result;
@@ -119,14 +119,14 @@ public class MainActivityTest{
     @Test
     public void testSignUpButton(){
         // Click register button
-        Espresso.onView(withId(R.id.register)).perform(click());
+        Espresso.onView(withId(R.id.register_button)).perform(click());
         // Test if Activity switched to Register
         Espresso.onView(withId(R.id.activity_register_id)).check(matches(isDisplayed()));
     }
 
     // Finally, test logging into the app with a registered username and password
     @Test
-    public void zzzTestCorrectLogin() throws InterruptedException {
+    public void TestCorrectLogin() throws InterruptedException {
 
         // Enter valid username and password
         Espresso.onView(withId(R.id.login_emailAddress)).perform(typeText("askiba@ualberta.ca"));

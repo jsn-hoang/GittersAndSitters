@@ -65,7 +65,7 @@ public class AddHabitActivityTest {
                     // Set String representation of date to startDate TextView
 
                     // Create and put a User object before launching AddRemoveHabitActivity
-                    User user = new User("testUsername","testEmail");
+                    User user = new User("testID","testUsername","testEmail");
                     Intent result = new Intent(targetContext, AddRemoveHabitActivity.class);
                     result.putExtra("user", user);
                     // By not including putExtra("position", position) this will activate new habit mode
