@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.Blob;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -13,10 +14,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 /** This class enables the addition, deletion, and updating of Habits and HabitEvents in the Firestore
  */
 
-public class DataUploader implements Serializable, FirestoreCallback{
+public class DataUploader implements Serializable, FirestoreCallback, Comparable<Blob>{
 
     private final String userID;
     private CollectionReference collectionRef;
@@ -92,9 +95,15 @@ public class DataUploader implements Serializable, FirestoreCallback{
         data.put("longDate", longDate);
         data.put("eventComment", habitEvent.getEventComment());
 
-        //TODO upload event and Location (optional attributes)
-        //data.put("eventPhoto", habitEvent.getEventPhoto());
-        //data.put("eventLocation", habitEvent.getEventLocation());
+        // upload event and Location (optional attributes)
+        if (habitEvent.getEventPhoto() != null) {
+            byte[] bytesPhoto = habitEvent.getEventPhoto();
+            Blob blobPhoto = Blob.fromBytes(bytesPhoto);
+            data.put("eventPhoto",blobPhoto);
+        }
+        if (habitEvent.getEventLocation() != null) {
+            data.put("eventLocation", habitEvent.getEventLocation());
+        }
 
         DocumentReference docRef = collectionRef.document();
         String docID = docRef.getId();
@@ -207,12 +216,23 @@ public class DataUploader implements Serializable, FirestoreCallback{
         setCollectionReference(false, habit);
         long longDate = habitEvent.getEventDate().getTimeInMillis();
         DocumentReference docRef = collectionRef.document(habitEvent.getEventID());
+
+        // update event and Location (optional attributes)
+        if (habitEvent.getEventPhoto() != null) {
+            byte[] bytesPhoto = habitEvent.getEventPhoto();
+            Blob blobPhoto = Blob.fromBytes(bytesPhoto);
+            docRef.update("eventPhoto", blobPhoto).addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
+                    .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
+        }
+        if (habitEvent.getEventLocation() != null) {
+            docRef.update("eventLocation", habitEvent.getEventLocation()).addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
+                    .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
+        }
+
         docRef.update(
                 "eventName", habitEvent.getEventName(),
                 "longDate", longDate,
                 "eventComment", habitEvent.getEventComment())
-                // "eventLocation", habitEvent.getLocation(),
-                // "eventPhoto", habitEvent.getPhoto())
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
@@ -234,4 +254,10 @@ public class DataUploader implements Serializable, FirestoreCallback{
     @Override
     public void onCallback() {
     }
+
+    @Override
+    public int compareTo(Blob o) {
+        return 0;
+    }
+
 }

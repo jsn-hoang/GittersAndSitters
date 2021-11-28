@@ -121,6 +121,30 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
+
+        /**
+         * Launches AddRemoveEventActivity when user clicks on a ListView entry
+         * "Today's Habits" tab must be selected for Activity to launch
+         */
+        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                // Get integer corresponding to currently selected tab
+                int tabPosition = tabLayout.getSelectedTabPosition();
+
+                if (tabPosition == 0) { // true iff "Today's Habits" tab is currently selected
+
+
+                    habit = (Habit) habitListView.getItemAtPosition(i); // Get the clicked habit
+                    Intent intent = new Intent(HabitActivity.this, AddRemoveEventActivity.class);
+                    intent.putExtra("user", user);
+                    intent.putExtra("habit", habit);
+                    habitActivityResultLauncher.launch(intent);
+                }
+            }
+        });
+
         // logout button goes to logout screen (ProfileActivity) to confirm or cancel
         final Button logoutButton = findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +193,6 @@ public class HabitActivity extends AppCompatActivity {
                 }
             }
         });
-
         }
 
     /**
