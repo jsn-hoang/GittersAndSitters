@@ -13,7 +13,13 @@ import android.widget.ListView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -41,6 +47,7 @@ public class HabitActivity extends AppCompatActivity {
         // Set adapter to todayUserHabits
         habitAdapter = new HabitCustomList(this, user.getTodayUserHabits(), true);
         habitListView.setAdapter(habitAdapter);
+
 
         // Initialize the tab layout
         TabLayout tabLayout = findViewById(R.id.tabLayout);
