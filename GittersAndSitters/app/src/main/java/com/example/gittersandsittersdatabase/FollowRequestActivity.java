@@ -198,4 +198,13 @@ public class FollowRequestActivity extends AppCompatActivity {
         });
     }
 
+    // deliver back the updated user object on back button pressed
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(FollowRequestActivity.this, MenuPage.class);
+        intent.putExtra("user", user);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+    }
+
 }

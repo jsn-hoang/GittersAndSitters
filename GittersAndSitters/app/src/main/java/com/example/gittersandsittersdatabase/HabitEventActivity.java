@@ -80,16 +80,14 @@ public class HabitEventActivity extends AppCompatActivity {
             }
         });
 
-        // Habit Activity Button goes to Habit Activity
-        final Button habitActivityButton = findViewById(R.id.habit_activity_button);
-        habitActivityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    }
 
-                Intent intent = new Intent(HabitEventActivity.this, HabitActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
-            }
-        });
+    // deliver back the updated user object on back button pressed
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(HabitEventActivity.this, MenuPage.class);
+        intent.putExtra("user", user);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

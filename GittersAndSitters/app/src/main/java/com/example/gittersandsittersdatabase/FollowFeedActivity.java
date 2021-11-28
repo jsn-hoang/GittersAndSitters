@@ -23,6 +23,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -46,6 +47,7 @@ public class FollowFeedActivity extends AppCompatActivity {
     private ArrayAdapter<Habit> followHabitAdapter;
     private List<String> followList;
     private ArrayList<Habit> followHabitArrayList;
+    private ListenerRegistration registration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,7 @@ public class FollowFeedActivity extends AppCompatActivity {
         followHabitArrayList = new ArrayList<>();
         followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList,targetUserId);
         followHabit_list.setAdapter(followHabitAdapter);
-        habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        registration = habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 followHabitArrayList.clear();
@@ -172,4 +174,11 @@ public class FollowFeedActivity extends AppCompatActivity {
 
     }
 
+    // deliver back the updated user object on back button pressed
+    @Override
+    public void onBackPressed() {
+        registration.remove();
+        super.onBackPressed();
     }
+
+}

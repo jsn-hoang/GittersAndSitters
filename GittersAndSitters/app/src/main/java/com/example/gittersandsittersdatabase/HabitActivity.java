@@ -77,32 +77,8 @@ public class HabitActivity extends AppCompatActivity {
                         // update current tab with data from updated user object
                         refreshCurrentTab(tabLayout, habitListView, user);
                     }
-
-//                    if (result.getResultCode() == Activity.RESULT_OK) { // a habit was added or updated
-//                        Intent data = result.getData();
-//                        user = (User) data.getExtras().get("user");
-//                        // update current tab with data from updated user object
-//                        refreshCurrentTab(tabLayout, habitListView, user);
-//                    }
-//                    else if (result.getResultCode() == 2) { // DELETE habit
-//                        Intent data = result.getData();
-//                        user = (User) data.getExtras().get("user");
-//                        // update current tab with data from updated user object
-//                        refreshCurrentTab(tabLayout, habitListView, user);
-//                    }
                 });
 
-//        // manages the result (updated habit object)
-//        ActivityResultLauncher<Intent> habitEventActivityResultLauncher = registerForActivityResult(
-//                new ActivityResultContracts.StartActivityForResult(),
-//                result -> {
-//                    if (result.getResultCode() == Activity.RESULT_OK) {
-//                        Intent data = result.getData();
-//                        habit = (Habit) data.getExtras().get("habit");
-//                        // update events list with data from updated habit object
-//                        //TODO
-//                    }
-//                });
 
         // FAB to add a habit
         final FloatingActionButton floatingActionButton = findViewById(R.id.add_habit_FAB);
@@ -160,29 +136,6 @@ public class HabitActivity extends AppCompatActivity {
             }
         });
 
-        // logout button goes to logout screen (ProfileActivity) to confirm or cancel
-        final Button logoutButton = findViewById(R.id.logout_button);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HabitActivity.this, ProfileActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
-            }
-
-        });
-        // Event History button goes to HabitEventActivity
-        final Button eventHistoryButton = findViewById(R.id.event_history_button);
-        eventHistoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(HabitActivity.this, HabitEventActivity.class);
-                intent.putExtra("user", user);
-                //startActivity(intent);
-                habitActivityResultLauncher.launch(intent);
-            }
-        });
 
         /**
          * Launches AddRemoveEventActivity when user clicks on a ListView entry
@@ -239,16 +192,25 @@ public class HabitActivity extends AppCompatActivity {
      * @param i - the int position of the clicked Habit in "Today's Habits"
      * @return - the int position of the clicked Habit in the user's habitList
      */
-        public int getClickedHabitPosition(int i) {
-            Habit clickedHabit = user.getTodayUserHabits().get(i);
-            boolean found = false;
-            for (int j = 0; j < user.getAllUserHabits().size() && !found; j++) {
-                Habit habit = user.getAllUserHabits().get(j);
-                if (habit.getHabitID().equals(clickedHabit.getHabitID())) {
-                    found = true;
-                    i = j;
-                }
+    public int getClickedHabitPosition(int i) {
+        Habit clickedHabit = user.getTodayUserHabits().get(i);
+        boolean found = false;
+        for (int j = 0; j < user.getAllUserHabits().size() && !found; j++) {
+            Habit habit = user.getAllUserHabits().get(j);
+            if (habit.getHabitID().equals(clickedHabit.getHabitID())) {
+                found = true;
+                i = j;
             }
-            return i;
         }
+        return i;
+    }
+
+    // deliver back the updated user object on back button pressed
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(HabitActivity.this, MenuPage.class);
+        intent.putExtra("user", user);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+    }
 }
