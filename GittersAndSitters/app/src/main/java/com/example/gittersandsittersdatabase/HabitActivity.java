@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -34,10 +35,6 @@ public class HabitActivity extends AppCompatActivity {
     User user;
     Habit habit;
 
-    private DrawerLayout drawer;
-//    private ViewPager viewPager;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,17 +48,6 @@ public class HabitActivity extends AppCompatActivity {
         habitAdapter = new HabitCustomList(this, user.getTodayUserHabits(), true);
         habitListView.setAdapter(habitAdapter);
 
-        Toolbar toolbar = findViewById(R.id.toolBar);
-        setSupportActionBar(toolbar);
-
-//        viewPager = (ViewPager) findViewById(R.id.)
-
-        drawer = findViewById(R.id.drawer_layout);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
         // Initialize the tab layout
         TabLayout tabLayout = findViewById(R.id.tabLayout);
@@ -189,16 +175,6 @@ public class HabitActivity extends AppCompatActivity {
         });
 
         }
-
-    @Override
-    public void onBackPressed() {
-        if(drawer.isDrawerOpen(GravityCompat.START)){
-            drawer.closeDrawer(GravityCompat.START);
-        }else{
-            super.onBackPressed();
-        }
-
-    }
 
     /**
      * Refreshes the tab that is currently selected. A user method is called to get the updated habit list.
