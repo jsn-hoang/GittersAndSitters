@@ -4,7 +4,7 @@ apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    //buildToolsVersion "29.0.2" commented out
     defaultConfig {
         applicationId "com.example.gittersandsittersdatabase"
         minSdkVersion 19        // upgraded from 16 to implement Google Maps
