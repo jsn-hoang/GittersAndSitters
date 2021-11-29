@@ -53,7 +53,6 @@ public class FollowRequestActivity extends AppCompatActivity {
     private List<String> requestList;
     private ArrayList<String> requestArrayList;
     private User user;
-
     private FirebaseAuth mAuth;
     private String current_user;
     private String current_username;

@@ -25,7 +25,7 @@ public class DataUploader implements Serializable, FirestoreCallback, Comparable
     private CollectionReference collectionRef;
 
     // Constructor for DataUploader
-    DataUploader(String userID) {
+    public DataUploader(String userID) {
         this.userID = userID;
     }
 

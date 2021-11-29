@@ -65,19 +65,6 @@ public class HabitActivityTest {
         Espresso.onView(ViewMatchers.withText("Today's Habits")).perform(ViewActions.click());
     }
 
-
-    // Test functionality of the logout button
-    @Test
-    public void testLogoutButton() throws InterruptedException {
-        // Click logout button
-        Espresso.onView(withId(R.id.nav_logout)).perform(click());
-        // Pause for activity change
-        Thread.sleep(1500);
-        // Test if Activity switched to LogoutActivity
-        Espresso.onView(withId(R.id.activity_profile_id)).check(matches(isDisplayed()));
-
-    }
-
     @After
     public void tearDown() throws Exception {
     }

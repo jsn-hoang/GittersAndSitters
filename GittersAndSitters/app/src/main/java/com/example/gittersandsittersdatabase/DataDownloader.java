@@ -28,7 +28,7 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
     private ArrayList<HabitEvent> habitEventList;
 
     // Constructor for DataDownloader
-    DataDownloader(String userID) {
+    public DataDownloader(String userID) {
         this.userID = userID;
     }
 
@@ -103,10 +103,10 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
      * This method searches all of the user's "HabitEvents" collections (one for each Habit).
      * All of the documents within the collections are converted to HabitEvent objects and added to
      * an ArrayList<HabitEvent>
-     * @param firestoreHabitCallback - Interface for handling Firestore's asynchronous behaviour
+     * @param firestoreEventListCallback - Interface for handling Firestore's asynchronous behaviour
      *                                 Enables us to get the data from Firestore
      */
-    public void getHabitEvents (FirestoreEventListCallback firestoreHabitCallback) {
+    public void getHabitEvents (FirestoreEventListCallback firestoreEventListCallback) {
 
         // Initialize habitEventList
         habitEventList = new ArrayList<>();
@@ -142,12 +142,11 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
 
                     String eventComment = (String) document.getData().get("eventComment");
 
-                    // TODO get Location and Photo
-
-
                     // Create HabitEvent object and add to habitEventList
                     HabitEvent habitEvent = new HabitEvent
                             (eventID, parentHabitID, eventName, eventDate, eventComment);
+
+                    // Check if photo and location document fields exist
 
                     if (document.getData().get("eventPhoto") != null) {
                         Blob photo = (Blob) document.getData().get("eventPhoto");
@@ -158,10 +157,6 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
                     if (document.getData().get("eventLocation") != null) {
                         List<Double> coord = (List<Double>) document.getData().get("eventLocation");
                         habitEvent.setEventLocation((ArrayList<Double>) coord);
-//                        for (Double day : longDays) {
-//                            Integer i = (int) (long) day;
-//                            weekdays.add(i);
-//                        }
                     }
 
                     habitEventList.add(habitEvent);
@@ -171,7 +166,7 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
             }
 
             // Callback enables us to get all of the downloaded HabitEvents
-            firestoreHabitCallback.onEventListCallback(habitEventList);
+            firestoreEventListCallback.onEventListCallback(habitEventList);
         });
     }
 

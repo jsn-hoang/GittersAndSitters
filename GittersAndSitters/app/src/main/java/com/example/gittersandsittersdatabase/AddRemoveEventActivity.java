@@ -3,29 +3,19 @@
 
 package com.example.gittersandsittersdatabase;
 
-import static android.content.ContentValues.TAG;
-
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,46 +27,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.w3c.dom.Text;
-
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.text.DateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * This Activity is responsible for creating, editing, or deleting an Event.
@@ -88,28 +50,24 @@ import java.util.Locale;
 public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
-    private FirebaseFirestore db;
     public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
+    public static final int RESULT_DELETE = 2;
     public static final int REQUEST_CODE_CAMERA = 3;
     public static final int REQUEST_CODE_SELECTLOC = 4;
-    public static final int RESULT_DELETE = 2;
-    User user;
-    Habit habit;                   // The parent Habit of the HabitEvent
-    HabitEvent habitEvent;
-    Calendar habitEventDate;
-    ArrayList<Double> habitEventLocation = null;
-    Bitmap photoBmp;
-    byte[] habitEventPhoto = null;
-    boolean isNewHabitEvent;
-    int habitListIndex;            // index position of the Habit in the User's habitList
-    int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
+    private User user;
+    private Habit habit;                   // The parent Habit of the HabitEvent
+    private HabitEvent habitEvent;
+    private Calendar habitEventDate;
+    private ArrayList<Double> habitEventLocation = null;
+    private byte[] habitEventPhoto = null;
+    private boolean isNewHabitEvent;
+    private int habitListIndex;            // index position of the Habit in the User's habitList
+    private int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
     private DataUploader dataUploader;
-    ImageView imageView;
-    Double userLat;
-    Double userLong;
-
-    // location
-    private FusedLocationProviderClient fusedLocationClient;
+    private ImageView imageView;
+    private Double userLat;
+    private Double userLong;
+    private FusedLocationProviderClient fusedLocationClient;    // location
 
 
     @Override
@@ -124,8 +82,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         habit = (Habit) getIntent().getSerializableExtra("habit");
         // get the index position of the parentHabit in habitList
         habitListIndex = user.getUserHabitPosition(habit);
-        // get instance of FirebaseFirestore
-        db = FirebaseFirestore.getInstance();
 
         // position intent is only available for an existing HabitEvent
         if (getIntent().hasExtra("position")) {
@@ -349,7 +305,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         }
 
     }
-
 
     /**
      * Tries to get location permission from the user; if successful, gets the last location and starts the MapsActivity
