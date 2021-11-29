@@ -16,4 +16,4 @@ The best way to track your habits!
 NOTE:  
 For running Android tests, use the Nexus 6P AVD. If you encounter a failing test, try using a different device.
 
-Geolocation does not cooperate with all emulators. If you encounter issues with setting the location, attempt a different emulator. 
+Geolocation may not cooperate due to private Google API Key.  
