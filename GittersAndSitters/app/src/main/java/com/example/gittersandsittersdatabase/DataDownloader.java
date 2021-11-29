@@ -158,10 +158,6 @@ public class DataDownloader implements FirestoreHabitListCallback, FirestoreEven
                     if (document.getData().get("eventLocation") != null) {
                         List<Double> coord = (List<Double>) document.getData().get("eventLocation");
                         habitEvent.setEventLocation((ArrayList<Double>) coord);
-//                        for (Double day : longDays) {
-//                            Integer i = (int) (long) day;
-//                            weekdays.add(i);
-//                        }
                     }
 
                     habitEventList.add(habitEvent);

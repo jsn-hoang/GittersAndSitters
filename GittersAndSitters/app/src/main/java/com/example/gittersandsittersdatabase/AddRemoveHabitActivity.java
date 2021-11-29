@@ -35,8 +35,6 @@ import java.util.concurrent.Executor;
 
 public class AddRemoveHabitActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
-    private FirebaseFirestore db;
-
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
 
@@ -58,8 +56,6 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
         // get user
         user = (User) getIntent().getSerializableExtra("user");
-
-        db = FirebaseFirestore.getInstance();;
 
         // habitPosition corresponds to which ListView entry was clicked
         if (getIntent().hasExtra("position")) {
