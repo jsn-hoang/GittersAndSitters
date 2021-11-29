@@ -42,15 +42,6 @@ public class ProfileActivityTest {
     public void setUp() throws Exception {
     }
 
-    // Test functionality of the cancel button
-    @Test
-    public void testCancelButton() {
-        // Click the cancel button
-        Espresso.onView(withId(R.id.cancel_logout_button)).perform(click());
-        // Check that the activity has changed to HabitActivity
-        Espresso.onView(withId(R.id.activity_menu_page_id)).check(matches(isDisplayed()));
-    }
-
     // Test functionality of the logout button
     @Test
     public void testLogoutButton() {
