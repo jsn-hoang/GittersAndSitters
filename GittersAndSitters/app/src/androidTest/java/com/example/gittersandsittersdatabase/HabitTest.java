@@ -22,9 +22,14 @@ public class HabitTest {
     }
 
     private HabitEvent mockHabitEvent() {
-        HabitEvent habitEvent = new HabitEvent("MockEventName", mockHabit().getHabitName(), Calendar.getInstance(),"mockEventComment");
+        //HabitEvent habitEvent = new HabitEvent("MockEventName", mockHabit().getHabitName(), Calendar.getInstance(),"mockEventComment");
+        //HabitEvent(String eventID, String parentHabitID, String eventName, Calendar eventDate,
+        //        String eventComment)
+       HabitEvent habitEvent = new HabitEvent(mockHabitEvent().getEventID(), mockHabitEvent().getParentHabitID(), mockHabitEvent().getEventName(),mockHabitEvent().getEventDate(), mockHabitEvent().getEventComment());
         return habitEvent;
     }
+
+
 
     @Test
     public void testAddEvent() {

@@ -36,13 +36,13 @@ import java.util.List;
 
 /**
  * This class represents the activity which displays the users that the user follows
+ * Clicking on a follower will show a list of the followers habits and their progress for each habit
  */
 public class FollowingActivity extends AppCompatActivity {
     //public static final String EXTRA_INDEX = "com.example.gittersandsittersdatabase.INDEX";
 
 
     TextView followingBanner;
-
     private ListView follow_list;
     private ArrayAdapter<String> followAdapter;
     private List<String> followList;
@@ -88,9 +88,12 @@ public class FollowingActivity extends AppCompatActivity {
                     return;
                 }
 
+
                 if (snapshot != null && snapshot.exists()) {
                     followArrayList.clear();
+                    // Storing the list of followers in followList
                     followList = (List<String>) snapshot.getData().get("following");
+                    // looping through each item in followList and adding it to followArrayList
                     for (String follow : followList) {
                         followArrayList.add(follow);
                     }
@@ -110,15 +113,15 @@ public class FollowingActivity extends AppCompatActivity {
         followingBanner = findViewById(R.id.following_banner);
         followingBanner.setText("Following");
 
-
+        // When a follower is clicked on we want a list of their habits to be displayed
         follow_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                // targertUserName is the username of the follower a app user clicks on
                 targetUserName = followArrayList.get(i);
                 final CollectionReference collectionReference = db.collection("Users");
                 collectionReference
-                        .whereEqualTo("userName", targetUserName) // <-- This line
+                        .whereEqualTo("userName", targetUserName) // search for user with a username equal to targetUserName
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -146,10 +149,7 @@ public class FollowingActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                //System.out.println("User clicked on " + userClickedOn.getUsername());
-                //Intent intent = new Intent(FollowingActivity.this, FollowFeedActivity.class);
-                //intent.putExtra("user", userClickedOn);
-                //startActivity(intent);
+
             }
         });
     }

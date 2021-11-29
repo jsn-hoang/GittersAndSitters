@@ -31,9 +31,9 @@ public class FollowingActivityTest {
                 @Override
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-                    User user = new User("testID","testUsername","testEmail");
+                    User user = new User("Cy67EIwsbUcxKNooWd1PB9HsYOO2","testuser1","mmcgoey@ualberta.ca");
                     Intent result = new Intent(targetContext, FollowingActivity.class);
-                    result.putExtra("user", user);
+                    result.putExtra("testuser1", user);
 
                     return result;
                 }
@@ -46,7 +46,8 @@ public class FollowingActivityTest {
 
     @Test
     public void testFollowActivityList(){
-        Espresso.onView(withText("mmmcgoey")).perform(ViewActions.click());
+        Espresso.onView(withText("jhoang2")).perform(ViewActions.click());
+
     }
 
 
