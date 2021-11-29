@@ -17,9 +17,12 @@ import android.widget.Button;
 
 import com.google.android.material.navigation.NavigationView;
 
+/**
+ * This activity is the root page for navigating through the app.
+ * The back button is disabled in this activity.
+ */
 public class MenuPage extends AppCompatActivity {
 
-    // private DrawerLayout drawer;
     private User user;
 
     @Override

@@ -17,6 +17,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.gittersandsittersdatabase.databinding.ActivityMapsBinding;
 
+/**
+ * MapsActivity loads and displays the mapFragment for the Google Maps API. All background API
+ * actions are done inside the fragment (loading tiles, requesting data updates as the user pans
+ * around, etc). The map places a pin at the user's current location by default and this pin can
+ * be moved by the user. The Done button returns the location selected.
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener{
 
     private GoogleMap mMap;
@@ -44,6 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         // Done Button returns the location to calling activity
+        // the marker's current Lat and Long are returned through intent
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,8 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * A default marker is placed on the location passed by intent, and camera is centered there. Default zoom is set.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -77,6 +83,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLoc));
     }
 
+    /**
+     * On Click, the previous marker is removed. A new marker is added at the click location
+     * with a distinct label. The camera is smoothly animated to the new marker and the new location
+     * is stored to be passed back to intent.
+     * @param latLng LatLng of place clicked
+     */
     @Override
     public void onMapClick(@NonNull LatLng latLng) {
         userLat = latLng.latitude;

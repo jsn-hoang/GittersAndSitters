@@ -306,6 +306,10 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Checks for camera permissions; if granted, starts the built-in image capture activity.
+     * if denied, displays a dialog window explaining why permission is needed to access the camera.
+     */
     private void launchCamera() {
         if (ContextCompat.checkSelfPermission(
                 AddRemoveEventActivity.this, Manifest.permission.CAMERA) ==
@@ -347,13 +351,17 @@ public class AddRemoveEventActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Tries to get location permission from the user; if successful, gets the last location and starts the MapsActivity
+     * with the LAT/LONG retrieved as input for the marker to be placed.
+     * When permission is denied, displays a dialog window explaining why permission is needed to access the map.
+     */
     private void fetchLocation() {
         if (ContextCompat.checkSelfPermission(
                 AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
             Log.d("DEBUG", "in if statement permission granted to fine location");
-            // You can use the API that requires the permission.
+            // the Google Maps API that requires the permission is used.
             LocationRequest mLocationRequest = LocationRequest.create();
             mLocationRequest.setInterval(60000);
             mLocationRequest.setFastestInterval(5000);
@@ -365,13 +373,8 @@ public class AddRemoveEventActivity extends AppCompatActivity {
                         .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                             @Override
                             public void onSuccess(Location location) {
-                                Log.d("DEBUG", "in onSuccess listener of getLastLocation()");
-
                                 // Got last known location. In some rare situations this can be null.
                                 if (location != null) {
-                                    Log.d("DEBUG", "location is not null");
-
-//                                if (location != null) {
                                     // Logic to handle location object
                                     Double userLat = location.getLatitude();
                                     Double userLong = location.getLongitude();
@@ -394,7 +397,7 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
 
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(AddRemoveEventActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // explain to the user why your app requires this permission for a specific feature to behave as expected.
+            // explains to the user why app requires this permission.
 
             new AlertDialog.Builder(this)
                     .setTitle("Required Location Permission")
@@ -424,6 +427,9 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Displays a Toast describing the result that the user chose to allow or deny a specific permission.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -448,6 +454,12 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Upon the result of the camera activity or the GMap activity, converts the output into appropriate format to return in intent parcel.
+     * @param requestCode request's requestCode (int)
+     * @param resultCode resultCode of called activity
+     * @param data data being returned
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
