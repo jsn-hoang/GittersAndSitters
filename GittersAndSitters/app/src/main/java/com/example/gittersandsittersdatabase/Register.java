@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -42,7 +43,7 @@ import java.util.Map;
 /**
  * This class is responsible for allowing a user to register for the HabitTracker app
  */
-public class Register extends AppCompatActivity implements View.OnClickListener {
+public class Register extends AppCompatActivity{
 
     // Declare variables to be referenced
     private TextView banner, registerUser;
@@ -66,17 +67,32 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
         mAuth = FirebaseAuth.getInstance();
 
-        loginButton = (Button) findViewById(R.id.return_to_login_button);
-        loginButton.setOnClickListener(this);
-
-        registerUser = (Button) findViewById(R.id.registerUser);
-        registerUser.setOnClickListener(this);
 
         emailName = findViewById(R.id.email);
         userName = findViewById(R.id.userName);
         userPassword = findViewById(R.id.password);
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+
+        // FAB to add a habit
+        final Button registerButton = findViewById(R.id.register_button);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                registerUser();
+            }
+        });
+
+        // FAB to add a habit
+        final Button loginButton = findViewById(R.id.return_to_login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               startActivity(new Intent(Register.this, MainActivity.class));
+            }
+        });
+
 
 
     }
@@ -87,18 +103,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
      * If the id is banner we want to go the main activity
      */
 
-    @Override
-    public void onClick(View view) {
-
-        switch (view.getId()) {
-            case R.id.return_to_login_button:
-                startActivity(new Intent(this, MainActivity.class));
-                break;
-            case R.id.registerUser:
-                registerUser();
-                break;
-        }
-    }
     /**
      * registerUser() does error checking to make sure the user is not missing any fields
      * an error is displayed if the user name, email or password field is empty

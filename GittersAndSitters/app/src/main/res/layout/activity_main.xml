@@ -73,7 +73,7 @@
 
 
     <Button
-        android:id="@+id/register_button"
+        android:id="@+id/go_to_register_button"
         android:layout_width="380dp"
         android:layout_height="70dp"
         android:textSize="26sp"
