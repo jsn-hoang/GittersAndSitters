@@ -8,9 +8,9 @@
 
     <Button
         android:id="@+id/nav_home"
-        android:layout_width="120dp"
+        android:layout_width="130dp"
         android:layout_height="67dp"
-        android:text="Home Page"
+        android:text="Habits"
         app:backgroundTint="@color/purple_custom"
         app:layout_constraintBottom_toTopOf="@+id/nav_friends"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +20,7 @@
 
     <Button
         android:id="@+id/nav_event_history"
-        android:layout_width="120dp"
+        android:layout_width="130dp"
         android:layout_height="67dp"
         android:text="Event History"
         app:backgroundTint="@color/purple_custom"
@@ -32,9 +32,9 @@
 
     <Button
         android:id="@+id/nav_friends"
-        android:layout_width="120dp"
+        android:layout_width="130dp"
         android:layout_height="67dp"
-        android:text="Friends"
+        android:text="Following"
         app:backgroundTint="@color/purple_custom"
         app:layout_constraintBottom_toTopOf="@+id/nav_event_history"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,10 +49,10 @@
 
     <Button
         android:id="@+id/nav_requests"
-        android:layout_width="120dp"
+        android:layout_width="130dp"
         android:layout_height="67dp"
         android:layout_gravity="center_horizontal"
-        android:text="Friend Requests"
+        android:text="Follow Requests"
         app:backgroundTint="@color/purple_custom"
         app:layout_constraintBottom_toTopOf="@+id/nav_logout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +62,7 @@
 
     <Button
         android:id="@+id/nav_logout"
-        android:layout_width="120dp"
+        android:layout_width="130dp"
         android:layout_height="67dp"
         android:text="Log Out"
         app:backgroundTint="@color/purple_custom"
