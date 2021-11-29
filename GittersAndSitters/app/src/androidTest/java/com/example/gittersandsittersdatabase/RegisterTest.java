@@ -63,7 +63,7 @@ public class RegisterTest {
 
 
         Espresso.closeSoftKeyboard();
-        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        Espresso.onView(withId(R.id.register_button)).perform(click());
         Espresso.closeSoftKeyboard();
         //Since the user did not add a username the account should not be created
         // If account was created then the activity would change to activity_main
@@ -89,7 +89,7 @@ public class RegisterTest {
 
         Espresso.closeSoftKeyboard();
 
-        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        Espresso.onView(withId(R.id.register_button)).perform(click());
 
         Espresso.closeSoftKeyboard();
         //Since the user did not add an email the account should not be created
@@ -114,7 +114,7 @@ public class RegisterTest {
         Espresso.onView(withId(R.id.password)).perform(typeText("123456"));
 
         Espresso.closeSoftKeyboard();
-        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        Espresso.onView(withId(R.id.register_button)).perform(click());
 
         Espresso.closeSoftKeyboard();
         //Since the user did not add a valid email address the account will not be created
@@ -142,7 +142,7 @@ public class RegisterTest {
 
 
         Espresso.closeSoftKeyboard();
-        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        Espresso.onView(withId(R.id.register_button)).perform(click());
 
         Espresso.closeSoftKeyboard();
         //Since the user did not add a password with length >6 account should not be created
@@ -168,7 +168,7 @@ public class RegisterTest {
         //Since the user did not add a password with length >6 account should not be created
         // If account was created then the activity would change to activity_main
         // Since the account was not created the activity should be activity_register_id
-        Espresso.onView(withId(R.id.registerUser)).perform(click());
+        Espresso.onView(withId(R.id.register_button)).perform(click());
         Espresso.closeSoftKeyboard();
 
     }
