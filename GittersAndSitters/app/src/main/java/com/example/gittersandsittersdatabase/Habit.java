@@ -105,7 +105,7 @@ public class Habit implements Serializable {
         return progress;
     }
 
-    /** This method calculates a Habit's progress
+    /** This method calculates a Habit's progress.
      */
     public void calculateProgress() {
 
@@ -119,18 +119,18 @@ public class Habit implements Serializable {
             // Compute how many days have elapsed since the Habit has started
             int n = (int) TimeUnit.MILLISECONDS.toDays(Math.abs(today - start)) + 1;
 
-            // For each day in weekdays
+            // For each day in Habit's weekdays
             for (int day : this.weekdays){
 
-                // tempDate = startDate clone
+                // set tempDate = startDate
                 Calendar tempDate = (Calendar) s.clone();
                 // for each day in number of days since startDate
                 for (int i = 0; i < n; i++){
 
-                    // Get the weekday that the Habit was started on
+                    // Get the weekday of startDate + i
                     // Sunday == 1, Monday == 2, ..., Saturday == 7
                     int weekday = tempDate.get(Calendar.DAY_OF_WEEK);
-                    // if Habit startDate matches this weekday
+                    
                     if (weekday == day){
                         // increment count
                         count++;
@@ -152,7 +152,7 @@ public class Habit implements Serializable {
             }
         }
     }
-    
+
     public boolean isPublic() {
         return habitPublic;
     }
