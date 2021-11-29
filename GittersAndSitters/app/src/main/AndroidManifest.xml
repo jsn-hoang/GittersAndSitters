@@ -48,9 +48,6 @@
             android:name=".MenuPage"
             android:exported="true" />
         <activity
-            android:name=".FollowFeedActivity"
-            android:exported="true"/>
-        <activity
             android:name=".FollowingActivity"
             android:exported="true" />
         <activity
