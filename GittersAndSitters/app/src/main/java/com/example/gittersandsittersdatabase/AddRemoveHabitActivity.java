@@ -37,16 +37,13 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
     // Declare variables for referencing
     public static final int RESULT_DELETE = 2;
-
-    User user;
-    Habit habit;
-    boolean isNewHabit;
-    int habitIndexPosition;
-    EditText habitNameEditText;
-    Calendar habitStartDate;
-    TextView habitStartDateText;
-    ArrayList<CheckBox> weekdayCheckBoxes;
-    EditText habitReasonEditText;
+    private User user;
+    private Habit habit;
+    private boolean isNewHabit;
+    private int habitIndexPosition;
+    private Calendar habitStartDate;
+    private TextView habitStartDateText;
+    private ArrayList<CheckBox> weekdayCheckBoxes;
     private DataUploader dataUploader;
 
     @Override
@@ -70,7 +67,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
 
         // Get views that will be used for user input
 
-        habitNameEditText = findViewById(R.id.habit_name_editText);
+        EditText habitNameEditText = findViewById(R.id.habit_name_editText);
         habitStartDateText = findViewById(R.id.habit_start_date_text);
         weekdayCheckBoxes = new ArrayList<>();
         RadioButton publicRadioButton = findViewById(R.id.public_radio_button);
@@ -88,7 +85,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
                 (sunday, monday, tuesday, wednesday, thursday, friday, saturday);
         weekdayCheckBoxes.addAll(checkBoxes);
 
-        habitReasonEditText = findViewById(R.id.habit_reason_editText);
+        EditText habitReasonEditText = findViewById(R.id.habit_reason_editText);
         final Button deleteButton = findViewById(R.id.delete_habit_button);
         final Button addButton = findViewById(R.id.add_habit_button);
         final Button cancelButton = findViewById(R.id.cancel_habit_button);

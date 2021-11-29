@@ -51,25 +51,23 @@ public class AddRemoveEventActivity extends AppCompatActivity {
 
     // Declare variables for referencing
     public static final int PERMISSIONS_REQUEST_CODE_FINE_LOCATION = 1;
+    public static final int RESULT_DELETE = 2;
     public static final int REQUEST_CODE_CAMERA = 3;
     public static final int REQUEST_CODE_SELECTLOC = 4;
-    public static final int RESULT_DELETE = 2;
-    User user;
-    Habit habit;                   // The parent Habit of the HabitEvent
-    HabitEvent habitEvent;
-    Calendar habitEventDate;
-    ArrayList<Double> habitEventLocation = null;
-    byte[] habitEventPhoto = null;
-    boolean isNewHabitEvent;
-    int habitListIndex;            // index position of the Habit in the User's habitList
-    int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
+    private User user;
+    private Habit habit;                   // The parent Habit of the HabitEvent
+    private HabitEvent habitEvent;
+    private Calendar habitEventDate;
+    private ArrayList<Double> habitEventLocation = null;
+    private byte[] habitEventPhoto = null;
+    private boolean isNewHabitEvent;
+    private int habitListIndex;            // index position of the Habit in the User's habitList
+    private int habitEventListIndex;       // index position of the HabitEvent in the Habit's habitEventList
     private DataUploader dataUploader;
-    ImageView imageView;
-    Double userLat;
-    Double userLong;
-
-    // location
-    private FusedLocationProviderClient fusedLocationClient;
+    private ImageView imageView;
+    private Double userLat;
+    private Double userLong;
+    private FusedLocationProviderClient fusedLocationClient;    // location
 
 
     @Override
@@ -303,8 +301,6 @@ public class AddRemoveEventActivity extends AppCompatActivity {
         }
 
     }
-
-
 
     private void fetchLocation() {
         if (ContextCompat.checkSelfPermission(
