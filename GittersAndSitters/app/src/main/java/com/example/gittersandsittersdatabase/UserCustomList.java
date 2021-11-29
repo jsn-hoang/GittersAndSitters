@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
- * This class represents a CustomList which holds User objects
+ * This class represents a CustomList which holds String objects (usernames)
  */
 public class UserCustomList extends ArrayAdapter<String> {
     private ArrayList<String> users;
