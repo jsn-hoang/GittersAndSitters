@@ -10,7 +10,7 @@ import java.util.Calendar;
 public class HabitEvent implements Serializable, Comparable<HabitEvent> {
 
     private String eventID;
-    private String parentHabitID;
+    private final String parentHabitID;
     private String parentHabitName;
     private String eventName;
     private Calendar eventDate;     // always today's date
@@ -19,8 +19,8 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     private byte[] eventPhoto;
 
    // This constructor will be used when re-creating HabitEvents from Firestore downloads
-    public HabitEvent(String eventID, String parentHabitID, String eventName, Calendar eventDate,
-             String eventComment) {
+    public HabitEvent(String eventID, String parentHabitID, String eventName,
+                      Calendar eventDate, String eventComment) {
         this.eventID = eventID;
         this.parentHabitID = parentHabitID;
         this.parentHabitName = null;
@@ -39,8 +39,6 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
         this.eventComment = eventComment;
         this.eventDate = eventDate;
     }
-
-    // Getters and Setters
 
     public String getEventID() {
         return eventID;
@@ -75,7 +73,6 @@ public class HabitEvent implements Serializable, Comparable<HabitEvent> {
     }
 
     public void setEventDate(Calendar eventDate) {
-        // Set EventDate to today's date
         this.eventDate = eventDate;
     }
 

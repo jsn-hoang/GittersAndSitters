@@ -27,7 +27,8 @@ public class Habit implements Serializable {
      * @param habitReason Reason for habit: String
      * @param habitPublic Public visibility of habit: boolean
      */
-    public Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate, String habitReason, boolean habitPublic) {
+    public Habit(String habitName, ArrayList<Integer> weekdays, Calendar startDate,
+                 String habitReason, boolean habitPublic) {
         this.habitID = "temp";
         this.habitName = habitName;
         this.weekdays = weekdays;
@@ -102,10 +103,6 @@ public class Habit implements Serializable {
 
     public int getProgress() {
         return progress;
-    }
-
-    public void setProgress(int progress) {
-        this.progress = progress;
     }
 
     /** This method calculates a Habit's progress
@@ -267,7 +264,6 @@ public class Habit implements Serializable {
         return position;
     }
 
-
     /**
      * Overwrites a chosen habitEventList object with a new one
      * @param i - int that represents the position of the HabitEvent to be overwritten
@@ -275,26 +271,6 @@ public class Habit implements Serializable {
      */
     public void setHabitEvent(int i, HabitEvent habitEvent) {
         habitEventList.set(i, habitEvent);
-    }
-
-    /**
-     * Overwrites a chosen habitEventList object with a new one
-     * @param oldHabitEvent - the habitEvent to be overwritten
-     * @param newHabitEvent - the habitEvent we will overwrite with
-     */
-    public void setHabitEvent(HabitEvent oldHabitEvent, HabitEvent newHabitEvent) {
-
-        boolean habitEventFound = false;
-        // search habitEventList until we find the HabitEvent we are searching for
-        for (int i = 0; i < habitEventList.size() && !habitEventFound; i++) {
-            HabitEvent habitEvent = habitEventList.get(i);
-            // if we find the habitEvent we are looking for
-            if (habitEvent == oldHabitEvent) {
-                // set the oldHabitEvent to newHabitEvent
-                setHabitEvent(i, newHabitEvent);
-                habitEventFound = true;
-            }
-        }
     }
 
     /**
@@ -321,21 +297,6 @@ public class Habit implements Serializable {
      */
     public void deleteHabitEvent(HabitEvent habitEvent) {
         habitEventList.remove(habitEvent);
-    }
-
-    public ArrayList<HabitEvent> getHabitEventList() {
-        return habitEventList;
-    }
-
-    public void setHabitEventList(ArrayList<HabitEvent> habitEventList) {
-        this.habitEventList = habitEventList;
-    }
-
-    /**
-     * @return Number of habitsEvents corresponding to this habit: int
-     */
-    public int countHabitEvents(){
-        return habitEventList.size();
     }
 
     /**

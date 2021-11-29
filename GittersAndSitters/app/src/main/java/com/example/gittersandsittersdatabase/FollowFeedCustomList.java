@@ -52,23 +52,14 @@ public class FollowFeedCustomList extends ArrayAdapter<Habit> {
         TextView habitName = view.findViewById(R.id.habit_name_text);
         ProgressBar habitProgress = view.findViewById(R.id.progressBar);
 
-
-
         habitName.setText(habit.getHabitName());
-
-
-
 
         habit.calculateProgress();
         habitProgress.setMax(100);
         habitProgress.setProgress(habit.getProgress());
         habitProgress.setScaleY(7f);
 
-
-
-
         return view;
     }
-
 }
 

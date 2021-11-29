@@ -40,20 +40,15 @@ import java.util.List;
 public class FollowingActivity extends AppCompatActivity {
     //public static final String EXTRA_INDEX = "com.example.gittersandsittersdatabase.INDEX";
 
-
-    TextView followingBanner;
-
+    private TextView followingBanner;
     private ListView follow_list;
     private ArrayAdapter<String> followAdapter;
     private List<String> followList;
     private ArrayList<String> followArrayList;
     private String targetUserId;
-    private String current_username;
     private String targetEmail;
     private String targetUserName;
     private User userClickedOn;
-
-
     private FirebaseAuth mAuth;
     private String current_user;
 

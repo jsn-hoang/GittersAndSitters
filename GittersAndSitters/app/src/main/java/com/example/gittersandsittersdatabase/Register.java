@@ -46,17 +46,12 @@ import java.util.Map;
 public class Register extends AppCompatActivity{
 
     // Declare variables to be referenced
-    private TextView banner, registerUser;
-    private Button loginButton;
     private EditText emailName;
     private EditText userName;
     private EditText userPassword;
     private ProgressBar progressBar;
     private String userID;
     private FirebaseFirestore fStore;
-    private ArrayList<String> following;
-    private ArrayList<String> requests;
-    private ArrayList<String> habitList;
     private FirebaseAuth mAuth;
 
     @Override
@@ -120,9 +115,6 @@ public class Register extends AppCompatActivity{
         String email = emailName.getText().toString().trim();
         String password = userPassword.getText().toString().trim();
         String uname = userName.getText().toString().trim();
-        following = new ArrayList<>();
-        requests = new ArrayList<>();
-        habitList = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference collectionReference = db.collection("Users");

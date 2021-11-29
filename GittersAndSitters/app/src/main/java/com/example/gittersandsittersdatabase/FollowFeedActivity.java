@@ -38,7 +38,6 @@ import java.util.Objects;
 public class FollowFeedActivity extends AppCompatActivity {
     private TextView feedBanner;
     private FirebaseFirestore fStore;
-    private FirebaseAuth mAuth;
     private User targetUserName;
     private String targetUserId;
     private ListView followHabit_list;
@@ -56,8 +55,6 @@ public class FollowFeedActivity extends AppCompatActivity {
         //feedBanner.setText("");
 
         fStore = FirebaseFirestore.getInstance();
-
-        mAuth = FirebaseAuth.getInstance();
 
         targetUserName = (User) getIntent().getSerializableExtra("user");
 
