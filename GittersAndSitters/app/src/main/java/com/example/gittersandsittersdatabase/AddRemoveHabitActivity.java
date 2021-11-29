@@ -152,6 +152,7 @@ public class AddRemoveHabitActivity extends AppCompatActivity implements DatePic
             if (isValidInput) {
                 // if new Habit
                 if (isNewHabit) {
+
                     habit = new Habit(habitName, weekdays, habitStartDate, habitReason, isPublic);
                     // Add the habit to db and get its ID
                     String habitID = dataUploader.addHabitAndGetID(habit);

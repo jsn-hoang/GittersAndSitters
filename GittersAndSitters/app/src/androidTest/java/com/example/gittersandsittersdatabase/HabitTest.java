@@ -8,21 +8,26 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 
 public class HabitTest {
-    private Habit mockHabit() {
 
+    private Habit habit;
+    private HabitEvent habitEvent;
+
+    // Method for constructing a mockHabit
+    private Habit mockHabit() {
         ArrayList<Integer> weekdays = new ArrayList<>();
         Integer []l = {2,5,6}; // Monday, Friday, Saturday
-        for (Integer i : l) {
-            weekdays.add(i);
-        }
-        Habit habit = new Habit("MockHabit", weekdays, Calendar.getInstance(), "Mock habit reason", true);
+        Collections.addAll(weekdays, l);
+
+        habit = new Habit("mockHabitID","mockHabitName", weekdays, Calendar.getInstance(), "mock habit reason", true);
         return habit;
     }
 
+    // Method for constructing a mock HabitEvent
     private HabitEvent mockHabitEvent() {
-        HabitEvent habitEvent = new HabitEvent("MockEventName", mockHabit().getHabitName(), Calendar.getInstance(),"mockEventComment");
+        habitEvent = new HabitEvent("mockEventID", habit.getHabitID(), "mockEventName", Calendar.getInstance(),"mockEventComment");
         return habitEvent;
     }
 

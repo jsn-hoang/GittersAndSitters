@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Habit implements Serializable {
 
+    private String habitID;
     private String habitName;
     private ArrayList<Integer> weekdays;    // 1 -> Sunday, 2 -> Monday, ..., 7 -> Saturday
     private Calendar startDate;
@@ -17,7 +18,6 @@ public class Habit implements Serializable {
     private int progress;
     private boolean habitPublic; // public vs private to users that follow
     private ArrayList<HabitEvent> habitEventList;
-    private String habitID;
 
     /**
      * Constructor
@@ -52,15 +52,162 @@ public class Habit implements Serializable {
     public String getHabitID() {
         return habitID;
     }
+
     public void setHabitID(String habitID) {
         this.habitID = habitID;
     }
+
+    public String getHabitName() {
+        return habitName;
+    }
+
+    public void setHabitName(String habitName) {
+        this.habitName = habitName;
+    }
+
     /**
-     * Updates the progress bar value of this habit (0 - 100)
-     * based on HabitEvents completed since the start date
+     * Returns a list of integers representing days of the week
+     * (i.e. 1 = Sunday, 2 = Monday, ..., 7 = Saturday)
+     * @return ArrayList<Integer>
      */
-    private void updateProgress() {
-        //TODO
+    public ArrayList<Integer> getWeekdays() {
+        return weekdays;
+    }
+
+    public void setWeekdays(ArrayList<Integer> weekdays) {
+        this.weekdays = weekdays;
+    }
+
+    public Calendar getStartDate() {
+        return startDate;
+    }
+
+    /**
+     * Sets Habit startDate to the one chosen by the user in the date picker fragment.
+     * min habitStart date == today's date
+     * The HabitStart date cannot be changed after the Habit has started
+     * @param startDate a Calendar object
+     */
+    public void setStartDate(Calendar startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getHabitReason() {
+        return habitReason;
+    }
+
+    public void setHabitReason(String habitReason) {
+        this.habitReason = habitReason;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    /** This method computes a Habit's progress
+     */
+    public void computeProgress() {
+
+        Calendar c = Calendar.getInstance();
+        Calendar s = this.startDate;
+        int count = 0;
+        long today = c.getTimeInMillis();
+        long start = s.getTimeInMillis();
+        // If Habit has already started
+        if (start < today) {
+            // Compute how many days have elapsed since the Habit has started
+            int n = (int) TimeUnit.MILLISECONDS.toDays(Math.abs(today - start)) + 1;
+
+            // For each day in weekdays
+            for (int day : this.weekdays){
+
+                // tempDate = startDate clone
+                Calendar tempDate = (Calendar) s.clone();
+                // for each day in number of days since startDate
+                for (int i = 0; i < n; i++){
+
+                    // Get the weekday that the Habit was started on
+                    // Sunday == 1, Monday == 2, ..., Saturday == 7
+                    int weekday = tempDate.get(Calendar.DAY_OF_WEEK);
+                    // if Habit startDate matches this weekday
+                    if (weekday == day){
+                        // increment count
+                        count++;
+                    }
+                    // increment tempDate by one day
+                    tempDate.add(Calendar.DATE, 1);
+                }
+                //System.out.println("Habit Count "+count);
+            }
+            // Set numerator as number of HabitEvents completed
+            int numerator = habitEventList.size();
+
+            // avoid divide by 0 error
+            if(count != 0) {
+                double prog = (double) numerator / count;
+
+                // set progress as int
+                this.progress = (int) Math.round(prog * 100);
+            }
+        }
+    }
+
+    /** This method computes a Habit's progress
+     */
+    public void calculateProgress() {
+
+        Calendar c = Calendar.getInstance();
+        Calendar s = this.startDate;
+        int count = 0;
+        long today = c.getTimeInMillis();
+        long start = s.getTimeInMillis();
+
+        // If Habit has already started
+        if (start < today) {
+            // Compute how many days have elapsed since the Habit has started
+            int n = (int) TimeUnit.MILLISECONDS.toDays(Math.abs(today - start)) + 1;
+
+            // For each day in weekdays
+            for (int day : this.weekdays){
+                Calendar tempDate = s;
+
+                // for each day in number of days since startDate
+                for (int i = 0; i < n; i++){
+                    // set tempDate to i days past startDate
+                    tempDate.add(Calendar.DATE, i);
+                    // get DAY_OF_WEEK of tempDate
+                    if (day == tempDate.get(Calendar.DAY_OF_WEEK)){
+                        // increment count
+                        count++;
+                    }
+                }
+            }
+            // Set numerator as number of HabitEvents completed
+            int numerator = habitEventList.size();
+
+            // avoid divide by 0 error
+            if(count != 0) {
+                double prog = (double) numerator / count;
+
+                // set progress as int
+                this.progress = (int) Math.round(prog * 100);
+            }
+        }
+    }
+
+
+
+
+    public boolean isPublic() {
+        return habitPublic;
+    }
+
+    public void setHabitPublic(boolean habitPublic) {
+        this.habitPublic = habitPublic;
     }
 
     /**
@@ -166,7 +313,6 @@ public class Habit implements Serializable {
      */
     public void addHabitEvent(HabitEvent habitEvent) {
         habitEventList.add(habitEvent);
-        updateProgress();
     }
 
     /**
@@ -175,7 +321,6 @@ public class Habit implements Serializable {
      */
     public void deleteHabitEvent(HabitEvent habitEvent) {
         habitEventList.remove(habitEvent);
-        updateProgress();
     }
 
     public ArrayList<HabitEvent> getHabitEventList() {
@@ -199,116 +344,5 @@ public class Habit implements Serializable {
     public ArrayList<HabitEvent> getHabitEvents() {
         return habitEventList;
     }
-
-
-
-    // Getters and Setters
-
-    public boolean isPublic() {
-        return habitPublic;
-    }
-
-    public void setHabitPublic(boolean habitPublic) {
-        this.habitPublic = habitPublic;
-    }
-
-    /**
-     * Returns a list of integers representing days of the week
-     * (i.e. 1 = Sunday, 2 = Monday, ..., 7 = Saturday)
-     * @return ArrayList<Integer>
-     */
-    public ArrayList<Integer> getWeekdays() {
-        return weekdays;
-    }
-
-    public void setWeekdays(ArrayList<Integer> weekdays) {
-        this.weekdays = weekdays;
-    }
-
-    public String getHabitName() {
-        return habitName;
-    }
-
-    public void setHabitName(String habitName) {
-        this.habitName = habitName;
-    }
-
-    public Calendar getStartDate() {
-        return startDate;
-    }
-
-    /**
-     * Sets Habit startDate to the one chosen by the user in the date picker fragment.
-     * min habitStart date == today's date
-     * The HabitStart date cannot be changed after the Habit has started
-     * @param startDate a Calendar object
-     */
-    public void setStartDate(Calendar startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getHabitReason() {
-        return habitReason;
-    }
-
-    public void setHabitReason(String habitReason) {
-        this.habitReason = habitReason;
-    }
-    //TODO
-
-    public int getProgress() {
-        return progress;
-    }
-
-    public void setProgress(int progress) {
-        this.progress = progress;
-    }
-
-    public void calculateProgress() {
-        Calendar c = Calendar.getInstance();
-        Calendar s = this.startDate;
-        int count =0;
-        long today = c.getTimeInMillis();
-        long start = s.getTimeInMillis();
-        if (start < today) {
-            int n = (int) TimeUnit.MILLISECONDS.toDays(Math.abs(today - start)) + 1;
-            //Calendar tempDate = (Calendar) s.clone();
-            for (int day : this.weekdays){
-                Calendar tempDate = (Calendar) s.clone();
-                for (int i = 0; i < n; i++){
-                    int weekday = tempDate.get(Calendar.DAY_OF_WEEK);
-                    if (weekday == day){
-                     count++;
-                    }
-                    tempDate.add(Calendar.DATE, 1);
-                }
-                //System.out.println("Habit Count "+count);
-            }
-            int numerator = habitEventList.size();
-            if(count != 0) {
-                double prog = (double) numerator / count;
-                this.progress = (int) Math.round(prog * 100);
-                
-            }
-
-        }
-
-
-
-        //set n = today-startdate+1
-
-        //for WEEKDAY in weekdays:
-        //tempdate = startdate
-        //for (i .. n)
-        //weekday = tempdate.getweekday
-        //if weekday==WEEKDAY: count++
-        //tempdate+= 1 day
-
-
-
-    }
-
-
-
 
 }
