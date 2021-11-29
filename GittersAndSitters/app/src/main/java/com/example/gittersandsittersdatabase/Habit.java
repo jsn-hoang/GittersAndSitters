@@ -108,9 +108,9 @@ public class Habit implements Serializable {
         this.progress = progress;
     }
 
-    /** This method computes a Habit's progress
+    /** This method calculates a Habit's progress
      */
-    public void computeProgress() {
+    public void calculateProgress() {
 
         Calendar c = Calendar.getInstance();
         Calendar s = this.startDate;
@@ -158,7 +158,7 @@ public class Habit implements Serializable {
 
     /** This method computes a Habit's progress
      */
-    public void calculateProgress() {
+    public void computeProgress() {
 
         Calendar c = Calendar.getInstance();
         Calendar s = this.startDate;

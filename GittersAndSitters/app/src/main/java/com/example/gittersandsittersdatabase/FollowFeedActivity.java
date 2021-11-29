@@ -81,7 +81,9 @@ public class FollowFeedActivity extends AppCompatActivity {
         followHabit_list = findViewById(R.id.feed_list);
 
         followHabitArrayList = new ArrayList<>();
-        followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this,followHabitArrayList,targetUserId);
+
+        followHabitAdapter = new HabitCustomList(FollowFeedActivity.this, followHabitArrayList, false);
+        //followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this, followHabitArrayList, targetUserId);
         followHabit_list.setAdapter(followHabitAdapter);
         registration = habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -112,7 +114,6 @@ public class FollowFeedActivity extends AppCompatActivity {
                     long longDate = (long) doc.getData().get("longDate");
                     Calendar startDate = Calendar.getInstance();
                     startDate.setTimeInMillis(longDate);
-                    //Calendar startDate = Calendar.getInstance();
 
                     Habit habit = new Habit(doc.getId(), habitName, weekdays, startDate, reason, isPublic);
                     CollectionReference habitEventCollRef = fStore.collection("Users").document(targetUserId).collection("Habits").document(habit.getHabitID()).collection("HabitEvents");
