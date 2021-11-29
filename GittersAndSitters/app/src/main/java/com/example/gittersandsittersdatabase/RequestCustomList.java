@@ -66,9 +66,11 @@ public class RequestCustomList extends ArrayAdapter<String> {
                 final CollectionReference collectionRef = db.collection("Users");
                 DocumentReference docRef = collectionRef.document(currentUserId);
 
+                // Remove from user's request list
                 String targetUserName = requests.get(position);
                 docRef.update("requests", FieldValue.arrayRemove(targetUserName));
 
+                // Add user's username to requester's following list
                 collectionRef
                         .whereEqualTo("userName", targetUserName) // <-- This line
                         .get()
@@ -114,6 +116,8 @@ public class RequestCustomList extends ArrayAdapter<String> {
 
         Button denyButton = view.findViewById(R.id.button_deny);
         denyButton.setText("Deny");
+
+        // Remove from user's request list if deny is clicked
         denyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

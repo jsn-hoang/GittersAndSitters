@@ -28,7 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 /**
- * This Activity represents the main activity after the user logs in.
+ * This Activity represents the home page where the user can view and manage their habits.
  */
 public class HabitActivity extends AppCompatActivity {
 
@@ -202,6 +202,11 @@ public class HabitActivity extends AppCompatActivity {
         return i;
     }
 
+    /**
+     * Swaps the positions of two items in the user's habit list
+     * @param a_list
+     *  This is an ArrayList<Integer> object that contains two elements (indices)
+     */
     private void swap(ArrayList<Integer> a_list) {
         int index = a_list.get(0);
         Habit tempHabit = user.getAllUserHabits().get(index);
