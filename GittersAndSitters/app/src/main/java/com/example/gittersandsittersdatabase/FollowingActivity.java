@@ -12,21 +12,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,13 +32,13 @@ import java.util.List;
 
 /**
  * This class represents the activity which displays the users that the user follows
+ * Clicking on a follower will show a list of the followers habits and their progress for each habit
  */
 public class FollowingActivity extends AppCompatActivity {
-    //public static final String EXTRA_INDEX = "com.example.gittersandsittersdatabase.INDEX";
+
 
 
     TextView followingBanner;
-
     private ListView follow_list;
     private ArrayAdapter<String> followAdapter;
     private List<String> followList;
@@ -78,6 +74,7 @@ public class FollowingActivity extends AppCompatActivity {
 
         follow_list.setAdapter(followAdapter);
 
+        // setting snap shot listener so the follower list updates after a follow request is accepted
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -88,14 +85,18 @@ public class FollowingActivity extends AppCompatActivity {
                     return;
                 }
 
+
                 if (snapshot != null && snapshot.exists()) {
+                    // clearing followArrayList to avoid duplicate items
                     followArrayList.clear();
+                    // Storing the list of followers in followList
                     followList = (List<String>) snapshot.getData().get("following");
+                    // looping through each item in followList and adding it to followArrayList
                     for (String follow : followList) {
                         followArrayList.add(follow);
                     }
 
-
+                    // notifying adapter that there was changes to followArrayList
                     followAdapter.notifyDataSetChanged();
 
 
@@ -110,15 +111,15 @@ public class FollowingActivity extends AppCompatActivity {
         followingBanner = findViewById(R.id.following_banner);
         followingBanner.setText("Following");
 
-
+        // When a follower is clicked on we want a list of their habits to be displayed
         follow_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                // targertUserName is the username of the follower an app user clicks on
                 targetUserName = followArrayList.get(i);
                 final CollectionReference collectionReference = db.collection("Users");
                 collectionReference
-                        .whereEqualTo("userName", targetUserName) // <-- This line
+                        .whereEqualTo("userName", targetUserName) // search for user with a username equal to targetUserName
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -126,16 +127,16 @@ public class FollowingActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     for (DocumentSnapshot document : task.getResult()) {
                                         if (document.exists()) {
+                                            // getting followers Id, Email and creating a new user object
                                             targetUserId = document.getId();
                                             targetEmail = (String) document.getData().get("email");
                                             userClickedOn = new User(targetUserId,targetUserName, targetEmail);
-                                            //System.out.println("User clicked on " + userClickedOn.getUsername());
+                                            // passing the user object to the FollowFeedActivity class
                                             Intent intent = new Intent(FollowingActivity.this, FollowFeedActivity.class);
                                             intent.putExtra("user", userClickedOn);
                                             startActivity(intent);
 
-                                            //DocumentReference targetUserReference = collectionReference.document(targetUserId);
-                                            //targetUserReference.update("requests", FieldValue.arrayUnion(current_username));
+
 
 
                                             Log.d("TAG", document.getId() + " => " + document.getData());
@@ -146,10 +147,7 @@ public class FollowingActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                //System.out.println("User clicked on " + userClickedOn.getUsername());
-                //Intent intent = new Intent(FollowingActivity.this, FollowFeedActivity.class);
-                //intent.putExtra("user", userClickedOn);
-                //startActivity(intent);
+
             }
         });
     }

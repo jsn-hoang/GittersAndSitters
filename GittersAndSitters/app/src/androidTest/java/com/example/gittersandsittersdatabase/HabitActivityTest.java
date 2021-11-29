@@ -70,7 +70,7 @@ public class HabitActivityTest {
     @Test
     public void testLogoutButton() throws InterruptedException {
         // Click logout button
-        Espresso.onView(withId(R.id.logout_button)).perform(click());
+        Espresso.onView(withId(R.id.nav_logout)).perform(click());
         // Pause for activity change
         Thread.sleep(1500);
         // Test if Activity switched to LogoutActivity
