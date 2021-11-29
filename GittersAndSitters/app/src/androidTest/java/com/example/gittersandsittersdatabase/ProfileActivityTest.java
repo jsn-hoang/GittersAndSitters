@@ -30,7 +30,7 @@ public class ProfileActivityTest {
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
                     // Create and put a User object before launching ProfileActivity
-                    User user = new User("testID","testUsername","testEmail");
+                    User user = new User("testId","testUsername","testEmail");
                     Intent result = new Intent(targetContext, ProfileActivity.class);
                     result.putExtra("user", user);
                     return result;
@@ -48,7 +48,7 @@ public class ProfileActivityTest {
         // Click the cancel button
         Espresso.onView(withId(R.id.cancel_logout_button)).perform(click());
         // Check that the activity has changed to HabitActivity
-        Espresso.onView(withId(R.id.activity_habit_id)).check(matches(isDisplayed()));
+        Espresso.onView(withId(R.id.activity_menu_page_id)).check(matches(isDisplayed()));
     }
 
     // Test functionality of the logout button

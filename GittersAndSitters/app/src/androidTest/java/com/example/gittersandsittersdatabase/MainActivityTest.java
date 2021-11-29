@@ -119,7 +119,7 @@ public class MainActivityTest{
     @Test
     public void testSignUpButton(){
         // Click register button
-        Espresso.onView(withId(R.id.register_button)).perform(click());
+        Espresso.onView(withId(R.id.go_to_register_button)).perform(click());
         // Test if Activity switched to Register
         Espresso.onView(withId(R.id.activity_register_id)).check(matches(isDisplayed()));
     }
@@ -135,8 +135,8 @@ public class MainActivityTest{
         // Click login button
         Espresso.onView(withId(R.id.login_button)).perform(click());
         Thread.sleep(10000);
-        // Test if Activity switched to MainActivity
-        Espresso.onView(withId(R.id.activity_habit_id)).check(matches(isDisplayed()));
+        // Test if Activity switched to MenuPage
+        Espresso.onView(withId(R.id.activity_menu_page_id)).check(matches(isDisplayed()));
     }
 
     @After
