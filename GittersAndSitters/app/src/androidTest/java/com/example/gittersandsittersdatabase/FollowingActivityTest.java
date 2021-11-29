@@ -32,6 +32,7 @@ public class FollowingActivityTest {
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
                     User user = new User("Cy67EIwsbUcxKNooWd1PB9HsYOO2","testuser1","mmcgoey@ualberta.ca");
+
                     Intent result = new Intent(targetContext, FollowingActivity.class);
                     result.putExtra("testuser1", user);
 

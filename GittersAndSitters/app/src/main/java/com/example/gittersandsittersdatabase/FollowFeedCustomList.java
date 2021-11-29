@@ -1,32 +1,22 @@
 package com.example.gittersandsittersdatabase;
 
-import static android.content.ContentValues.TAG;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
 
+
+/**
+ * This class provides the logic for displaying Habits objects as ListView entries for a users followers.
+ */
 public class FollowFeedCustomList extends ArrayAdapter<Habit> {
     private ArrayList<Habit> habitList;
     private Context context;
@@ -57,15 +47,14 @@ public class FollowFeedCustomList extends ArrayAdapter<Habit> {
         habitName.setText(habit.getHabitName());
 
 
-
-
         habit.calculateProgress();
+        // setting maximum progress
         habitProgress.setMax(100);
         habitProgress.setProgress(habit.getProgress());
+        // changing the width of the progress bar
         habitProgress.setScaleY(7f);
 
-        //habitProgress.setMax(100);
-        //habitProgress.setProgress(habit.getProgress());
+
 
 
 

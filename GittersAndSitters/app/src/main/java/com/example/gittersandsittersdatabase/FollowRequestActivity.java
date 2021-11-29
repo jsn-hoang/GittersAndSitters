@@ -83,35 +83,6 @@ public class FollowRequestActivity extends AppCompatActivity {
         requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
         request_list.setAdapter(requestAdapter);
 
-
-        //docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            //@Override
-           //public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                //if (task.isSuccessful()) {
-                    //DocumentSnapshot document = task.getResult();
-                    //if (document.exists()) {
-                        ////current_username = (String) document.get("userName");
-                        //requestList = (List<String>) document.getData().get("requests");
-                        //for (String request : requestList) {
-                            //requestArrayList.add(request);
-
-                        //}
-                        //requestAdapter = new RequestCustomList(FollowRequestActivity.this, requestArrayList);
-                        //request_list.setAdapter(requestAdapter);
-
-                        //System.out.println(requestArrayList.get(0));
-                        //System.out.println(current_username);
-                        //System.out.println(requestList.get(0));
-
-                        //Log.d("TAG", "DocumentSnapshot data: " + document.getData());
-                    //} else {
-                        //Log.d("TAG", "No such document");
-                    //}
-                //} else {
-                    //Log.d("TAG", "get failed with ", task.getException());
-                //}
-            //}
-        //});
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -143,6 +114,7 @@ public class FollowRequestActivity extends AppCompatActivity {
     /**
      * Called when the send request button is clicked
      * @param view
+     *  This is the send request button
      */
     public void sendRequest(View view) {
         search_username = (EditText) findViewById(R.id.search_username);
