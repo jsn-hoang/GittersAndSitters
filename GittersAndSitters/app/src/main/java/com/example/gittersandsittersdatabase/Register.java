@@ -46,7 +46,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
     // Declare variables to be referenced
     private TextView banner, registerUser;
-
+    private Button loginButton;
     private EditText emailName;
     private EditText userName;
     private EditText userPassword;
@@ -66,8 +66,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
 
         mAuth = FirebaseAuth.getInstance();
 
-        banner = (TextView) findViewById(R.id.banner);
-        banner.setOnClickListener(this);
+        loginButton = (Button) findViewById(R.id.return_to_login_button);
+        loginButton.setOnClickListener(this);
 
         registerUser = (Button) findViewById(R.id.registerUser);
         registerUser.setOnClickListener(this);
@@ -91,7 +91,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.banner:
+            case R.id.return_to_login_button:
                 startActivity(new Intent(this, MainActivity.class));
                 break;
             case R.id.registerUser:
