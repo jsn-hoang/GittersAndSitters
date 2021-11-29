@@ -152,53 +152,7 @@ public class Habit implements Serializable {
             }
         }
     }
-
-    /** This method computes a Habit's progress
-     */
-    public void computeProgress() {
-
-        Calendar c = Calendar.getInstance();
-        Calendar s = this.startDate;
-        int count = 0;
-        long today = c.getTimeInMillis();
-        long start = s.getTimeInMillis();
-
-        // If Habit has already started
-        if (start < today) {
-            // Compute how many days have elapsed since the Habit has started
-            int n = (int) TimeUnit.MILLISECONDS.toDays(Math.abs(today - start)) + 1;
-
-            // For each day in weekdays
-            for (int day : this.weekdays){
-                Calendar tempDate = s;
-
-                // for each day in number of days since startDate
-                for (int i = 0; i < n; i++){
-                    // set tempDate to i days past startDate
-                    tempDate.add(Calendar.DATE, i);
-                    // get DAY_OF_WEEK of tempDate
-                    if (day == tempDate.get(Calendar.DAY_OF_WEEK)){
-                        // increment count
-                        count++;
-                    }
-                }
-            }
-            // Set numerator as number of HabitEvents completed
-            int numerator = habitEventList.size();
-
-            // avoid divide by 0 error
-            if(count != 0) {
-                double prog = (double) numerator / count;
-
-                // set progress as int
-                this.progress = (int) Math.round(prog * 100);
-            }
-        }
-    }
-
-
-
-
+    
     public boolean isPublic() {
         return habitPublic;
     }
