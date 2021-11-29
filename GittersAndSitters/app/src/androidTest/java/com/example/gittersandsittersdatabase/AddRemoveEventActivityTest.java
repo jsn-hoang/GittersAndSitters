@@ -55,7 +55,25 @@ public class AddRemoveEventActivityTest {
     }
 
 
+        @Test
+    public void locationExists(){
+        
+    }
+    
+    @Test
+    public void photoExists(){
+        
+    }
+    
+    @Test
+    public void titleExists(){
+        
+    }
 
+    @Test
+    public void habitReasonExists(){
+        
+    }
 
     @After
     public void tearDown() throws Exception {
