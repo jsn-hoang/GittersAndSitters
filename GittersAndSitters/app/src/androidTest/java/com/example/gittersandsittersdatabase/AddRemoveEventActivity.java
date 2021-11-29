@@ -30,6 +30,7 @@ import org.junit.Test;
 import java.text.DateFormat;
 import java.util.Calendar;
 
+/* Test AddRemoveEventActivityClass */
 
 public class AddRemoveEventActivityTest {
 
