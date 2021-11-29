@@ -52,6 +52,17 @@ public class AddRemoveHabitActivityTest {
     @Before
     public void setUp() throws Exception {
     }
+    
+    @Test
+    public void isDateSetUp(){
+
+    }
+
+    @Test
+    public void isHabitStarted(){
+
+    }
+    
 
     @After
     public void tearDown() throws Exception {
