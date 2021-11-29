@@ -18,13 +18,9 @@ public class User implements Serializable{
     private ArrayList<String> following;
     private ArrayList<String> requests;
     private ArrayList<Habit> habitList;
-    private DataUploader dataUploader;
-//    private ArrayList<HabitEvent> habitEventList;
 
 
-    // User constructors
     public User(){
-
     }
 
     public User(String userID, String username, String email){
@@ -34,18 +30,16 @@ public class User implements Serializable{
         this.following = new ArrayList<>();     // initialize empty following list
         this.requests = new ArrayList<>();      // initialize empty requests list
         this.habitList = new ArrayList<>();     // initialize empty Habit list
-//        this.habitEventList = new ArrayList<>();     // initialize empty HabitEvent list
     }
 
     public User(String userID, String username, String email, ArrayList<String> following,
-                ArrayList<String> requests, ArrayList<Habit> habitList /*ArrayList<HabitEvent> habitEventList*/) {
+                ArrayList<String> requests, ArrayList<Habit> habitList) {
         this.userID = userID;
         this.username = username;
         this.email = email;
         this.following = following;
         this.requests = requests;
         this.habitList = habitList;
-//        this.habitEventList = habitEventList;
     }
 
     public String getUserID() {
@@ -293,105 +287,4 @@ public class User implements Serializable{
         }
         return habit;
     }
-
-
-    /*
-    public void sendReq(String uname) {
-        //TODO DB management
-        if (requests.contains(uname)) {
-            throw new IllegalArgumentException();
-        }
-        requests.add(uname);
-    }
-
-    public void acceptReq(String uname) {
-        //TODO
-    }
-
-    public void rejectReq(String uname) {
-        //TODO
-    }
-
-    public void follow(String uname) {
-        //TODO DB managment
-        if (following.contains(uname)) {
-            throw new IllegalArgumentException();
-        }
-        following.add(uname);
-    }
-
-    public void unfollow(String uname) {
-        //TODO DB managment
-        if (!following.contains(uname)) {
-            throw new IllegalArgumentException();
-        }
-        following.remove(uname);
-    }
-*/
-
-    /** These methods rely on user.habitEventList, which will probably not be implemented. */
-    //    /**
-//     * Returns a habitEvent from habitEventList (specified by integer)
-//     * @param i - int/index position of the habitEvent in habitEventList
-//     * @return habitEvent
-//     */
-//    public HabitEvent getHabitEvent(Habit habit, Integer i) {
-//        return habit.getHabitEvent(i);
-//    }
-//
-//    /**
-//     * This method overwrites a previous HabitEvent with a newly edited one.
-//     * The HabitEvent is overwritten in both the User HabitEventList
-//     * as well as the parent Habit's HabitEventList
-//     * @param i
-//     * @param newHabitEvent
-//     */
-//    public void setHabitEvent(Integer i, HabitEvent newHabitEvent) {
-//
-//        // Get the previous HabitEvent
-//        HabitEvent oldHabitEvent = habitEventList.get(i);
-//        // Set the new HabitEvent to habitEventList
-//        habitEventList.set(i, newHabitEvent);
-//        // Get the Habit that corresponds to this habitEvent
-//        Habit habit = getParentHabitOfHabitEvent(newHabitEvent);
-//        // Replace the HabitEvent in the Habit's habitEventList
-//        habit.setHabitEvent(oldHabitEvent, newHabitEvent);
-//    }
-
-//    /**
-//     * This method adds a HabitEvent to the user's habitEventList
-//     * It also adds a HabitEvent to the parent Habit's habitEventList
-//     * @return ArrayList<HabitEvent>
-//     */
-//    public void addHabitEvent(Habit habit, HabitEvent habitEvent) {
-//
-//        // Add to User's habitEvent list
-//        habitEventList.add(habitEvent);
-//        // Add to Habit's habitEvent list
-//        habit.addHabitEvent(habitEvent);
-//    }
-//
-//    /**
-//     * This method returns an ArrayList of all of the user's HabitEvents.
-//     * (As a result of appending HabitEvents, they are sorted in reverse chronological order.)
-//     * @return ArrayList<HabitEvent>
-//     *
-//    public ArrayList<HabitEvent> setUserHabitEvent() {
-//        return habitEventList;
-//    }
-//    */
-//
-//
-//    /**
-//     * This method deletes a HabitEvent from the user's habitEventList
-//     * It also deletes a HabitEvent from the correct Habit's habitEventList
-//     * @return ArrayList<HabitEvent>
-//     *
-//    public void deleteHabitEvent(Habit habit, HabitEvent habitEvent) {
-//        habitEventList.remove(habitEvent);
-//        habit.deleteHabitEvent(habitEvent);
-//    }
-//     */
-
-
 }

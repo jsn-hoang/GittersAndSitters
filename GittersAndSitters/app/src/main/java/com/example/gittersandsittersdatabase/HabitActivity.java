@@ -100,7 +100,6 @@ public class HabitActivity extends AppCompatActivity {
         });
 
         // LONG CLICK a habit to edit it
-
         habitListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -110,8 +109,10 @@ public class HabitActivity extends AppCompatActivity {
                 int tabPosition = tabLayout.getSelectedTabPosition();
                 // if i corresponds to "Today's Habits"
                 if (tabPosition == 0)
-                    // Get the clicked Habit position
-                    i = getClickedHabitPosition(i);
+                    // Get the clicked Habit
+                    habit = (Habit) habitListView.getItemAtPosition(i);
+                    // Get the position of the clicked Habit
+                    i = getClickedHabitPosition(habit);
 
                 Intent intent = new Intent(HabitActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
@@ -186,11 +187,12 @@ public class HabitActivity extends AppCompatActivity {
      * The int position of the Habit in the "Today's Habits" ListView may not correspond
      * with the int position of the Habit in the user's entire habitList.
      * This method computes the int position of the clicked Habit within "All Habits"
-     * @param i - the int position of the clicked Habit in "Today's Habits"
      * @return - the int position of the clicked Habit in the user's habitList
      */
-    public int getClickedHabitPosition(int i) {
-        Habit clickedHabit = user.getTodayUserHabits().get(i);
+    public int getClickedHabitPosition(Habit clickedHabit) {
+
+        // initialize i
+        int i = -1;
         boolean found = false;
         for (int j = 0; j < user.getAllUserHabits().size() && !found; j++) {
             Habit habit = user.getAllUserHabits().get(j);
@@ -204,8 +206,7 @@ public class HabitActivity extends AppCompatActivity {
 
     /**
      * Swaps the positions of two items in the user's habit list
-     * @param a_list
-     *  This is an ArrayList<Integer> object that contains two elements (indices)
+     * @param a_list This is an ArrayList<Integer> object that contains two elements (indices)
      */
     private void swap(ArrayList<Integer> a_list) {
         int index = a_list.get(0);

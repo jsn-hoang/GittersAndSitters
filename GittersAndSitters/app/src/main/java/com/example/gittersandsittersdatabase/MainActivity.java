@@ -53,12 +53,22 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
        // Register button to switch to RegisterActivity
-        final Button registerButton = findViewById(R.id.register_button);
-        registerButton.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, Register.class)));
+        final Button registerButton = findViewById(R.id.go_to_register_button);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, Register.class));
+            }
+        });
 
         // Login button to execute logic for attempted login
         final Button loginButton = findViewById(R.id.login_button);
-        loginButton.setOnClickListener(view -> executeLoginAttempt());
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                executeLoginAttempt();
+            }
+        });
     }
 
     /**

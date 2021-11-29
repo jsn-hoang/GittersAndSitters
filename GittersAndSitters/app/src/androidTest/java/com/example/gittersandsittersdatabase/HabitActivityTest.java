@@ -77,7 +77,7 @@ public class HabitActivityTest {
         Espresso.onView(withId(R.id.activity_profile_id)).check(matches(isDisplayed()));
 
     }
-
+    
     @After
     public void tearDown() throws Exception {
     }
