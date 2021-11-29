@@ -75,7 +75,6 @@ public class FollowFeedActivity extends AppCompatActivity {
         followHabitArrayList = new ArrayList<>();
 
         followHabitAdapter = new HabitCustomList(FollowFeedActivity.this, followHabitArrayList, false);
-        //followHabitAdapter = new FollowFeedCustomList(FollowFeedActivity.this, followHabitArrayList, targetUserId);
         followHabit_list.setAdapter(followHabitAdapter);
         registration = habitCollectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
