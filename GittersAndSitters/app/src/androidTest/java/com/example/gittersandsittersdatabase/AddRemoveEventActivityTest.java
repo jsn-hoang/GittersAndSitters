@@ -30,13 +30,14 @@ import org.junit.Test;
 import java.text.DateFormat;
 import java.util.Calendar;
 
-public class AddRemoveHabitActivityTest {
+
+public class AddRemoveEventActivityTest {
 
     @Rule
     // ActivityTestRule provides functional testing of a single activity.
     // Rule will be launched before each test
-    public ActivityTestRule<AddRemoveHabitActivity> AddRemoveHabitActivityTestRule =
-            new ActivityTestRule<AddRemoveHabitActivity>(AddRemoveHabitActivity.class, true, true) {
+    public ActivityTestRule<AddRemoveEventActivity> AddRemoveEventActivityTestRule =
+            new ActivityTestRule<AddRemoveEventActivity>(AddRemoveEventActivity.class, true, true) {
 
                 @Override
                 protected Intent getActivityIntent() {
@@ -52,6 +53,9 @@ public class AddRemoveHabitActivityTest {
     @Before
     public void setUp() throws Exception {
     }
+
+
+
 
     @After
     public void tearDown() throws Exception {
