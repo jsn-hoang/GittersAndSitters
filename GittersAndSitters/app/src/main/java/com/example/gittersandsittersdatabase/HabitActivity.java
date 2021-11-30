@@ -108,11 +108,12 @@ public class HabitActivity extends AppCompatActivity {
                 // However, we need to know if it is the ith entry in "Today's Habits" or "All Habits"
                 int tabPosition = tabLayout.getSelectedTabPosition();
                 // if i corresponds to "Today's Habits"
-                if (tabPosition == 0)
+                if (tabPosition == 0) {
                     // Get the clicked Habit
                     habit = (Habit) habitListView.getItemAtPosition(i);
                     // Get the position of the clicked Habit
                     i = getClickedHabitPosition(habit);
+                }
 
                 Intent intent = new Intent(HabitActivity.this, AddRemoveHabitActivity.class);
                 intent.putExtra("user", user);
