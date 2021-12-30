@@ -233,7 +233,7 @@ public class Register extends AppCompatActivity{
                                                     // if user is not created and added to authentication section display an error message
                                                     // A possible cause of this failure is that the user is already created
                                                 } else {
-                                                    Toast.makeText(Register.this, "Failed to register user! Please try again!", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(Register.this, "Failed to register user! Please try again", Toast.LENGTH_LONG).show();
                                                     progressBar.setVisibility(View.GONE);
                                                 }
 

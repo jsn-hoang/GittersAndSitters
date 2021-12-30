@@ -62,7 +62,7 @@
             android:id="@+id/tuesday_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tues" />
+            android:text="Tue" />
 
         <CheckBox
             android:id="@+id/wednesday_checkbox"
@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Thur" />
+            android:text="Thu" />
 
         <CheckBox
             android:id="@+id/friday_checkbox"

@@ -37,7 +37,6 @@ import java.util.List;
 public class FollowingActivity extends AppCompatActivity {
 
 
-    private TextView followingBanner;
     private ListView follow_list;
     private ArrayAdapter<String> followAdapter;
     private List<String> followList;
@@ -54,6 +53,8 @@ public class FollowingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_following);
+
+        setTitle("Following");
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -103,9 +104,6 @@ public class FollowingActivity extends AppCompatActivity {
             }
         });
 
-
-        followingBanner = findViewById(R.id.following_banner);
-        followingBanner.setText("Following");
 
         // When a follower is clicked on we want a list of their habits to be displayed
         follow_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

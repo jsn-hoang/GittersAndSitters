@@ -8,13 +8,6 @@
     android:id="@+id/activity_follow_request_id"
     tools:context=".FollowRequestActivity">
 
-    <TextView
-        android:id="@+id/follow_request_banner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="48sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

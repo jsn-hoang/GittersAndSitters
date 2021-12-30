@@ -35,6 +35,8 @@ public class HabitEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_event);
 
+        setTitle("Event History");
+
         // Get the user intent
         user = (User) getIntent().getSerializableExtra("user");
 

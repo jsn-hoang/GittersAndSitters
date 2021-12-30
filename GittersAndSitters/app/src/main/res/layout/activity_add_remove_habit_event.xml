@@ -40,7 +40,7 @@
         android:id="@+id/event_location_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location" />
+        android:text="Add Location" />
 
     <TextView
         android:id="@+id/event_comment_text"
@@ -54,9 +54,9 @@
         android:layout_width="match_parent"
         android:layout_height="134dp"
         android:ems="10"
-        android:textAlignment="gravity"
-        android:hint="Add a comment to this event."
-        android:inputType="textPersonName" />
+        android:hint="Add a comment to this event"
+        android:inputType="textPersonName"
+        android:textAlignment="gravity" />
 
     <ImageButton
         android:id="@+id/event_photo_button"

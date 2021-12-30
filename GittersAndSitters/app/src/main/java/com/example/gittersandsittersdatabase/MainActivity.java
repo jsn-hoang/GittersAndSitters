@@ -96,14 +96,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Check to see if password field is empty
         if (password.isEmpty()) {
-            editTextPassword.setError("Password is required!");
+            editTextPassword.setError("Password is required");
             editTextPassword.requestFocus();
             return;
         }
 
         // Check to see if password length is less than 6
         if (password.length() < 6) {
-            editTextPassword.setError("Min password length is 6 characters!");
+            editTextPassword.setError("Minimum password length is 6 characters");
             editTextPassword.requestFocus();
             return;
         }

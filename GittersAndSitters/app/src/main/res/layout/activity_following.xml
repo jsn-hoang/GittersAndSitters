@@ -7,13 +7,6 @@
     android:orientation="vertical"
     tools:context=".FollowingActivity">
 
-    <TextView
-        android:id="@+id/following_banner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="48sp" />
-
     <ListView
         android:id="@+id/following_list"
         android:layout_width="match_parent"
