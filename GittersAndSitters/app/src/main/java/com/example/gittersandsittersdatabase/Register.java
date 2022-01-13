@@ -152,7 +152,7 @@ public class Register extends AppCompatActivity{
                                 }
 
                                 if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                                    emailName.setError("Please provide valid email!");
+                                    emailName.setError("Please provide a valid email");
                                     emailName.requestFocus();
                                     return;
                                 }

@@ -176,11 +176,13 @@ public class MainActivity extends AppCompatActivity {
                 }
         else {
             fUser.sendEmailVerification();
+            progressBar.setVisibility(View.GONE);
             Toast.makeText(MainActivity.this, "Check your email to verify your account!", Toast.LENGTH_LONG).show();
         }
             }
             else {
-                Toast.makeText(MainActivity.this, "Failed to login! Please check your credentials", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Failed to log in! Please check your credentials", Toast.LENGTH_LONG).show();
     }
         });
     }
