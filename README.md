@@ -8,6 +8,11 @@ An Android app that helps you stay on top of your habits.
 Built using Android Studio, Java, and Firebase.   
 Team project for CMPUT 301.   
 
+## At a Glance
+1                        |  2                  | 3
+:------------------------------------:|:-----------------------------------:|:-----------------------------------:
+![](/doc/Images/ht1.png)  |  ![](/doc/Images/ht2.png) | ![](/doc/Images/ht3.png)
+
 ## Contributors
 
 Traian Oglinzanu   
