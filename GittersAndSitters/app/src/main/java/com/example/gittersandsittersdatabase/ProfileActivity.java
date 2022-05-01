@@ -46,7 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
         final TextView greetingTextView = (TextView) findViewById(R.id.greeting);
         final TextView userNameTextView = (TextView) findViewById(R.id.userName);
         final TextView emailTextView = (TextView) findViewById(R.id.emailAddress);
-        greetingTextView.setText("Are you sure you want to logout " + user.getUsername()+ "?");
+        greetingTextView.setText("Are you sure you want to log out " + user.getUsername()+ "?");
         userNameTextView.setText(user.getUsername());
         emailTextView.setText(user.getEmail());
 

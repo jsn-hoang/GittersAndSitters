@@ -4,8 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_add_remove_habit.xml" value="0.7516218721037998" />
+        <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_add_remove_habit_event.xml" value="0.7516218721037998" />
         <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_follow_feed.xml" value="0.5" />
+        <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_follow_request.xml" value="0.7516218721037998" />
         <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_following.xml" value="0.5" />
+        <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_habit_event.xml" value="0.67" />
         <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_login.xml" value="0.5" />
         <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_logout.xml" value="0.5" />
         <entry key="..\:/Users/Kenny/Desktop/GittersAndSitters/GittersAndSitters/app/src/main/res/layout/activity_main.xml" value="0.33" />

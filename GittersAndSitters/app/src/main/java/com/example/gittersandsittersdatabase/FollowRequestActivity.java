@@ -45,7 +45,6 @@ import java.util.Map;
  */
 public class FollowRequestActivity extends AppCompatActivity {
 
-    private TextView follow_request_banner;
     private EditText search_username;
     private Button send_request_button;
     private ListView request_list;
@@ -63,11 +62,11 @@ public class FollowRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow_request);
 
+        setTitle("Follow Requests");
+
         user = (User) getIntent().getSerializableExtra("user");
 
-        follow_request_banner = findViewById(R.id.follow_request_banner);
         send_request_button = findViewById(R.id.send_request_button);
-        follow_request_banner.setText("Follow Requests");
         send_request_button.setText("Send Request");
 
         mAuth = FirebaseAuth.getInstance();
