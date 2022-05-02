@@ -4,7 +4,7 @@ The best way to track your habits!
 
 ## About
 
-An Android app that helps you stay on top of your habits.  
+An Android app that makes it easy to build good habits.  
 Built using Android Studio, Java, and Firebase.   
 Team project for CMPUT 301.   
 
