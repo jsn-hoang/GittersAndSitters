@@ -24,7 +24,5 @@ Ashwin Thampy
 
 ## Notes
 
-For running Android tests, use the Nexus 6P AVD. If you encounter a failing test, try using a different device.  
-Geolocation may not cooperate due to private Google Maps API key.    
-Android CI was removed due to issues with updated Gradle version causing build to fail.  
+For running Android tests, use the Nexus 6P AVD. If you encounter a failing test, try using a different device.
 
